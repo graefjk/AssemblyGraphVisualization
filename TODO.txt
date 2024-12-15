@@ -1,0 +1,29 @@
+Datenformat:
+
+assembly.zip
+   tree.json
+   steps
+      1
+	 instructions.json/html
+	 unityObjects.json
+	 matrixes
+	    1
+	       1.npy
+	       2.npy
+	       3.npy
+	       4.npy
+	       ...
+	       100.npy
+	    2
+	    3
+	    4
+	    5
+		
+	
+Beispiele auswählen und bereitstellen
+see unity project
+
+Feature Liste schrieben
+
+
+Screenshots ?

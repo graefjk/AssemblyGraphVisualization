@@ -1,0 +1,1 @@
+{"planner": "bk-rrt", "dir": "joint_assembly_rotation/puzzle", "move_id": "0", "still_ids": ["1"], "rotation": false, "body_type": "sdf", "sdf_dx": 0.05, "collision_th": 0.01, "force_mag": 100, "frame_skip": 100, "max_time": 120, "seed": 1, "num_proc": 8, "log_dir": "../logs_puzzle", "record_dir": null, "save_dir": "../saves_puzzle", "n_save_state": 100}
