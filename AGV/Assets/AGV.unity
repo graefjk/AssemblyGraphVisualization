@@ -168,7 +168,7 @@ MonoBehaviour:
   object1: {fileID: 454655144}
   object2: {fileID: 2113648427}
   tickTime: 0.02
-  path: C:\Users\janni\Desktop\Bachelor\AssembleThemAll\save_rotation_16505
+  path: .\ATM_Data\save_rotation_16505
   repeat: 1
 --- !u!4 &95712599 stripped
 Transform:
@@ -260,8 +260,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175328898}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1347565, y: -0.31274813, z: 0.04520235, w: 0.93914115}
-  m_LocalPosition: {x: 15.4, y: 7.079, z: -21.048}
+  m_LocalRotation: {x: 0.17841671, y: 0.62472874, z: -0.13181998, w: 0.74866885}
+  m_LocalPosition: {x: -34.44, y: 11.78, z: -15.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -782,7 +782,7 @@ MonoBehaviour:
   object1: {fileID: 958601751}
   object2: {fileID: 2113648427}
   tickTime: 0.02
-  path: C:\Users\janni\Desktop\Bachelor\AssembleThemAll\save_rotation_09301
+  path: .\ATM_Data\save_rotation_09301
   repeat: 1
 --- !u!1001 &1462109987
 PrefabInstance:
@@ -1089,7 +1089,7 @@ MonoBehaviour:
   object1: {fileID: 1752547354}
   object2: {fileID: 2113648427}
   tickTime: 0.02
-  path: C:\Users\janni\Desktop\Bachelor\AssembleThemAll\save_rotation_2
+  path: .\ATM_Data\save_rotation_2
   repeat: 1
 --- !u!1001 &1955312962
 PrefabInstance:
@@ -1210,7 +1210,7 @@ MonoBehaviour:
   object1: {fileID: 1940441935}
   object2: {fileID: 2113648427}
   tickTime: 0.02
-  path: C:\Users\janni\Desktop\Bachelor\AssembleThemAll\save
+  path: .\ATM_Data\save
   repeat: 1
 --- !u!1 &2113648427 stripped
 GameObject:

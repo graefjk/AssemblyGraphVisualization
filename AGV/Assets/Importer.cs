@@ -63,6 +63,7 @@ public class Importer : MonoBehaviour
         {
             t = matrixes.Count - 1;
             object1.transform.localPosition = matrixes[t].GetPosition();
+            object1.transform.localRotation = matrixes[t].rotation;
         }
         Debug.Log(object1.transform.position);
     }
