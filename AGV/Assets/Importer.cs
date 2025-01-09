@@ -25,7 +25,7 @@ public class Importer : MonoBehaviour
         foreach (var file in files)
         {
             matrixes.Add(NDArrayToMatrix4x4(np.load(file.FullName)));
-            Debug.Log($"{file.FullName}");
+            //Debug.Log($"{file.FullName}");
         }
         print(matrixes);
         t = matrixes.Count - 1;
@@ -65,6 +65,6 @@ public class Importer : MonoBehaviour
             object1.transform.localPosition = matrixes[t].GetPosition();
             object1.transform.localRotation = matrixes[t].rotation;
         }
-        Debug.Log(object1.transform.position);
+        //Debug.Log(object1.transform.position);
     }
 }
