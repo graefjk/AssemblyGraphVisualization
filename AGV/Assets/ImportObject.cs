@@ -5,8 +5,6 @@ using System.IO.Compression;
 using QuikGraph;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using QuikGraph.Graphviz;
-using Loonim;
 using System;
 
 public class ImportObject : MonoBehaviour
@@ -57,8 +55,6 @@ public class ImportObject : MonoBehaviour
                 graph.AddEdge(new STaggedEdge<string, int>(item["source"].ToString(Formatting.None), item["target"].ToString(Formatting.None), item["moveID"].ToObject<int>()));
             }
         }
-        var graphviz = new GraphvizAlgorithm<string, STaggedEdge<string, int>>(graph);
-        string dotGraph = graphviz.Generate();
         openGraphVisualization(graph);
     }
 
