@@ -5,6 +5,9 @@ using System.IO.Compression;
 using QuikGraph;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using QuikGraph.Graphviz;
+using Loonim;
+using System;
 
 public class ImportObject : MonoBehaviour
 {
@@ -54,7 +57,42 @@ public class ImportObject : MonoBehaviour
                 graph.AddEdge(new STaggedEdge<string, int>(item["source"].ToString(Formatting.None), item["target"].ToString(Formatting.None), item["moveID"].ToObject<int>()));
             }
         }
-        Debug.Log(graph);
+        var graphviz = new GraphvizAlgorithm<string, STaggedEdge<string, int>>(graph);
+        string dotGraph = graphviz.Generate();
+        openGraphVisualization(graph);
+    }
+
+    //you can visualize the output here: https://dreampuf.github.io/GraphvizOnline
+    public string exportDotGraph(AdjacencyGraph<string, STaggedEdge<string, int>> graph, bool edgeLabels=true)
+    {
+        string graphString = "";
+        graphString += "digraph G {\n";
+        foreach (string s in graph.Vertices)
+        {
+            graphString += "\""+s.Replace("\"","")+"\";\n";
+        }
+        foreach (STaggedEdge<string, int> edge in graph.Edges)
+        {
+            if (edgeLabels)
+            {
+                graphString += "\"" + edge.Source.Replace("\"", "") + "\" -> \"" + edge.Target.Replace("\"", "") + "\" [label=" + edge.Tag + "];\n";
+            }
+            else
+            {
+                graphString += "\"" + edge.Source.Replace("\"", "") + "\" -> \"" + edge.Target.Replace("\"", "") + "\";\n";
+            }
+        }
+        return graphString + "}";
+    }
+
+    public string getDotGraphURL(AdjacencyGraph<string, STaggedEdge<string, int>> graph, bool edgeLabels = true)
+    {
+        return "https://dreampuf.github.io/GraphvizOnline/?engine=dot#" + Uri.EscapeDataString(exportDotGraph(graph, edgeLabels));
+    }
+
+    public void openGraphVisualization(AdjacencyGraph<string, STaggedEdge<string, int>> graph, bool edgeLabels = true)
+    {
+        System.Diagnostics.Process.Start(getDotGraphURL(graph,edgeLabels));
     }
 
     // Update is called once per frame

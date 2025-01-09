@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>QuikGraph.Graphviz</id>
+    <version>2.5.0</version>
+    <title>QuikGraph.Graphviz</title>
+    <authors>Alexandre Rabérin</authors>
+    <license type="expression">MS-PL</license>
+    <licenseUrl>https://licenses.nuget.org/MS-PL</licenseUrl>
+    <icon>quikgraph_logo.png</icon>
+    <projectUrl>https://github.com/KeRNeLith/QuikGraph</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/KeRNeLith/QuikGraph/master/docs/images/quikgraph_logo.png</iconUrl>
+    <description>.NET library that provides a bridge from QuikGraph graphs structures to Graphviz and Dot language serialization.
+
+This package is the Graphviz subset of the original QuickGraph renamed QuikGraph and ported to .NET Core.
+
+Supported platforms:
+- .NET Standard 1.3+
+- .NET Core 1.0+
+- .NET Framework 3.5+
+
+Supports Source Link</description>
+    <releaseNotes>➟ Release 2.5.0
+Updates:
+- Deprecate ToSvg API (underlying web service is down).
+- Update package dependencies.
+
+Misc:
+- Assembly is CLS compliant (Common Language Specification).</releaseNotes>
+    <copyright>Copyright © 2020</copyright>
+    <tags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization Graphviz</tags>
+    <repository type="GitHub" url="https://github.com/KeRNeLith/QuikGraph" commit="9cd6b49292e09041258708a37bed99c56177b0ef" />
+    <dependencies>
+      <group targetFramework=".NETFramework3.5">
+        <dependency id="QuikGraph" version="2.5.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="QuikGraph" version="2.5.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="QuikGraph" version="2.5.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="QuikGraph" version="2.5.0" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="QuikGraph" version="2.5.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
