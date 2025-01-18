@@ -10,12 +10,15 @@ using Unity.VisualScripting;
 using System.Collections.Generic;
 using QuikGraph.Collections;
 using System.Linq;
+using NumSharp;
+using System.Xml.Linq;
 
 public class ImportObject : MonoBehaviour
 {
     [SerializeField]
     public string zipFile;
     protected ImportOptions importOptions = new ImportOptions();
+
     ObjectImporter objImporter;
 
 
@@ -25,7 +28,10 @@ public class ImportObject : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        standardShader = Shader.Find("Standard");
         //importOptions.litDiffuse = true;
+        importOptions.zUp = false;
+        importOptions.convertToDoubleSided = true;
         objImporter = gameObject.GetComponent<ObjectImporter>();
         objImporter.ImportingComplete += ObjImporter_ImportingComplete;
         importZIP(zipFile);
@@ -39,6 +45,7 @@ public class ImportObject : MonoBehaviour
 
     string currentVertex = "[]";
     IEnumerable<STaggedEdge<string, int[]>> edgeList;
+    Shader standardShader;
 
     private void ObjImporter_ImportingComplete()
     {
@@ -46,16 +53,19 @@ public class ImportObject : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);
-            child.localScale = new Vector3(-1, 1, 1);
+            child.localScale = new Vector3(1, 1, -1);
             child.AddComponent<MeshCollider>();
             child.AddComponent<OnMouseClick>();
 
             Renderer renderer = child.GetComponent<Renderer>();
+            renderer.material.shader = standardShader;
             renderer.material.color = Color.red;
 
+
             Bounds bounds = renderer.bounds;
+            Debug.Log(bounds.center - transform.position);
             xPosition += bounds.extents.x;
-            child.position = new Vector3(xPosition - bounds.center.x, bounds.extents.y - bounds.center.y, 0);
+            child.position = new Vector3(xPosition - bounds.center.x, bounds.extents.y - bounds.center.y, 0) + transform.position;
             xPosition += bounds.extents.x + 0.1f;
         }
 
@@ -76,7 +86,7 @@ public class ImportObject : MonoBehaviour
         {
             if(""+edge.Tag[0] == partName)
             {
-                Debug.Log(edge);
+                Debug.Log("1: " + edge);
                 currentVertex = edge.Target;
                 playEdgeTransition(edge);
             }            
@@ -96,26 +106,92 @@ public class ImportObject : MonoBehaviour
             Debug.Log(edgeItem + " " + edgeItem.Tag[0] + " " + edgeItem.Tag[1]);
             transform.Find(edgeItem.Tag[0] + "").GetComponent<Renderer>().material.color = Color.green;
         }
-
-        foreach (string s in edge.Target.Split(','))
+        foreach (string s in edge.Source.Split(','))
         {
+            if (s == "[]")
+            {
+                continue;
+            }
             string id = string.Concat(s.Where(Char.IsDigit));
             GameObject part = transform.Find(id).gameObject;
-            part.transform.position = new Vector3(-5,15,-25);
+            part.transform.localPosition = new Vector3(-5, 15, -25); 
             part.GetComponent<Renderer>().material.color = Color.white;
         }
         transform.Find(""+edge.Tag[0]).GetComponent<Renderer>().material.color = Color.yellow;
+        if (edge.Tag[1] == -1)
+        {
+            transform.Find(edge.Tag[0] + "").transform.localPosition = new Vector3(-5, 15, -25);
+            Debug.Log(transform.Find(edge.Tag[0] + "").transform.localPosition);
+        }
+        else
+        {
+            loadAndPlayTransition(edge.Tag[0], edge.Tag[1]);
+        }
     }
 
+    bool play = false;
+    GameObject transitionObject;
+    List<Matrix4x4> matrixes;
+    void loadAndPlayTransition(int partID, int transitionID)
+    {
+        matrixes = new List<Matrix4x4>();
+        string path = directory + "\\steps\\" + transitionID + "\\transformationMatrices.npz";
+        var data = np.Load_Npz<Array>(path);
+        foreach (var item in data)
+        {
+            matrixes.Add(NDArrayToMatrix4x4(item.Value));
+        }
+        transitionObject = transform.Find(partID + "").gameObject;
+        t = matrixes.Count - 1;
+        play = true;
+    }
 
+    private Matrix4x4 NDArrayToMatrix4x4(NDArray nDarray)
+    {
+        double[,] array = (double[,])nDarray.ToMuliDimArray<double>();
+        Matrix4x4 matrix = new Matrix4x4();
+        for (int i = 0; i < 4; i++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                matrix[i, k] = (float)array[i, k];
+            }
+        }
+        return matrix;
+    }
 
+    public float tickTime;
+    public bool repeat = true;
+    float LastTick = 0;
+    int t=-1;
+    void playTransition(GameObject part)
+    {
+        if ((Time.time - LastTick > tickTime) && (t >= 0))
+        {
+            Debug.Log(t);
+            part.transform.localPosition = matrixes[t].GetPosition() + new Vector3(-5, 15, -25);
+            part.transform.localRotation = matrixes[t--].rotation;
 
+            //object1.transform.Translate(matrixes[t++].GetPosition());
+            //object1.transform.Rotate(matrixes[t++].rotation.eulerAngles);
+            LastTick = Time.time;
+        }
+        if ((t < 0) && repeat)
+        {
+            Debug.Log("repeat");
+            t = matrixes.Count - 1;
+            part.transform.localPosition = matrixes[t].GetPosition() + new Vector3(-5, 15, -25);
+            part.transform.localRotation = matrixes[t].rotation;
+        }
+    }
+
+    string directory;
 
     public void importZIP(string zipFile)
     {
         string basePath = Path.GetDirectoryName(zipFile);
         string folderName = Path.GetFileNameWithoutExtension(zipFile);
-        string directory = basePath + "\\" + folderName;
+        directory = basePath + "\\" + folderName;
 
         //ZipFile.ExtractToDirectory("C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00013.zip", "C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00013",true);
         ZipFile.ExtractToDirectory(zipFile, directory, true);
@@ -185,6 +261,9 @@ public class ImportObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (play)
+        {
+            playTransition(transitionObject);
+        }
     }
 }
