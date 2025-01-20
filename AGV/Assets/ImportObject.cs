@@ -265,5 +265,9 @@ public class ImportObject : MonoBehaviour
         {
             playTransition(transitionObject);
         }
+        if (Input.GetKeyDown("r"))
+        {
+            t = matrixes.Count - 1;
+        }
     }
 }
