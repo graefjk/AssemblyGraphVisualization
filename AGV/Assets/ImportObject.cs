@@ -75,9 +75,16 @@ public class ImportObject : MonoBehaviour
     string currentVertex = "[]";
     IEnumerable<STaggedEdge<string, int[]>> edgeList;
     Shader standardShader;
+    public Bounds assemblyBounds;
+
+    public Bounds getAssemblyBounds()
+    {
+        return assemblyBounds;
+    }
 
     private void ObjImporter_ImportingComplete()
     {
+        assemblyBounds = assembly.GetComponent<Renderer>().bounds;
         float xPosition = 0;
         for (int i = 0; i < parts.transform.childCount; i++)
         {
@@ -87,7 +94,10 @@ public class ImportObject : MonoBehaviour
             Transform copy = Instantiate(child, assembly.transform);
             child.AddComponent<OnMouseClick>();
             copy.AddComponent<OnMouseClickDisassemble>();
+            assemblyBounds.Encapsulate(copy.gameObject.GetComponent<Renderer>().bounds);
             copy.gameObject.SetActive(false);
+
+            
             //copy.localScale = new Vector3(1, 1, -1);
 
 
@@ -102,6 +112,8 @@ public class ImportObject : MonoBehaviour
             child.position = new Vector3(xPosition - bounds.center.x, bounds.extents.y - bounds.center.y, 0) + transform.position;
             xPosition += bounds.extents.x + 0.1f;
         }
+
+        Debug.Log(assemblyBounds);
 
         
         graph.TryGetOutEdges("[]", out edgeList);
