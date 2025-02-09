@@ -19,13 +19,15 @@ public class ImportObject : MonoBehaviour
     [SerializeField]
     public string zipFile;
     protected ImportOptions importOptions = new ImportOptions();
+    public List<string> timeLine = new List<string>();
+    public int timeLinePosition = 0;
 
     ObjectImporter objImporter;
     GameObject assembly;
     GameObject parts;
     [SerializeField]
     bool reverse;
-    
+
 
     AdjacencyGraph<string, STaggedEdge<string, int[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
     int childCount = 0;
@@ -36,6 +38,8 @@ public class ImportObject : MonoBehaviour
         assembly = transform.Find("Assembly").gameObject;
         parts = transform.Find("Parts").gameObject;
         standardShader = Shader.Find("Standard");
+        addToTimeLine("[]");
+        timeLinePosition = 0;
         //importOptions.litDiffuse = true;
         importOptions.zUp = false;
         importOptions.convertToDoubleSided = true;
@@ -63,16 +67,27 @@ public class ImportObject : MonoBehaviour
         graph.TryGetEdge(sourceVertex, currentVertex, out outEdge);
         Debug.Log("source: " + sourceVertex);
         currentVertex = sourceVertex;
+        addToTimeLine(currentVertex);
         reverse = true;
         playEdgeTransition(outEdge);
         if (sourceVertex == "[]")
         {
-            assembly.transform.Find(name+"(Clone)").gameObject.SetActive(false);
+            assembly.transform.Find(name + "(Clone)").gameObject.SetActive(false);
         }
 
     }
 
-    string currentVertex = "[]";
+    public string currentVertex = "[]";
+    public bool isAssembled(string partName)
+    {
+        return currentVertex.Contains('"' + partName + '"');
+    }
+
+    public bool canBeAssembled(string partName)
+    {
+        return addableParts.Contains(partName);
+    }
+
     IEnumerable<STaggedEdge<string, int[]>> edgeList;
     Shader standardShader;
     public Bounds assemblyBounds;
@@ -97,7 +112,7 @@ public class ImportObject : MonoBehaviour
             assemblyBounds.Encapsulate(copy.gameObject.GetComponent<Renderer>().bounds);
             copy.gameObject.SetActive(false);
 
-            
+
             //copy.localScale = new Vector3(1, 1, -1);
 
 
@@ -115,12 +130,13 @@ public class ImportObject : MonoBehaviour
 
         Debug.Log(assemblyBounds);
 
-        
-        graph.TryGetOutEdges("[]", out edgeList);
 
+        graph.TryGetOutEdges("[]", out edgeList);
+        addableParts = new List<string>();
         foreach (STaggedEdge<string, int[]> edge in edgeList)
         {
             parts.transform.Find(edge.Tag[0] + "").GetComponent<Renderer>().material.color = Color.green;
+            addableParts.Add(edge.Tag[0] + "");
             Debug.Log(edge);
         }
     }
@@ -130,17 +146,31 @@ public class ImportObject : MonoBehaviour
         graph.TryGetOutEdges(currentVertex, out edgeList);
         foreach (STaggedEdge<string, int[]> edge in edgeList)
         {
-            if(""+edge.Tag[0] == partName)
+            if ("" + edge.Tag[0] == partName)
             {
                 Debug.Log("1: " + edge);
                 currentVertex = edge.Target;
+                addToTimeLine(currentVertex);
                 reverse = false;
                 playEdgeTransition(edge);
-            }            
+            }
         }
     }
-    HashSet<char> removeChars = new HashSet<char> {'"','[',']'};
+
+    void addToTimeLine(string Vertex)
+    {
+        if (timeLinePosition != timeLine.Count-1)
+        {
+            Debug.Log((timeLinePosition + 1) + " " +  (timeLine.Count - timeLinePosition - 1));
+            timeLine.RemoveRange(timeLinePosition+1, timeLine.Count - timeLinePosition - 1);
+        }
+        timeLine.Add(Vertex);
+        timeLinePosition++;
+    }
+
+    HashSet<char> removeChars = new HashSet<char> { '"', '[', ']' };
     List<string> removableParts = new List<string>();
+    public List<string> addableParts = new List<string>();
     STaggedEdge<string, int[]> outEdge = new STaggedEdge<string, int[]>();
 
     private void playEdgeTransition(STaggedEdge<string, int[]> edge)
@@ -154,7 +184,7 @@ public class ImportObject : MonoBehaviour
         for (int i = 0; i < assembly.transform.childCount; i++)
         {
             GameObject child = assembly.transform.GetChild(i).gameObject;
-            if (!currentParts.Contains(child.name.Replace("(Clone)","")))
+            if (!currentParts.Contains(child.name.Replace("(Clone)", "")))
             {
                 child.SetActive(false);
             }
@@ -166,9 +196,9 @@ public class ImportObject : MonoBehaviour
             List<String> inList = currentParts.ToList();
             inList.Remove(s);
             string inVertex = "[";
-            for (int i = 0; i<inList.Count-1 ;i++)
+            for (int i = 0; i < inList.Count - 1; i++)
             {
-                inVertex += '"' + inList[i]+ "\",";
+                inVertex += '"' + inList[i] + "\",";
             }
             if (inList.Count > 0)
             {
@@ -181,13 +211,15 @@ public class ImportObject : MonoBehaviour
             {
                 parts.transform.Find(s).GetComponent<Renderer>().material.color = Color.blue;
                 removableParts.Add(s);
-            } 
+            }
         }
         graph.TryGetOutEdges(currentVertex, out edgeList);
+        addableParts = new List<string>();
         foreach (STaggedEdge<string, int[]> edgeItem in edgeList)
         {
             Debug.Log(edgeItem + " " + edgeItem.Tag[0] + " " + edgeItem.Tag[1]);
             parts.transform.Find(edgeItem.Tag[0] + "").GetComponent<Renderer>().material.color = Color.green;
+            addableParts.Add(edgeItem.Tag[0] + "");
         }
         foreach (string s in edge.Source.Split(','))
         {
@@ -196,8 +228,8 @@ public class ImportObject : MonoBehaviour
                 continue;
             }
             string id = string.Concat(s.Where(Char.IsDigit));
-            GameObject part = assembly.transform.Find(id+"(Clone)").gameObject;
-            part.transform.localPosition = new Vector3(0,0,0); 
+            GameObject part = assembly.transform.Find(id + "(Clone)").gameObject;
+            part.transform.localPosition = new Vector3(0, 0, 0);
             part.GetComponent<Renderer>().material.color = Color.white;
         }
         GameObject activePart = assembly.transform.Find(edge.Tag[0] + "(Clone)").gameObject;
@@ -205,8 +237,15 @@ public class ImportObject : MonoBehaviour
         activePart.GetComponent<Renderer>().material.color = Color.yellow;
         if (edge.Tag[1] == -1)
         {
-            activePart.transform.localPosition = new Vector3(0,0,0);
-            Debug.Log(assembly.transform.Find(edge.Tag[0] + "(Clone)").transform.localPosition);
+            if (reverse)
+            {
+                activePart.SetActive(false);
+            }
+            else
+            {
+                activePart.transform.localPosition = new Vector3(0, 0, 0);
+                Debug.Log(assembly.transform.Find(edge.Tag[0] + "(Clone)").transform.localPosition);
+            }
         }
         else
         {
@@ -248,7 +287,7 @@ public class ImportObject : MonoBehaviour
     public float tickTime;
     public bool repeat = true;
     float LastTick = 0;
-    int t=-1;
+    int t = -1;
     void playTransition(GameObject part, bool reverse = false)
     {
         if ((Time.time - LastTick > tickTime) && (t >= 0) && (t < matrixes.Count))
@@ -256,7 +295,7 @@ public class ImportObject : MonoBehaviour
             //Debug.Log(t);
             part.transform.localPosition = matrixes[t].GetPosition();
             part.transform.localRotation = matrixes[t].rotation;
-            t += reverse? 1: -1;
+            t += reverse ? 1 : -1;
 
             //object1.transform.Translate(matrixes[t++].GetPosition());
             //object1.transform.Rotate(matrixes[t++].rotation.eulerAngles);
@@ -269,10 +308,15 @@ public class ImportObject : MonoBehaviour
             part.transform.localPosition = matrixes[t].GetPosition();
             part.transform.localRotation = matrixes[t].rotation;
         }
-        else if(((t < 0) || t >= matrixes.Count) && reverse)
+        else if (((t < 0) || t >= matrixes.Count) && reverse)
         {
             part.SetActive(false);
         }
+    }
+
+    void stopTransition()
+    {
+
     }
 
     string directory;
@@ -309,7 +353,7 @@ public class ImportObject : MonoBehaviour
             }
             foreach (dynamic item in array["links"]) //add all edges to the graph
             {
-                graph.AddEdge(new STaggedEdge<string, int[]>(item["source"].ToString(Formatting.None), item["target"].ToString(Formatting.None), new int[]{item["moveID"].ToObject<int>() , item["edgeID"].ToObject<int>()}));
+                graph.AddEdge(new STaggedEdge<string, int[]>(item["source"].ToString(Formatting.None), item["target"].ToString(Formatting.None), new int[] { item["moveID"].ToObject<int>(), item["edgeID"].ToObject<int>() }));
             }
         }
         Debug.Log(exportDotGraph(graph));
@@ -358,7 +402,42 @@ public class ImportObject : MonoBehaviour
         if (Input.GetKeyDown("r"))
         {
             transitionObject.SetActive(true);
-            t = reverse? 0 : matrixes.Count - 1;
+            t = reverse ? 0 : matrixes.Count - 1;
         }
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && (timeLinePosition - 1 >= 0))
+        {
+            STaggedEdge<string, int[]> edge;
+            if (timeLine[timeLinePosition].Length > timeLine[timeLinePosition - 1].Length)
+            {
+                graph.TryGetEdge(timeLine[timeLinePosition - 1], timeLine[timeLinePosition], out edge);
+            }
+            else
+            {
+                graph.TryGetEdge(timeLine[timeLinePosition], timeLine[timeLinePosition - 1], out edge);
+            }
+            currentVertex = timeLine[timeLinePosition - 1];
+            reverse = true;
+            playEdgeTransition(edge);
+            timeLinePosition--;
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow) && (timeLinePosition + 1 < timeLine.Count))
+        {
+            STaggedEdge<string, int[]> edge;
+            if (timeLine[timeLinePosition].Length > timeLine[timeLinePosition + 1].Length)
+            {
+                graph.TryGetEdge(timeLine[timeLinePosition + 1], timeLine[timeLinePosition], out edge);
+            }
+            else
+            {
+                graph.TryGetEdge(timeLine[timeLinePosition], timeLine[timeLinePosition + 1], out edge);
+            }
+            currentVertex = timeLine[timeLinePosition + 1];
+            reverse = false;
+            playEdgeTransition(edge);
+            timeLinePosition++;
+        }
+
     }
+
+
 }

@@ -31,7 +31,7 @@ public class OnMouseClick : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (!assembled)
+        if (parent.canBeAssembled(gameObject.name))
         {
             assemblyPart.SetActive(true);
             assemblyPart.GetComponent<Renderer>().material.color = Color.blue;
@@ -40,7 +40,7 @@ public class OnMouseClick : MonoBehaviour
 
     void OnMouseExit()
     {
-        if (!assembled)
+        if (parent.canBeAssembled(gameObject.name))
         {
             assemblyPart.SetActive(false);
             Debug.Log(gameObject.name);
