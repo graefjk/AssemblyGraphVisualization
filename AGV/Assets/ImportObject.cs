@@ -13,6 +13,7 @@ using System.Linq;
 using NumSharp;
 using System.Xml.Linq;
 using NumSharp.Utilities;
+using UnityEngine.InputSystem.HID;
 
 public class ImportObject : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class ImportObject : MonoBehaviour
     GameObject parts;
     [SerializeField]
     bool reverse;
+
+    [SerializeField] public float partTableLenght;
 
 
     AdjacencyGraph<string, STaggedEdge<string, int[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
@@ -58,6 +61,43 @@ public class ImportObject : MonoBehaviour
         else
         {
             assemblePart(name);
+        }
+    }
+
+    private void OnValidate()
+    {
+        Debug.Log("partTableLenght changed to: " + partTableLenght);
+        if (parts != null)
+        {
+            placePartsOnTable(partTableLenght);
+        }
+    }
+
+    public float maxY = 0;
+    void placePartsOnTable(float length)
+    {
+        float xPosition = 0;
+        int yPosition = 0;
+
+        for (int i = 0; i < parts.transform.childCount; i++)
+        {
+            Transform part = parts.transform.GetChild(i);
+            Bounds bounds = part.GetComponent<Renderer>().bounds;
+            Debug.Log(part.name + " " + xPosition + " " + partTableLenght + " " + bounds + " " + part.transform.position + " " + (part.transform.position.z - bounds.center.z + bounds.extents.z));
+            if (xPosition + bounds.extents.x > partTableLenght)
+            {
+                //Debug.Log(part.name);
+                xPosition = 0;
+                yPosition++;
+            }
+            else if (xPosition != 0)
+            {
+                xPosition += bounds.extents.x;
+            }
+            part.transform.localPosition = new Vector3(xPosition - bounds.center.x + part.transform.position.x, 1 * (bounds.extents.z - bounds.center.z + part.transform.position.z) + (3 * maxY * yPosition), part.transform.position.y - bounds.center.y + bounds.extents.y);
+
+            //part.position = new Vector3(0,0,0);
+            xPosition += bounds.extents.x + 0.1f;
         }
     }
 
@@ -120,12 +160,10 @@ public class ImportObject : MonoBehaviour
             renderer.material.shader = standardShader;
             renderer.material.color = Color.red;
 
-
-            Bounds bounds = renderer.bounds;
-            Debug.Log(bounds.center - transform.position);
-            xPosition += bounds.extents.x;
-            child.position = new Vector3(xPosition - bounds.center.x, bounds.extents.y - bounds.center.y, 0) + transform.position;
-            xPosition += bounds.extents.x + 0.1f;
+            if (maxY < renderer.bounds.extents.y)
+            {
+                maxY = renderer.bounds.extents.y;
+            }
         }
 
         Debug.Log(assemblyBounds);
@@ -139,6 +177,8 @@ public class ImportObject : MonoBehaviour
             addableParts.Add(edge.Tag[0] + "");
             Debug.Log(edge);
         }
+
+        placePartsOnTable(partTableLenght);
     }
 
     void assemblePart(string partName)
@@ -159,10 +199,10 @@ public class ImportObject : MonoBehaviour
 
     void addToTimeLine(string Vertex)
     {
-        if (timeLinePosition != timeLine.Count-1)
+        if (timeLinePosition != timeLine.Count - 1)
         {
-            Debug.Log((timeLinePosition + 1) + " " +  (timeLine.Count - timeLinePosition - 1));
-            timeLine.RemoveRange(timeLinePosition+1, timeLine.Count - timeLinePosition - 1);
+            Debug.Log((timeLinePosition + 1) + " " + (timeLine.Count - timeLinePosition - 1));
+            timeLine.RemoveRange(timeLinePosition + 1, timeLine.Count - timeLinePosition - 1);
         }
         timeLine.Add(Vertex);
         timeLinePosition++;
@@ -391,6 +431,8 @@ public class ImportObject : MonoBehaviour
     {
         System.Diagnostics.Process.Start(getDotGraphURL(graph, edgeLabels));
     }
+
+
 
     // Update is called once per frame
     void Update()
