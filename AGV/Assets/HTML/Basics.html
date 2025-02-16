@@ -1,0 +1,79 @@
+﻿<!-- Time for a little CSS! -->
+<!DOCTYPE html>
+<style type='text/css'>
+
+    html {
+        background: rgba(0, 0, 0, 0);
+        font-family: ;
+    }
+
+    #content-box {
+        background: rgba(1, 1, 1, 1);
+        border: 6px solid rgba(0, 0, 0, 1);
+        border-radius: 30px 30px 30px 30px;
+        width: 300px;
+        padding: 40px;
+        color: black;
+        left: 10%;
+    }
+
+    #controls {
+        position: fixed;
+        text-align: center;
+        bottom: 0px;
+        zoom: 7;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<html>
+<body>
+
+	<!-- The rounded box containing the welcome info. Gets its style from the CSS above. -->
+	<div id='content-box'>
+		<b>
+			Welcome to PowerUI! <i class="fa">&#xf04b;</i>
+		</b>
+		<br>
+		<i class="fa fa-step-backward" aria-hidden="true"></i>
+		<br>
+		The HTML for this example is in a file called Basics.html sitting alongside this scene in your project.<i class="fa fa-play"></i>
+		<br>
+		<br>
+		<b>To add a UI to a new scene..</b><i class="fa fa-pause"></i>
+		<br>
+		Go to GameObject &gt; Create Other &gt; Simple Main UI. This creates a gameobject which you can attach a .HTML file to.<i class="fa fa-step-forward"></i>
+		<br>
+		<br>
+		<b>To quickly make a .HTML file..</b>
+		<br>
+		Right click in your project and go to PowerUI &gt; New HTML File. <i class="fa fa-play" aria-hidden="true"></i>
+
+		<br>
+		<br>
+		<b>Need help? No problem!</b>
+		<br>
+		PowerUI can do a vast amount of stuff so make sure you check out our <a href='http://powerui.kulestar.com/getting-started/' target='_blank'>help guides</a> or if you're stuck please do get in touch!
+		<br>
+		<br>
+		For the latest updates and free extras see <a>My PowerUI</a>.
+												   <button onclick="log('hello world')">Click me</button>
+		<p id="demo">hello</p>
+
+	</div>
+
+
+	<div id='controls'>
+		<i class="fa" onclick="log('left')">&#xf048;</i> 
+		<i class="fa" onclick="log('play')">&#xf04b;</i> 
+		<i class="fa" onclick="log('right')">&#xf051;</i> 
+	</div>
+
+	<script>
+		function log(message) {
+			document.getElementById("demo").innerHTML = message;
+			console.log(message);
+		}
+	</script>
+</body>
+</html>

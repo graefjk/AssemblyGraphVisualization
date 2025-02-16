@@ -2865,6 +2865,56 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f5782b1f5cd3b9468052bf0258588bb, type: 3}
+--- !u!1 &2001936750
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2001936752}
+  - component: {fileID: 2001936751}
+  m_Layer: 0
+  m_Name: PowerUI-Example
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2001936751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001936750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cf392ec64524774197c70abaed147f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HtmlFile: {fileID: 4900000, guid: 06c56c9cd87078540b8a63965d26421e, type: 3}
+  Url: 
+  WatchForChanges: 1
+  LengthScale: 1
+  AutomaticallyHandleDpi: 1
+  HtmlFilePath: Assets/HTML/Basics.html
+--- !u!4 &2001936752
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001936750}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 44.220387, y: -17.129549, z: 29.829445}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2012529100 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 84dc9f53806ff09439684e904c062210, type: 3}
@@ -2947,3 +2997,4 @@ SceneRoots:
   - {fileID: 1596989401}
   - {fileID: 1273893112}
   - {fileID: 453466768}
+  - {fileID: 2001936752}
