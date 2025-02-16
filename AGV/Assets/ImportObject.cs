@@ -293,19 +293,26 @@ public class ImportObject : MonoBehaviour
         }
     }
 
+    string path = "";
     bool play = false;
     GameObject transitionObject;
     List<Matrix4x4> matrixes;
     void loadAndPlayTransition(int partID, int transitionID)
     {
-        matrixes = new List<Matrix4x4>();
-        string path = directory + "\\steps\\" + transitionID + "\\transformationMatrices.npz";
-        var data = np.Load_Npz<Array>(path);
-        foreach (var item in data)
+        if (!path.Contains("\\" + transitionID + "\\"))
         {
-            matrixes.Add(NDArrayToMatrix4x4(item.Value));
+            Debug.Log(path);
+            matrixes = new List<Matrix4x4>();
+            path = directory + "\\steps\\" + transitionID + "\\transformationMatrices.npz";
+            NpzDictionary<Array> dict;
+            var data = np.Load_Npz(path, out dict);
+            foreach (var item in data)
+            {
+                matrixes.Add(NDArrayToMatrix4x4(item.Value));
+            }
+            transitionObject = assembly.transform.Find(partID + "(Clone)").gameObject;
+            dict.Dispose();
         }
-        transitionObject = assembly.transform.Find(partID + "(Clone)").gameObject;
         t = reverse ? 0 : matrixes.Count - 1;
         play = true;
     }
@@ -478,8 +485,5 @@ public class ImportObject : MonoBehaviour
             playEdgeTransition(edge);
             timeLinePosition++;
         }
-
     }
-
-
 }
