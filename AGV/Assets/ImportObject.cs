@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using NumSharp.Utilities;
 using UnityEngine.InputSystem.HID;
 using PowerUI;
+using SFB;
 
 namespace AGV
 {
@@ -32,7 +33,7 @@ namespace AGV
         GameObject finished;
         public GameObject activePart;
         [SerializeField]
-        public bool reverse;
+        public bool reverse = false;
         public bool pause = false;
         Dom.Element playPauseElement;
 
@@ -54,9 +55,7 @@ namespace AGV
             //importOptions.litDiffuse = true;
             importOptions.zUp = false;
             importOptions.convertToDoubleSided = true;
-            objImporter = gameObject.GetComponent<ObjectImporter>();
-            objImporter.ImportingComplete += ObjImporter_ImportingComplete;
-            importZIP(zipFile);
+            //importZIP(zipFile);
 
             HtmlDocument document = UI.document;
             Dom.Element stepBackElement = document.getElementById("stepBack");
@@ -67,6 +66,9 @@ namespace AGV
             stepForwardElement.onclick += stepForward;
             playPauseElement = document.getElementById("playPause");
             playPauseElement.onclick += playPause;
+
+            Dom.Element openFileElement = document.getElementById("openFile");
+            openFileElement.onclick += importZIP;
         }
 
         public void mouseClick(string name)
@@ -364,11 +366,12 @@ namespace AGV
         List<Matrix4x4> matrixes;
         void loadAndPlayTransition(int partID, int transitionID)
         {
-            if (!path.Contains("\\" + transitionID + "\\"))
+            if (!(path.Contains("\\" + transitionID + "\\") || path.Contains("/" + transitionID + "/")))
             {
                 Debug.Log(path);
                 matrixes = new List<Matrix4x4>();
-                path = directory + "\\steps\\" + transitionID + "\\transformationMatrices.npz";
+                path = Path.Combine(directory, "steps", transitionID+"", "transformationMatrices.npz");
+                Debug.Log(path);
                 NpzDictionary<Array> dict;
                 var data = np.Load_Npz(path, out dict);
                 foreach (var item in data)
@@ -442,17 +445,45 @@ namespace AGV
 
         string directory;
 
+        public void importZIP(MouseEvent mouseEvent = null)
+        {
+            string path = StandaloneFileBrowser.OpenFilePanel("Open File", "", "zip", false)[0];
+            Debug.Log(path);
+            importZIP(path);
+        }
+
+        void removeAllObjects()
+        {
+            foreach (Transform child in assembly.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach (Transform child in parts.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach (Transform child in finished.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
         public void importZIP(string zipFile)
         {
+            removeAllObjects();
+            Destroy(gameObject.GetComponent<ObjectImporter>());
+            objImporter = gameObject.AddComponent<ObjectImporter>();
+            objImporter.ImportingComplete += ObjImporter_ImportingComplete;
+
             string basePath = Path.GetDirectoryName(zipFile);
             string folderName = Path.GetFileNameWithoutExtension(zipFile);
-            directory = basePath + "\\" + folderName;
+            directory = Path.Combine(basePath ,folderName);
 
             //ZipFile.ExtractToDirectory("C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00013.zip", "C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00013",true);
             ZipFile.ExtractToDirectory(zipFile, directory, true);
             //import objects
 
-            foreach (string file in Directory.GetFiles(directory + "\\objects"))
+            foreach (string file in Directory.GetFiles(Path.Combine(directory , "objects")))
             {
                 objImporter.ImportModelAsync(Path.GetFileNameWithoutExtension(file), file, parts.transform, importOptions);
                 childCount++;
@@ -462,7 +493,7 @@ namespace AGV
 
             //build graph
 
-            using (StreamReader r = new StreamReader(directory + "\\graph.json"))
+            using (StreamReader r = new StreamReader(Path.Combine(directory ,"graph.json")))
             {
                 string json = r.ReadToEnd();
                 JObject array = (JObject)JsonConvert.DeserializeObject(json);

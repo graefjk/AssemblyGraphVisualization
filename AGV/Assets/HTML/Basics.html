@@ -4,7 +4,6 @@
 
     html {
         background: rgba(0, 0, 0, 0);
-        font-family: ;
     }
 
     #content-box {
@@ -17,6 +16,12 @@
         left: 10%;
     }
 
+	#openFile {
+		left: 0px;
+		top: 0px;
+		zoom: 1.5;
+	}
+
     #controls {
         position: fixed;
         text-align: center;
@@ -28,9 +33,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <html>
 <body>
+	<button id="openFile"><i class="fa">&#xf07c;</i></button>
 
 	<!-- The rounded box containing the welcome info. Gets its style from the CSS above. -->
 	<div id='content-box'>
+
 		<b>
 			Welcome to PowerUI! <i class="fa">&#xf04b; &#xf04c; &#xf0e2; </i>
 		</b>
@@ -57,7 +64,7 @@
 		<br>
 		<br>
 		For the latest updates and free extras see <a>My PowerUI</a>.
-												   <button onclick="log('hello world')">Click me</button>
+		<button onclick="log('hello world')">Click me</button>
 		<p id="demo">hello</p>
 
 	</div>
