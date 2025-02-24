@@ -32,7 +32,7 @@ namespace AGV
         GameObject finished;
         public GameObject activePart;
         [SerializeField]
-        bool reverse;
+        public bool reverse;
 
         [SerializeField] public float partTableLenght;
 
@@ -351,7 +351,7 @@ namespace AGV
         }
 
         string path = "";
-        bool play = false;
+        public bool play = false;
         GameObject transitionObject;
         List<Matrix4x4> matrixes;
         void loadAndPlayTransition(int partID, int transitionID)
@@ -405,16 +405,25 @@ namespace AGV
                 //object1.transform.Rotate(matrixes[t++].rotation.eulerAngles);
                 LastTick = Time.time;
             }
-            if (((t < 0) || t >= matrixes.Count) && repeat)
+            if (((t < 0) || t >= matrixes.Count))
             {
-                Debug.Log("repeat");
-                t = reverse ? 0 : matrixes.Count - 1;
-                part.transform.localPosition = matrixes[t].GetPosition();
-                part.transform.localRotation = matrixes[t].rotation;
-            }
-            else if (((t < 0) || t >= matrixes.Count) && reverse)
-            {
-                part.SetActive(false);
+                if (repeat)
+                {
+                    Debug.Log("repeat");
+                    t = reverse ? 0 : matrixes.Count - 1;
+                    part.transform.localPosition = matrixes[t].GetPosition();
+                    part.transform.localRotation = matrixes[t].rotation;
+                }
+                else
+                {
+                    if (reverse)
+                    {
+                        part.SetActive(false);
+                    }
+                    play = false;
+                    part.transform.localPosition = Vector3.zero;
+                }
+
             }
         }
 
@@ -506,13 +515,14 @@ namespace AGV
             if (timeLine[timeLinePosition].Length > timeLine[timeLinePosition + 1].Length)
             {
                 graph.TryGetEdge(timeLine[timeLinePosition + 1], timeLine[timeLinePosition], out edge);
+                reverse = true;
             }
             else
             {
                 graph.TryGetEdge(timeLine[timeLinePosition], timeLine[timeLinePosition + 1], out edge);
+                reverse = false;
             }
             currentVertex = timeLine[timeLinePosition + 1];
-            reverse = false;
             playEdgeTransition(edge);
             timeLinePosition++;
         }
@@ -532,13 +542,14 @@ namespace AGV
             if (timeLine[timeLinePosition].Length > timeLine[timeLinePosition - 1].Length)
             {
                 graph.TryGetEdge(timeLine[timeLinePosition - 1], timeLine[timeLinePosition], out edge);
+                reverse = true;
             }
             else
             {
                 graph.TryGetEdge(timeLine[timeLinePosition], timeLine[timeLinePosition - 1], out edge);
+                reverse = false;
             }
             currentVertex = timeLine[timeLinePosition - 1];
-            reverse = true;
             playEdgeTransition(edge);
             timeLinePosition--;
         }

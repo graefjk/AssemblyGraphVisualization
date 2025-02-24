@@ -45,7 +45,10 @@ namespace AGV
             {
                 assemblyPart.SetActive(true);
             }
-            assemblyPart.GetComponent<Renderer>().material.color = partsPart.GetComponent<Renderer>().material.color;
+            if (parent.activePart != assemblyPart)
+            {
+                assemblyPart.GetComponent<Renderer>().material.color = partsPart.GetComponent<Renderer>().material.color;
+            }
             assemblyPart.GetComponent<Outline>().enabled = true;
             finishedPart.GetComponent<Outline>().enabled = true;
             partsPart.GetComponent<Outline>().enabled = true;
@@ -53,7 +56,7 @@ namespace AGV
 
         void OnMouseExit()
         {
-            if (parent.canBeAssembled(gameObject.name) && (parent.activePart != assemblyPart))
+            if (parent.canBeAssembled(gameObject.name) && ((parent.activePart != assemblyPart) || (parent.reverse && !parent.play)))
             {
                 assemblyPart.SetActive(false);
                 Debug.Log(gameObject.name);
