@@ -262,10 +262,11 @@ namespace AGV
                 }
                 inVertex += "]";
                 Debug.Log("InVertex: " + inVertex);
-
+                Renderer renderer = parts.transform.Find(s).GetComponent<Renderer>();
+                renderer.material.color = Color.gray;
                 if (graph.TryGetEdge(inVertex, currentVertex, out outEdge))
                 {
-                    parts.transform.Find(s).GetComponent<Renderer>().material.color = Color.blue;
+                    renderer.material.color = Color.blue;
                     removableParts.Add(s);
                 }
             }
