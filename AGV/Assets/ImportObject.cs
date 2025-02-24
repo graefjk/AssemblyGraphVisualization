@@ -33,6 +33,8 @@ namespace AGV
         public GameObject activePart;
         [SerializeField]
         public bool reverse;
+        public bool pause = false;
+        Dom.Element playPauseElement;
 
         [SerializeField] public float partTableLenght;
 
@@ -56,18 +58,22 @@ namespace AGV
             objImporter.ImportingComplete += ObjImporter_ImportingComplete;
             importZIP(zipFile);
 
-            var document = UI.document;
-            var stepBackElement = document.getElementById("stepBack");
+            HtmlDocument document = UI.document;
+            Dom.Element stepBackElement = document.getElementById("stepBack");
             stepBackElement.onclick += stepBackward;
-            var pauseElement = document.getElementById("repeat");
+            Dom.Element pauseElement = document.getElementById("repeat");
             pauseElement.onclick += repeatAnimation;
-            var stepForwardElement = document.getElementById("stepForward");
-            stepForwardElement.onclick += stepForward; 
+            Dom.Element stepForwardElement = document.getElementById("stepForward");
+            stepForwardElement.onclick += stepForward;
+            playPauseElement = document.getElementById("playPause");
+            playPauseElement.onclick += playPause;
         }
 
         public void mouseClick(string name)
         {
             Debug.Log(name);
+            playPauseElement.innerHTML = "&#xf04c;";
+            pause = false;
             if (removableParts.Contains(name))
             {
                 disassemblePart(name);
@@ -236,6 +242,8 @@ namespace AGV
 
         private void playEdgeTransition(STaggedEdge<string, int[]> edge)
         {
+            playPauseElement.innerHTML = "&#xf04c;";
+            pause = false;
             for (int i = 0; i < parts.transform.childCount; i++)
             {
                 parts.transform.Find(i + "").GetComponent<Renderer>().material.color = Color.red;
@@ -558,12 +566,23 @@ namespace AGV
         {
             transitionObject.SetActive(true);
             t = reverse ? 0 : matrixes.Count - 1;
+            playPauseElement.innerHTML = "&#xf04c;";
+            pause = false;
+        }
+
+        private void playPause(MouseEvent mouseEvent = null)
+        {
+            if (play)
+            {
+                pause = !pause;
+                playPauseElement.innerHTML = pause ? "&#xf04b;": "&#xf04c;";
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (play)
+            if (play && !pause)
             {
                 playTransition(transitionObject, reverse);
             }
