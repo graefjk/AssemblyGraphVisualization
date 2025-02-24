@@ -59,8 +59,8 @@ namespace AGV
             var document = UI.document;
             var stepBackElement = document.getElementById("stepBack");
             stepBackElement.onclick += stepBackward;
-            var pauseElement = document.getElementById("pause");
-            pauseElement.onclick += log;
+            var pauseElement = document.getElementById("repeat");
+            pauseElement.onclick += repeatAnimation;
             var stepForwardElement = document.getElementById("stepForward");
             stepForwardElement.onclick += stepForward; 
         }
@@ -479,12 +479,7 @@ namespace AGV
             System.Diagnostics.Process.Start(getDotGraphURL(graph, edgeLabels));
         }
 
-        public void stepForward(MouseEvent mouseEvent)
-        {
-            stepForward();
-        }
-
-        public void stepForward()
+        public void stepForward(MouseEvent mouseEvent = null)
         {
             if (timeLinePosition + 1 >= timeLine.Count)
             {
@@ -510,11 +505,7 @@ namespace AGV
             Debug.Log("a message from JavaScript!");
         }
 
-        public void stepBackward(MouseEvent mouseEvent)
-        {
-            stepBackward();
-        }
-        public void stepBackward()
+        public void stepBackward(MouseEvent mouseEvent = null)
         {
             if (timeLinePosition - 1 < 0)
             {
@@ -535,6 +526,12 @@ namespace AGV
             timeLinePosition--;
         }
 
+        public void repeatAnimation(MouseEvent mouseEvent = null)
+        {
+            transitionObject.SetActive(true);
+            t = reverse ? 0 : matrixes.Count - 1;
+        }
+
         // Update is called once per frame
         void Update()
         {
@@ -544,8 +541,7 @@ namespace AGV
             }
             if (UnityEngine.Input.GetKeyDown("r"))
             {
-                transitionObject.SetActive(true);
-                t = reverse ? 0 : matrixes.Count - 1;
+                repeatAnimation();
             }
             if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
             {

@@ -718,37 +718,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0ac0d0f53119efa4ea7aa1802edb1d15, type: 3}
   m_PrefabInstance: {fileID: 440947302}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &453466767
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 453466768}
-  m_Layer: 0
-  m_Name: Navmesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &453466768
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 453466767}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.051748276, y: 4.385331, z: 0.66336846}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &454655144 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: 7f5782b1f5cd3b9468052bf0258588bb, type: 3}
@@ -1576,6 +1545,7 @@ MonoBehaviour:
   zipFile: C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00002_graph.zip
   timeLine: []
   timeLinePosition: -1
+  activePart: {fileID: 0}
   reverse: 0
   partTableLenght: 18.5
   maxY: 0
@@ -3267,7 +3237,6 @@ SceneRoots:
   - {fileID: 801380553}
   - {fileID: 1596989401}
   - {fileID: 1273893112}
-  - {fileID: 453466768}
   - {fileID: 2001936752}
   - {fileID: 1314343071}
   - {fileID: 1801800158}
