@@ -30,6 +30,7 @@ namespace AGV
         GameObject assembly;
         GameObject parts;
         GameObject finished;
+        public GameObject activePart;
         [SerializeField]
         bool reverse;
 
@@ -159,12 +160,16 @@ namespace AGV
                 Transform child = parts.transform.GetChild(i);
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
+                Outline outline = child.AddComponent<Outline>();
+                outline.OutlineColor = Color.cyan;
+                outline.enabled = false;
+                child.AddComponent<OnMouseClick>();
                 Transform finishedCopy = Instantiate(child, finished.transform);
                 finishedCopy.name = child.name;
                 Transform copy = Instantiate(child, assembly.transform);
                 copy.name = child.name;
-                child.AddComponent<OnMouseClick>();
-                copy.AddComponent<OnMouseClickDisassemble>();
+                
+                //copy.AddComponent<OnMouseClickDisassemble>();
                 assemblyBounds.Encapsulate(copy.gameObject.GetComponent<Renderer>().bounds);
                 copy.gameObject.SetActive(false);
 
@@ -288,10 +293,28 @@ namespace AGV
                 GameObject part = assembly.transform.Find(id).gameObject;
                 part.transform.localPosition = new Vector3(0, 0, 0);
                 part.GetComponent<Renderer>().material.color = Color.white;
+                Outline outline = part.GetComponent<Outline>();
+                outline.OutlineColor = Color.cyan;
+                outline.enabled = false;
             }
             GameObject activePart = assembly.transform.Find(edge.Tag[0] + "").gameObject;
+            if (this.activePart != null)
+            {
+                finished.transform.Find(this.activePart.name).GetComponent<Outline>().enabled = false; 
+                parts.transform.Find(this.activePart.name).GetComponent<Outline>().enabled = false;
+            }
+            this.activePart = activePart;
+
+            Outline finishedOutline = finished.transform.Find(this.activePart.name).GetComponent<Outline>();
+            finishedOutline.OutlineColor = Color.yellow;
+            finishedOutline.enabled = true;
+            Outline partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
+            partOutline.OutlineColor = Color.yellow;
+            partOutline.enabled = true;
+
             activePart.SetActive(true);
             activePart.GetComponent<Renderer>().material.color = Color.yellow;
+            activePart.GetComponent<Outline>().OutlineColor = Color.yellow;
             if (edge.Tag[1] == -1)
             {
                 if (reverse)
