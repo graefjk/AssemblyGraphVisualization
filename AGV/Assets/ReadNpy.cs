@@ -20,7 +20,7 @@ public class ReadNpy : MonoBehaviour
     {
         Debug.Log("1");
         //string[] files = Directory.GetFiles("C:\\Users\\janni\\Desktop\\Bachelor\\AssembleThemAll\\save");
-       DirectoryInfo info = new DirectoryInfo(path);
+        DirectoryInfo info = new DirectoryInfo(path);
         Debug.Log("2");
         var data = np.Load_Npz<Array>(path);
         foreach ( var item in data)

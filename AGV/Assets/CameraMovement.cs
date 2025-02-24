@@ -23,7 +23,7 @@ namespace AGV
             importer = GameObject.Find("Importer").GetComponent<ImportObject>();
         }
 
-        // Update is 1lled once per frame
+        // Update is called once per frame
         void Update()
         {
             Bounds bounds = importer.getAssemblyBounds();

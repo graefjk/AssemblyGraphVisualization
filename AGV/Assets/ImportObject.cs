@@ -29,6 +29,7 @@ namespace AGV
         ObjectImporter objImporter;
         GameObject assembly;
         GameObject parts;
+        GameObject finished;
         [SerializeField]
         bool reverse;
 
@@ -43,6 +44,7 @@ namespace AGV
         {
             assembly = transform.Find("Assembly").gameObject;
             parts = transform.Find("Parts").gameObject;
+            finished = transform.Find("Finished").gameObject;
             standardShader = Shader.Find("Standard");
             addToTimeLine("[]");
             timeLinePosition = 0;
@@ -123,7 +125,7 @@ namespace AGV
             playEdgeTransition(outEdge);
             if (sourceVertex == "[]")
             {
-                assembly.transform.Find(name + "(Clone)").gameObject.SetActive(false);
+                assembly.transform.Find(name).gameObject.SetActive(false);
             }
 
         }
@@ -157,7 +159,10 @@ namespace AGV
                 Transform child = parts.transform.GetChild(i);
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
+                Transform finishedCopy = Instantiate(child, finished.transform);
+                finishedCopy.name = child.name;
                 Transform copy = Instantiate(child, assembly.transform);
+                copy.name = child.name;
                 child.AddComponent<OnMouseClick>();
                 copy.AddComponent<OnMouseClickDisassemble>();
                 assemblyBounds.Encapsulate(copy.gameObject.GetComponent<Renderer>().bounds);
@@ -235,7 +240,7 @@ namespace AGV
             for (int i = 0; i < assembly.transform.childCount; i++)
             {
                 GameObject child = assembly.transform.GetChild(i).gameObject;
-                if (!currentParts.Contains(child.name.Replace("(Clone)", "")))
+                if (!currentParts.Contains(child.name))
                 {
                     child.SetActive(false);
                 }
@@ -279,11 +284,11 @@ namespace AGV
                     continue;
                 }
                 string id = string.Concat(s.Where(Char.IsDigit));
-                GameObject part = assembly.transform.Find(id + "(Clone)").gameObject;
+                GameObject part = assembly.transform.Find(id).gameObject;
                 part.transform.localPosition = new Vector3(0, 0, 0);
                 part.GetComponent<Renderer>().material.color = Color.white;
             }
-            GameObject activePart = assembly.transform.Find(edge.Tag[0] + "(Clone)").gameObject;
+            GameObject activePart = assembly.transform.Find(edge.Tag[0] + "").gameObject;
             activePart.SetActive(true);
             activePart.GetComponent<Renderer>().material.color = Color.yellow;
             if (edge.Tag[1] == -1)
@@ -295,7 +300,7 @@ namespace AGV
                 else
                 {
                     activePart.transform.localPosition = new Vector3(0, 0, 0);
-                    Debug.Log(assembly.transform.Find(edge.Tag[0] + "(Clone)").transform.localPosition);
+                    Debug.Log(assembly.transform.Find(edge.Tag[0] + "").transform.localPosition);
                 }
             }
             else
@@ -321,7 +326,7 @@ namespace AGV
                 {
                     matrixes.Add(NDArrayToMatrix4x4(item.Value));
                 }
-                transitionObject = assembly.transform.Find(partID + "(Clone)").gameObject;
+                transitionObject = assembly.transform.Find(partID + "").gameObject;
                 dict.Dispose();
             }
             t = reverse ? 0 : matrixes.Count - 1;

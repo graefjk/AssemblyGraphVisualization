@@ -14,7 +14,7 @@ namespace AGV
         {
             renderer = GetComponent<Renderer>();
             parent = transform.parent.parent.gameObject.GetComponent<ImportObject>();
-            assemblyPart = GameObject.Find("Assembly").transform.Find(gameObject.name + "(Clone)").gameObject;
+            assemblyPart = GameObject.Find("Assembly").transform.Find(gameObject.name).gameObject;
         }
 
         // Update is called once per frame

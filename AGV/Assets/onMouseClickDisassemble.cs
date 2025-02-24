@@ -12,7 +12,7 @@ namespace AGV
         }
         void OnMouseDown()
         {
-            parent.mouseClick(gameObject.name.Replace("(Clone)", ""));
+            parent.mouseClick(gameObject.name);
             //      renderer.material.color = Color.black;
         }
     }
