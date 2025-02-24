@@ -564,8 +564,10 @@ namespace AGV
 
         public void repeatAnimation(MouseEvent mouseEvent = null)
         {
-            transitionObject.SetActive(true);
-            t = reverse ? 0 : matrixes.Count - 1;
+            //transitionObject.SetActive(true);
+            //t = reverse ? 0 : matrixes.Count - 1;
+            stepBackward();
+            stepForward();
             playPauseElement.innerHTML = "&#xf04c;";
             pause = false;
         }
