@@ -298,17 +298,23 @@ namespace AGV
                 outline.enabled = false;
             }
             GameObject activePart = assembly.transform.Find(edge.Tag[0] + "").gameObject;
+            Outline finishedOutline;
+            Outline partOutline;
             if (this.activePart != null)
             {
-                finished.transform.Find(this.activePart.name).GetComponent<Outline>().enabled = false; 
-                parts.transform.Find(this.activePart.name).GetComponent<Outline>().enabled = false;
+                finishedOutline = finished.transform.Find(this.activePart.name).GetComponent<Outline>();
+                finishedOutline.OutlineColor = Color.cyan;
+                finishedOutline.enabled = false;
+                partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
+                partOutline.OutlineColor = Color.cyan;
+                partOutline.enabled = false;
             }
             this.activePart = activePart;
 
-            Outline finishedOutline = finished.transform.Find(this.activePart.name).GetComponent<Outline>();
+            finishedOutline = finished.transform.Find(this.activePart.name).GetComponent<Outline>();
             finishedOutline.OutlineColor = Color.yellow;
             finishedOutline.enabled = true;
-            Outline partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
+            partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
             partOutline.OutlineColor = Color.yellow;
             partOutline.enabled = true;
 
