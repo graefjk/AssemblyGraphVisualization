@@ -6,21 +6,38 @@
         background: rgba(0, 0, 0, 0);
     }
 
+
     #content-box {
         background: rgba(1, 1, 1, 1);
         border: 6px solid rgba(0, 0, 0, 1);
-        border-radius: 30px 30px 30px 30px;
+        border-radius: 0px 0px 0px 0px;
         width: 300px;
-        padding: 40px;
-        color: black;
-        left: 10%;
+        padding: 0px,30px,30px,30px;
+		color: black;
+        left: 0px;
+        position: fixed;
+		top: 0px;
     }
 
-	#openFile {
-		left: 0px;
-		top: 0px;
-		zoom: 1.5;
-	}
+    #parts-list {
+        background: rgba(1, 1, 1, 1);
+        border: 6px solid rgba(0, 0, 0, 1);
+        border-radius: 0px 0px 0px 0px;
+        width: 300px;
+        padding: 0px,30px,30px,30px;
+        color: black;
+        margin-left: auto;
+        right: 0px;
+        position: fixed;
+        top: 0px;
+    }
+
+    #openFile {
+        left: 0px;
+        bottom: 0px;
+        zoom: 1.5;
+        position: fixed;
+    }
 
     #controls {
         position: fixed;
@@ -29,53 +46,116 @@
         zoom: 7;
         text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     }
+
+    #closeSidebar {
+		width:20px;
+		height: 20px;
+        left: 300px;
+        position: relative;
+    }
+
+    #openPartsList {
+        position: absolute;
+        margin-left: auto;
+        right: 0px;
+        top: 0px;
+    }
+
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="bootstrap.css">
 <html>
 <body>
-	<button id="openFile"><i class="fa">&#xf07c;</i></button>
+
 
 	<!-- The rounded box containing the welcome info. Gets its style from the CSS above. -->
-	<div id='content-box'>
+	<div>
+		<button onclick="openSidebar()" style="height: 20px; width: 20px; position: absolute; left: 0px; top:0px;"><b>></b></button>
+	</div>
 
-		<b>
-			Welcome to PowerUI! <i class="fa">&#xf04b; &#xf04c; &#xf0e2; </i>
-		</b>
-		<br>
-		<i class="fa fa-step-backward" aria-hidden="true"></i>
-		<br>
-		The HTML for this example is in a file called Basics.html sitting alongside this scene in your project.<i class="fa fa-play"></i>
-		<br>
-		<br>
-		<b>To add a UI to a new scene..</b><i class="fa fa-pause"></i>
-		<br>
-		Go to GameObject &gt; Create Other &gt; Simple Main UI. This creates a gameobject which you can attach a .HTML file to.<i class="fa fa-step-forward"></i>
-		<br>
-		<br>
-		<b>To quickly make a .HTML file..</b>
-		<br>
-		Right click in your project and go to PowerUI &gt; New HTML File. <i class="fa fa-play" aria-hidden="true"></i>
+	<div id='content-box' class='sidebar' style="display: block">
+		<button onclick="closeSidebar()" id="closeSidebar">X</button>
+		<div>
+			<button onclick="log('hello world')">Click me</button>
+			<b>
+				Welcome to PowerUI!
+			</b>
+			<br>
+			<i class="fa fa-step-backward" aria-hidden="true"></i>
+			<br>
+			The HTML for this example is in a file called Basics.html sitting alongside this scene in your project.<i class="fa fa-play"></i>
+			<br>
+			<br>
+			<b>To add a UI to a new scene..</b><i class="fa fa-pause"></i>
+			<br>
+			Go to GameObject &gt; Create Other &gt; Simple Main UI. This creates a gameobject which you can attach a .HTML file to.<i class="fa fa-step-forward"></i>
+			<br>
+			<br>
+			<b>To quickly make a .HTML file..</b>
+			<br>
+			Right click in your project and go to PowerUI &gt; New HTML File. <i class="fa fa-play" aria-hidden="true"></i>
 
-		<br>
-		<br>
-		<b>Need help? No problem!</b>
-		<br>
-		PowerUI can do a vast amount of stuff so make sure you check out our <a href='http://powerui.kulestar.com/getting-started/' target='_blank'>help guides</a> or if you're stuck please do get in touch!
-		<br>
-		<br>
-		For the latest updates and free extras see <a>My PowerUI</a>.
-		<button onclick="log('hello world')">Click me</button>
-		<p id="demo">hello</p>
+			<br>
+			<br>
+			<b>Need help? No problem!</b>
+			<br>
+			PowerUI can do a vast amount of stuff so make sure you check out our <a href='http://powerui.kulestar.com/getting-started/' target='_blank'>help guides</a> or if you're stuck please do get in touch!
+			<br>
+			<br>
+			For the latest updates and free extras see <a>My PowerUI</a>.
+			<button onclick="log('hello world')">Click me</button>
+			<p id="demo">hello</p>
+		</div>
 
 	</div>
 
+
+	<div id="openPartsList">
+		<button onclick="openPartsList()" style=" height: 20px; width: 20px;"><b>&lt;</b></button>
+	</div>
+
+	<div id='parts-list'>
+		<button onclick="closePartsList()" style=" width: 20px; height: 20px; left: -30px; position: relative;">X</button>
+		<div>
+			<b>
+				Welcome to PowerUI!
+			</b>
+			<br>
+			<i class="fa fa-step-backward" aria-hidden="true"></i>
+			<br>
+			The HTML for this example is in a file called Basics.html sitting alongside this scene in your project.<i class="fa fa-play"></i>
+			<br>
+			<br>
+			<b>To add a UI to a new scene..</b><i class="fa fa-pause"></i>
+			<br>
+			Go to GameObject &gt; Create Other &gt; Simple Main UI. This creates a gameobject which you can attach a .HTML file to.<i class="fa fa-step-forward"></i>
+			<br>
+			<br>
+			<b>To quickly make a .HTML file..</b>
+			<br>
+			Right click in your project and go to PowerUI &gt; New HTML File. <i class="fa fa-play" aria-hidden="true"></i>
+
+			<br>
+			<br>
+			<b>Need help? No problem!</b>
+			<br>
+			PowerUI can do a vast amount of stuff so make sure you check out our <a href='http://powerui.kulestar.com/getting-started/' target='_blank'>help guides</a> or if you're stuck please do get in touch!
+			<br>
+			<br>
+			For the latest updates and free extras see <a>My PowerUI</a>.
+			<button onclick="log('hello world')">Click me</button>
+			<p id="demo">hello</p>
+		</div>
+	</div>
 
 	<div id='controls'>
-		<i class="fa" id="stepBack">&#xf048;</i> 
-		<i class="fa" id="repeat">&#xf0e2;</i> 
-		<i class="fa" id="playPause">&#xf04b;</i> 
+		<i class="fa" id="stepBack">&#xf048;</i>&nbsp;
+		<i class="fa" id="repeat">&#xf0e2;</i>&nbsp;
+		<i class="fa" id="playPause">&#xf04b;</i>&nbsp;
 		<i class="fa" id="stepForward">&#xf051;</i>
 	</div>
+
+	<button id="openFile"><i class="fa">&#xf07c;</i></button>
 
 	<script>
 		function log(message) {
@@ -83,5 +163,23 @@
 			console.log(message);
 		}
 	</script>
+
+
+
+	<script>
+		//document.getElementById('openPartsList').style.left = window.innerWidth - 30; //the style.right element doesn't work correctly in PowerUi unless its a div
+		function openSidebar() {
+			document.getElementById('content-box').style.display = 'block';
+		}
+		function closeSidebar() {
+			document.getElementById('content-box').style.display = 'none';
+		}
+		function openPartsList() {
+			document.getElementById('parts-list').style.display = 'block';
+		}
+		function closePartsList() {
+			document.getElementById('parts-list').style.display = 'none';
+		}
+	</script>
 </body>
-</html>
+	</html>

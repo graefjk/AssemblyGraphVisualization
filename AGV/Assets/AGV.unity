@@ -1547,6 +1547,7 @@ MonoBehaviour:
   timeLinePosition: -1
   activePart: {fileID: 0}
   reverse: 0
+  pause: 0
   partTableLenght: 18.5
   maxY: 0
   currentVertex: '[]'
@@ -1554,6 +1555,7 @@ MonoBehaviour:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   addableParts: []
+  play: 0
   tickTime: 0.02
   repeat: 0
 --- !u!4 &1048240935
