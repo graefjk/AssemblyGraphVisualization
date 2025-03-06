@@ -10,13 +10,10 @@ namespace AGV
         GameObject assemblyPart;
         GameObject finishedPart;
         GameObject partsPart;
-        Renderer renderer;
-        Dom.Element uiElement;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
-            renderer = GetComponent<Renderer>();
             parent = transform.parent.parent.gameObject.GetComponent<ImportObject>();
             assemblyPart = GameObject.Find("Assembly").transform.Find(gameObject.name).gameObject;
             partsPart = GameObject.Find("Parts").transform.Find(gameObject.name).gameObject;
@@ -52,7 +49,6 @@ namespace AGV
             assemblyPart.GetComponent<Outline>().enabled = true;
             finishedPart.GetComponent<Outline>().enabled = true;
             partsPart.GetComponent<Outline>().enabled = true;
-            uiElement.style.border = "2px solid black";
         }
 
         public void OnMouseExit()
@@ -79,7 +75,6 @@ namespace AGV
                 finishedPart.GetComponent<Outline>().enabled = false;
                 partsPart.GetComponent<Outline>().enabled = false;
             }
-            uiElement.style.border = "0px solid black";
         }
 
         public void onMouseEnter(MouseEvent mouseEvent = null)
