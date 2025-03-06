@@ -167,6 +167,7 @@ namespace AGV
 
         private void ObjImporter_ImportingComplete()
         {
+            GameObject.Find("New Game Object").AddComponent<MeshCollider>();
             assemblyBounds = assembly.GetComponent<Renderer>().bounds;
             float xPosition = 0;
             Dom.Element partsList= document.getElementById("parts-list");
