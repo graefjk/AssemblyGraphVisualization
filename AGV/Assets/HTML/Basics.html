@@ -8,28 +8,56 @@
 
 
     #content-box {
-        background: rgba(1, 1, 1, 1);
-        border: 6px solid rgba(0, 0, 0, 1);
+        background: rgba(255, 255, 255, 1);
+        border: 5px solid rgba(0, 0, 0, 1);
         border-radius: 0px 0px 0px 0px;
+        padding: 30px;
         width: 300px;
-        padding: 0px,30px,30px,30px;
-		color: black;
+        color: black;
         left: 0px;
         position: fixed;
-		top: 0px;
+        max-height: 100%;
+        top: 0px;
+        cursor: alias;
     }
 
-    #parts-list {
-        background: rgba(1, 1, 1, 1);
-        border: 6px solid rgba(0, 0, 0, 1);
+    #textarea {
+        left: 0px;
+        width: 100%;
+        position: relative;
+    }
+
+    #resize-bar {
+        top: -35px;
+        right: -35px;
+        width: 5px;
+		height: 574px;
+        background: rgba(0, 0, 0,1);
+        position: absolute;
+    }
+
+    #parts-list-container {
+        background: rgba(255, 255, 255, 1);
+        border: 5px solid rgba(0, 0, 0, 1);
         border-radius: 0px 0px 0px 0px;
         width: 300px;
-        padding: 0px,30px,30px,30px;
+        padding: 0px,0px,0px,0px;
         color: black;
         margin-left: auto;
         right: 0px;
+        max-height: 100%;
         position: fixed;
         top: 0px;
+    }
+
+    #resize-bar-parts-list {
+        top: -5px;
+        left: -5px;
+        width: 6px;
+        height: 600px;
+        background: rgba(0, 0, 0,1);
+        position: absolute;
+        cursor: e-resize;
     }
 
     #openFile {
@@ -51,7 +79,8 @@
 		width:20px;
 		height: 20px;
         left: 300px;
-        position: relative;
+        top:-30px;
+        position: absolute;
     }
 
     #openPartsList {
@@ -59,6 +88,14 @@
         margin-left: auto;
         right: 0px;
         top: 0px;
+    }
+
+    .part {
+        background-color: green;
+        font-size: 20px;
+        text-align: center;
+        border: 0px solid rgba(0, 0, 0, 1);
+        margin-bottom:2px;
     }
 
 </style>
@@ -73,79 +110,33 @@
 		<button onclick="openSidebar()" style="height: 20px; width: 20px; position: absolute; left: 0px; top:0px;"><b>></b></button>
 	</div>
 
-	<div id='content-box' class='sidebar' style="display: block">
-		<button onclick="closeSidebar()" id="closeSidebar">X</button>
-		<div>
-			<button onclick="log('hello world')">Click me</button>
-			<b>
-				Welcome to PowerUI!
-			</b>
-			<br>
-			<i class="fa fa-step-backward" aria-hidden="true"></i>
-			<br>
-			The HTML for this example is in a file called Basics.html sitting alongside this scene in your project.<i class="fa fa-play"></i>
-			<br>
-			<br>
-			<b>To add a UI to a new scene..</b><i class="fa fa-pause"></i>
-			<br>
-			Go to GameObject &gt; Create Other &gt; Simple Main UI. This creates a gameobject which you can attach a .HTML file to.<i class="fa fa-step-forward"></i>
-			<br>
-			<br>
-			<b>To quickly make a .HTML file..</b>
-			<br>
-			Right click in your project and go to PowerUI &gt; New HTML File. <i class="fa fa-play" aria-hidden="true"></i>
+    <div id='content-box' class='sidebar' style="display: block">
 
-			<br>
-			<br>
-			<b>Need help? No problem!</b>
-			<br>
-			PowerUI can do a vast amount of stuff so make sure you check out our <a href='http://powerui.kulestar.com/getting-started/' target='_blank'>help guides</a> or if you're stuck please do get in touch!
-			<br>
-			<br>
-			For the latest updates and free extras see <a>My PowerUI</a>.
-			<button onclick="log('hello world')">Click me</button>
-			<p id="demo">hello</p>
-		</div>
+        <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
+        <!--<div id="content-box-padding"></div>-->
+        <button onclick="closeSidebar()" id="closeSidebar"><b>X</b></button>
+        <div id='textarea'>
+            <textarea name="message" placeholder="" style="width:100%; height: 500px;"></textarea>
+        </div>
 
-	</div>
+
+    </div>
 
 
 	<div id="openPartsList">
 		<button onclick="openPartsList()" style=" height: 20px; width: 20px;"><b>&lt;</b></button>
 	</div>
 
-	<div id='parts-list'>
-		<button onclick="closePartsList()" style=" width: 20px; height: 20px; left: -30px; position: relative;">X</button>
-		<div>
-			<b>
-				Welcome to PowerUI!
-			</b>
-			<br>
-			<i class="fa fa-step-backward" aria-hidden="true"></i>
-			<br>
-			The HTML for this example is in a file called Basics.html sitting alongside this scene in your project.<i class="fa fa-play"></i>
-			<br>
-			<br>
-			<b>To add a UI to a new scene..</b><i class="fa fa-pause"></i>
-			<br>
-			Go to GameObject &gt; Create Other &gt; Simple Main UI. This creates a gameobject which you can attach a .HTML file to.<i class="fa fa-step-forward"></i>
-			<br>
-			<br>
-			<b>To quickly make a .HTML file..</b>
-			<br>
-			Right click in your project and go to PowerUI &gt; New HTML File. <i class="fa fa-play" aria-hidden="true"></i>
-
-			<br>
-			<br>
-			<b>Need help? No problem!</b>
-			<br>
-			PowerUI can do a vast amount of stuff so make sure you check out our <a href='http://powerui.kulestar.com/getting-started/' target='_blank'>help guides</a> or if you're stuck please do get in touch!
-			<br>
-			<br>
-			For the latest updates and free extras see <a>My PowerUI</a>.
-			<button onclick="log('hello world')">Click me</button>
-			<p id="demo">hello</p>
-		</div>
+	<div id='parts-list-container'>
+		<div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
+		<button onclick="closePartsList()" style=" width: 20px; height: 20px; left: 0px; position: relative;"><b>X</b></button>
+        <div id="parts-list">
+            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part1</div>
+            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part2</div>
+            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part3</div>
+            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part4</div>
+            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part5</div>
+        </div>
 	</div>
 
 	<div id='controls'>
@@ -159,7 +150,6 @@
 
 	<script>
 		function log(message) {
-			document.getElementById("demo").innerHTML = message;
 			console.log(message);
 		}
 	</script>
@@ -167,19 +157,77 @@
 
 
 	<script>
-		//document.getElementById('openPartsList').style.left = window.innerWidth - 30; //the style.right element doesn't work correctly in PowerUi unless its a div
+		var contentBox = document.getElementById('content-box');
+        var partsList = document.getElementById('parts-list-container');
+        var resizeBar = document.getElementById('resize-bar');
+        var textArea = document.getElementById('textarea');
+        var closeSideBar = document.getElementById('closeSidebar');
+        var dragContentBoxResizeBar = false
+
+        var partsList = document.getElementById('parts-list-container');
+		var partsListResizeBar = document.getElementById('resize-bar-parts-list');
+        var dragPartsListResizeBar = false;
+        document.addEventListener('mouseup', function (e) {
+            // Turn off dragging flag when user mouse is up
+            console.log(dragPartsListResizeBar);
+            dragPartsListResizeBar = false;
+            dragContentBoxResizeBar = false;
+        });
+
+
+        document.addEventListener('mousemove', function (e) {
+            if (dragContentBoxResizeBar) {
+                contentBox.style.width = e.clientX - 65;
+                //right: 0px; does not work in powerUI for some reason
+                closeSideBar.style.left = contentBox.style.width;
+            }
+            else if (dragPartsListResizeBar) {
+                partsList.style.width = document.body.clientWidth - e.clientX + 5
+            }
+        });
+
+
 		function openSidebar() {
-			document.getElementById('content-box').style.display = 'block';
+			contentBox.style.display = 'block';
+			setContentBoxExtrasHeight();
 		}
 		function closeSidebar() {
-			document.getElementById('content-box').style.display = 'none';
+            contentBox.style.display = 'none';
 		}
 		function openPartsList() {
-			document.getElementById('parts-list').style.display = 'block';
+            partsList.style.display = 'block';
+            setPartsListExtrasHeight();
 		}
 		function closePartsList() {
-			document.getElementById('parts-list').style.display = 'none';
+			partsList.style.display = 'none';
 		}
+
+        var agv = importNamespace('AGV');
+		function changeToResizeCursor() {
+			agv.ChangeCursor.changeToResizeCursor();
+		}
+		function changeToNormalCursor() {
+			agv.ChangeCursor.changeToNormalCursor();
+        }
+
+        function setContentBoxExtrasHeight(element) {
+            resizeBar.style.height = contentBox.offsetHeight;
+            log(contentBox.offsetHeight);
+		}
+
+        function setPartsListExtrasHeight(element) {
+            partsListResizeBar.style.height = partsList.offsetHeight;
+            log(partsList.offsetHeight);
+        }
+
+
+        function showBorder(element) {
+            element.style.border = "2px solid rgba(0, 0, 0, 1)"
+        }
+
+        function hideBorder(element){
+            element.style.border = "0px solid rgba(0, 0, 0, 1)"
+        }
 	</script>
 </body>
 	</html>
