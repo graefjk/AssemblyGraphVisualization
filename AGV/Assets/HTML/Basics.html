@@ -31,7 +31,7 @@
         top: -35px;
         right: -35px;
         width: 5px;
-		height: 574px;
+        height: 574px;
         background: rgba(0, 0, 0,1);
         position: absolute;
     }
@@ -52,9 +52,9 @@
 
     #resize-bar-parts-list {
         top: -5px;
-        left: -5px;
+        left: -6px;
         width: 6px;
-        height: 600px;
+        height: 40px;
         background: rgba(0, 0, 0,1);
         position: absolute;
         cursor: e-resize;
@@ -91,7 +91,7 @@
     }
 
     .part {
-        background-color: green;
+        background-color: red;
         font-size: 20px;
         text-align: center;
         border: 0px solid rgba(0, 0, 0, 1);
@@ -111,15 +111,12 @@
 	</div>
 
     <div id='content-box' class='sidebar' style="display: block">
-
         <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
         <!--<div id="content-box-padding"></div>-->
         <button onclick="closeSidebar()" id="closeSidebar"><b>X</b></button>
         <div id='textarea'>
             <textarea name="message" placeholder="" style="width:100%; height: 500px;"></textarea>
         </div>
-
-
     </div>
 
 
@@ -131,11 +128,6 @@
 		<div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
 		<button onclick="closePartsList()" style=" width: 20px; height: 20px; left: 0px; position: relative;"><b>X</b></button>
         <div id="parts-list">
-            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part1</div>
-            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part2</div>
-            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part3</div>
-            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part4</div>
-            <div class="part" onmouseover="showBorder(this)" onmouseout="hideBorder(this)">Part5</div>
         </div>
 	</div>
 
@@ -169,7 +161,6 @@
         var dragPartsListResizeBar = false;
         document.addEventListener('mouseup', function (e) {
             // Turn off dragging flag when user mouse is up
-            console.log(dragPartsListResizeBar);
             dragPartsListResizeBar = false;
             dragContentBoxResizeBar = false;
         });
@@ -177,12 +168,16 @@
 
         document.addEventListener('mousemove', function (e) {
             if (dragContentBoxResizeBar) {
-                contentBox.style.width = e.clientX - 65;
+                if ((e.clientX - 65) > 20) {
+                    contentBox.style.width = e.clientX - 65;
+                }
                 //right: 0px; does not work in powerUI for some reason
                 closeSideBar.style.left = contentBox.style.width;
             }
             else if (dragPartsListResizeBar) {
-                partsList.style.width = document.body.clientWidth - e.clientX + 5
+                if ((document.body.clientWidth - e.clientX + 5) > 30) { 
+                    partsList.style.width = document.body.clientWidth - e.clientX + 5
+                }
             }
         });
 
@@ -212,12 +207,10 @@
 
         function setContentBoxExtrasHeight(element) {
             resizeBar.style.height = contentBox.offsetHeight;
-            log(contentBox.offsetHeight);
 		}
 
         function setPartsListExtrasHeight(element) {
             partsListResizeBar.style.height = partsList.offsetHeight;
-            log(partsList.offsetHeight);
         }
 
 

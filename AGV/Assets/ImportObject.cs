@@ -42,6 +42,7 @@ namespace AGV
 
         AdjacencyGraph<string, STaggedEdge<string, int[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
         int childCount = 0;
+        HtmlDocument document;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
@@ -57,7 +58,7 @@ namespace AGV
             importOptions.convertToDoubleSided = true;
             //importZIP(zipFile);
 
-            HtmlDocument document = UI.document;
+            document = UI.document;
             Dom.Element stepBackElement = document.getElementById("stepBack");
             stepBackElement.onclick += stepBackward;
             Dom.Element pauseElement = document.getElementById("repeat");
@@ -84,6 +85,11 @@ namespace AGV
             {
                 assemblePart(name);
             }
+        }
+
+        public void mouseClick(MouseEvent mouseEvent)
+        {
+            mouseClick(mouseEvent.htmlTarget.id);
         }
 
         private void OnValidate()
@@ -163,9 +169,13 @@ namespace AGV
         {
             assemblyBounds = assembly.GetComponent<Renderer>().bounds;
             float xPosition = 0;
+            Dom.Element partsList= document.getElementById("parts-list");
             for (int i = 0; i < parts.transform.childCount; i++)
             {
                 Transform child = parts.transform.GetChild(i);
+                //add part to UI list
+                partsList.innerHTML += "<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>";
+                
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
                 Outline outline = child.AddComponent<Outline>();
@@ -181,10 +191,7 @@ namespace AGV
                 assemblyBounds.Encapsulate(copy.gameObject.GetComponent<Renderer>().bounds);
                 copy.gameObject.SetActive(false);
 
-
                 //copy.localScale = new Vector3(1, 1, -1);
-
-
                 Renderer renderer = child.GetComponent<Renderer>();
                 renderer.material.shader = standardShader;
                 renderer.material.color = Color.red;
@@ -195,14 +202,25 @@ namespace AGV
                 }
             }
 
-            Debug.Log(assemblyBounds);
+            for (int i = 0; i < parts.transform.childCount; i++)
+            {
+                Transform child = parts.transform.GetChild(i);
+                OnMouseClick onMouseClick = child.GetComponent<OnMouseClick>();
+                Dom.Element childElement = document.getElementById(child.name);
+                childElement.onclick += mouseClick;
+                childElement.onmouseover = onMouseClick.onMouseEnter;
+                childElement.onmouseout = onMouseClick.onMouseExit;
+            }
+            document.Execute("setPartsListExtrasHeight()",document);
 
+            Debug.Log(assemblyBounds);
 
             graph.TryGetOutEdges("[]", out edgeList);
             addableParts = new List<string>();
             foreach (STaggedEdge<string, int[]> edge in edgeList)
             {
                 parts.transform.Find(edge.Tag[0] + "").GetComponent<Renderer>().material.color = Color.green;
+                document.getElementById(edge.Tag[0] + "").style.backgroundColor = "green";
                 addableParts.Add(edge.Tag[0] + "");
                 Debug.Log(edge);
             }
@@ -249,6 +267,7 @@ namespace AGV
             for (int i = 0; i < parts.transform.childCount; i++)
             {
                 parts.transform.Find(i + "").GetComponent<Renderer>().material.color = Color.red;
+                document.getElementById(i + "").style.backgroundColor = "red";
             }
             Debug.Log("current Vertex: " + currentVertex + " " + currentVertex.Split(','));
             string[] currentParts = currentVertex.ReplaceMultiple(removeChars, ' ').Replace(" ", "").Split(',');
@@ -279,9 +298,11 @@ namespace AGV
                 Debug.Log("InVertex: " + inVertex);
                 Renderer renderer = parts.transform.Find(s).GetComponent<Renderer>();
                 renderer.material.color = Color.gray;
+                document.getElementById(s).style.backgroundColor = "gray";
                 if (graph.TryGetEdge(inVertex, currentVertex, out outEdge))
                 {
                     renderer.material.color = Color.blue;
+                    document.getElementById(s).style.backgroundColor = "blue";
                     removableParts.Add(s);
                 }
             }
@@ -291,6 +312,7 @@ namespace AGV
             {
                 Debug.Log(edgeItem + " " + edgeItem.Tag[0] + " " + edgeItem.Tag[1]);
                 parts.transform.Find(edgeItem.Tag[0] + "").GetComponent<Renderer>().material.color = Color.green;
+                document.getElementById(edgeItem.Tag[0] + "").style.backgroundColor = "green";
                 addableParts.Add(edgeItem.Tag[0] + "");
             }
             foreach (string s in edge.Source.Split(','))
@@ -342,6 +364,7 @@ namespace AGV
 
             activePart.SetActive(true);
             activePart.GetComponent<Renderer>().material.color = Color.yellow;
+            //document.getElementById(activePart.name).style.backgroundColor = "yellow";
             if (edge.Tag[1] == -1)
             {
                 if (reverse)

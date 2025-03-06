@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using PowerUI;
 
 namespace AGV
 {
@@ -9,8 +10,8 @@ namespace AGV
         GameObject assemblyPart;
         GameObject finishedPart;
         GameObject partsPart;
-        bool assembled = false;
         Renderer renderer;
+        Dom.Element uiElement;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
@@ -31,13 +32,12 @@ namespace AGV
         void OnMouseDown()
         {
             parent.mouseClick(gameObject.name);
-            assembled = true;
             //      renderer.material.color = Color.black;
         }
 
-        void OnMouseEnter()
+        public void OnMouseEnter()
         {
-            if (Input.GetMouseButton(1))
+            if (UnityEngine.Input.GetMouseButton(1))
             {
                 return;
             }
@@ -52,9 +52,10 @@ namespace AGV
             assemblyPart.GetComponent<Outline>().enabled = true;
             finishedPart.GetComponent<Outline>().enabled = true;
             partsPart.GetComponent<Outline>().enabled = true;
+            uiElement.style.border = "2px solid black";
         }
 
-        void OnMouseExit()
+        public void OnMouseExit()
         {
             if (parent.canBeAssembled(gameObject.name) && ((parent.activePart != assemblyPart) || (parent.reverse && !parent.play)))
             {
@@ -78,6 +79,19 @@ namespace AGV
                 finishedPart.GetComponent<Outline>().enabled = false;
                 partsPart.GetComponent<Outline>().enabled = false;
             }
+            uiElement.style.border = "0px solid black";
+        }
+
+        public void onMouseEnter(MouseEvent mouseEvent = null)
+        {
+            Debug.Log("MouseEnter!!!");
+            OnMouseEnter();
+        }
+
+        public void onMouseExit(MouseEvent mouseEvent = null)
+        {
+            Debug.Log("MouseExit!!!");
+            OnMouseExit();
         }
     }
 }
