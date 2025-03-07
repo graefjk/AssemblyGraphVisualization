@@ -26,6 +26,14 @@ namespace AGV
         // Update is called once per frame
         void Update()
         {
+            if (PowerUI.UI.document.activeElement != null)
+            {
+                if (PowerUI.UI.document.activeElement.id == "textArea")
+                {
+                    return;
+                }
+            }
+
             Bounds bounds = importer.getAssemblyBounds();
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {

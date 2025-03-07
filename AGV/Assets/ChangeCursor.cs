@@ -1,30 +1,21 @@
-using System.IO;
 using UnityEngine;
 
 namespace AGV
 {
     public static class ChangeCursor
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-
         static public CursorMode cursorMode = CursorMode.Auto;
-        static public Texture2D resizeTexture = new Texture2D(16, 16);
-
-        // Update is called once per frame
-        static ChangeCursor()
-        {
-#if UNITY_STANDALONE_WIN
-            resizeTexture.LoadImage(File.ReadAllBytes(@"resize-cursor.png"));
-            Debug.Log("Windows");
-#else
-                Debug.Log("not Windows");
-#endif
-        }
-
+        static public Texture2D resizeTexture;
+        static public Texture2D resizeTextureBottom;
 
         public static void changeToResizeCursor()
         {
             Cursor.SetCursor(resizeTexture, new Vector2(11,2), cursorMode);
+        }
+
+        public static void changeToResizeCursorBottom()
+        {
+            Cursor.SetCursor(resizeTextureBottom, new Vector2(2, 11), cursorMode);
         }
 
         public static void changeToNormalCursor()

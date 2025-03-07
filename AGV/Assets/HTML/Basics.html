@@ -1,11 +1,8 @@
-﻿<!-- Time for a little CSS! -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <style type='text/css'>
-
     html {
         background: rgba(0, 0, 0, 0);
     }
-
 
     #content-box {
         background: rgba(255, 255, 255, 1);
@@ -19,19 +16,35 @@
         max-height: 100%;
         top: 0px;
         cursor: alias;
+        height: 200px;
     }
 
-    #textarea {
+    #textAreaDiv {
         left: 0px;
         width: 100%;
+        height: 100%;
         position: relative;
+    }
+
+    #textArea {
+        width: 100%;
+        height: 100%;
     }
 
     #resize-bar {
         top: -35px;
         right: -35px;
         width: 5px;
-        height: 574px;
+        height: 270px;
+        background: rgba(0, 0, 0,1);
+        position: absolute;
+    }
+
+    #resize-bar-bottom {
+        bottom: -35px;
+        left: -35px;
+        width: 370px;
+        height: 5px;
         background: rgba(0, 0, 0,1);
         position: absolute;
     }
@@ -76,10 +89,10 @@
     }
 
     #closeSidebar {
-		width:20px;
-		height: 20px;
+        width: 20px;
+        height: 20px;
         left: 300px;
-        top:-30px;
+        top: -30px;
         position: absolute;
     }
 
@@ -92,10 +105,17 @@
 
     .part {
         background-color: red;
-        font-size: 20px;
         text-align: center;
         border: 0px solid rgba(0, 0, 0, 1);
         margin-bottom:2px;
+    }
+
+    #toggleEdit {
+        width: 20px;
+        height: 20px;
+        left: 150px;
+        top: -30px;
+        position: absolute;
     }
 
 </style>
@@ -104,18 +124,18 @@
 <html>
 <body>
 
-
-	<!-- The rounded box containing the welcome info. Gets its style from the CSS above. -->
 	<div>
-		<button onclick="openSidebar()" style="height: 20px; width: 20px; position: absolute; left: 0px; top:0px;"><b>></b></button>
+		<button onclick="openSidebar()" style="height: 20px; width: 20px; position: absolute; left: 0px; top: 0px;"><b>></b></button>
 	</div>
 
     <div id='content-box' class='sidebar' style="display: block">
         <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
+        <div id="resize-bar-bottom" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBarBottom = true"></div>
         <!--<div id="content-box-padding"></div>-->
         <button onclick="closeSidebar()" id="closeSidebar"><b>X</b></button>
-        <div id='textarea'>
-            <textarea name="message" placeholder="" style="width:100%; height: 500px;"></textarea>
+        <button onclick="toggleEdit()" id="toggleEdit"><i class="fa" style="font-size: 20px">&#xf046;</i></button>
+        <div id='textAreaDiv' onfocus="console.log('focus')" onblur="console.log('blur')">
+            <textarea id="textArea"></textarea>
         </div>
     </div>
 
@@ -152,9 +172,11 @@
 		var contentBox = document.getElementById('content-box');
         var partsList = document.getElementById('parts-list-container');
         var resizeBar = document.getElementById('resize-bar');
-        var textArea = document.getElementById('textarea');
+        var resizeBarBottom = document.getElementById('resize-bar-bottom');
+        var textArea = document.getElementById('textArea');
         var closeSideBar = document.getElementById('closeSidebar');
-        var dragContentBoxResizeBar = false
+        var dragContentBoxResizeBar = false;
+        var dragContentBoxResizeBarBottom = false;
 
         var partsList = document.getElementById('parts-list-container');
 		var partsListResizeBar = document.getElementById('resize-bar-parts-list');
@@ -163,6 +185,7 @@
             // Turn off dragging flag when user mouse is up
             dragPartsListResizeBar = false;
             dragContentBoxResizeBar = false;
+            dragContentBoxResizeBarBottom = false;
         });
 
 
@@ -170,14 +193,30 @@
             if (dragContentBoxResizeBar) {
                 if ((e.clientX - 65) > 20) {
                     contentBox.style.width = e.clientX - 65;
+                    resizeBarBottom.style.width = e.clientX;
                 }
                 //right: 0px; does not work in powerUI for some reason
                 closeSideBar.style.left = contentBox.style.width;
+
             }
             else if (dragPartsListResizeBar) {
-                if ((document.body.clientWidth - e.clientX + 5) > 30) { 
+                if ((document.body.clientWidth - e.clientX + 5) > 30) {
                     partsList.style.width = document.body.clientWidth - e.clientX + 5
                 }
+            }
+            else if (dragContentBoxResizeBarBottom) {
+                if ((e.clientY - 65) > 20) {
+                    contentBox.style.height = e.clientY - 65;
+                    resizeBar.style.height = e.clientY;
+                }
+
+            }
+        });
+
+        document.addEventListener('mousedown', function (e) {
+            //unfocus the textbox when clicking somewhere else
+            if ((e.target.id != "textArea") && editable) {
+                document.getElementById("textArea").blur();
             }
         });
 
@@ -200,7 +239,10 @@
         var agv = importNamespace('AGV');
 		function changeToResizeCursor() {
 			agv.ChangeCursor.changeToResizeCursor();
-		}
+        }
+        function changeToResizeCursorBottom() {
+            agv.ChangeCursor.changeToResizeCursorBottom();
+        }
 		function changeToNormalCursor() {
 			agv.ChangeCursor.changeToNormalCursor();
         }
@@ -220,6 +262,27 @@
 
         function hideBorder(element){
             element.style.border = "0px solid rgba(0, 0, 0, 1)"
+        }
+
+        var instructionText = "";
+        var textAreaDiv = document.getElementById("textAreaDiv");
+        var editable = true;
+        var toggleEditButton = document.getElementById("toggleEdit");
+
+        function toggleEdit() {
+            if (editable) {
+                textAreaDiv = document.getElementById("textAreaDiv");
+                instructionText = document.getElementById("textArea").innerText;
+                console.log(instructionText);
+                textAreaDiv.innerHTML = instructionText;
+                toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf044;</i>"
+            } else {
+                textAreaDiv.innerHTML = "<textarea id='textArea'></textarea>";
+                document.getElementById("textArea").innerText = instructionText;
+                toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf046;</i>"
+            }
+            editable = !editable;
+            setContentBoxExtrasHeight();
         }
 	</script>
 </body>
