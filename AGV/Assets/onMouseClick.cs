@@ -49,6 +49,7 @@ namespace AGV
             assemblyPart.GetComponent<Outline>().enabled = true;
             finishedPart.GetComponent<Outline>().enabled = true;
             partsPart.GetComponent<Outline>().enabled = true;
+            PowerUI.UI.document.getElementById(gameObject.name).style.border = "2px solid rgba(0, 0, 0, 1)";
         }
 
         public void OnMouseExit()
@@ -56,7 +57,7 @@ namespace AGV
             if (parent.canBeAssembled(gameObject.name) && ((parent.activePart != assemblyPart) || (parent.reverse && !parent.play)))
             {
                 assemblyPart.SetActive(false);
-                Debug.Log(gameObject.name);
+                //Debug.Log(gameObject.name);
             }
             else if (parent.isAssembled(gameObject.name))
             {
@@ -75,6 +76,7 @@ namespace AGV
                 finishedPart.GetComponent<Outline>().enabled = false;
                 partsPart.GetComponent<Outline>().enabled = false;
             }
+            PowerUI.UI.document.getElementById(gameObject.name).style.border = "0px solid rgba(0, 0, 0, 1)";
         }
 
         public void onMouseEnter(MouseEvent mouseEvent = null)
