@@ -56,7 +56,7 @@
         width: 300px;
         padding: 0px,0px,0px,0px;
         color: black;
-        margin-left: auto;
+        padding-left: 5px;
         right: 0px;
         max-height: 100%;
         position: fixed;
@@ -65,7 +65,7 @@
 
     #resize-bar-parts-list {
         top: -5px;
-        left: -6px;
+        left: -11px;
         width: 6px;
         height: 40px;
         background: rgba(0, 0, 0,1);
@@ -108,12 +108,15 @@
         text-align: center;
         border: 0px solid rgba(0, 0, 0, 1);
         margin-bottom:2px;
+        display: inline-block;
+        font-size: 15px;
+        width: 271px;
     }
 
     #toggleEdit {
         width: 20px;
         height: 20px;
-        left: 150px;
+        left: 0px;
         top: -30px;
         position: absolute;
     }
@@ -146,9 +149,11 @@
 
 	<div id='parts-list-container'>
 		<div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
-		<button onclick="closePartsList()" style=" width: 20px; height: 20px; left: 0px; position: relative;"><b>X</b></button>
+		<button onclick="closePartsList()" style=" width: 20px; height: 20px; left: -5px; position: relative;"><b>X</b></button>
         <div id="parts-list">
+            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox'>&nbsp;<div class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)' id="test" style="background-color: mediumblue; color: black;">test</div>
         </div>
+        <input type="checkbox" id="selectAll" onchange="toggleAll()">
 	</div>
 
 	<div id='controls'>
@@ -202,6 +207,10 @@
             else if (dragPartsListResizeBar) {
                 if ((document.body.clientWidth - e.clientX + 5) > 30) {
                     partsList.style.width = document.body.clientWidth - e.clientX + 5
+                    var parts = document.getElementsByClassName("part");
+                    for (i = 0; i < parts.length; i++) {
+                        parts[i].style.width = document.body.clientWidth - e.clientX - 25;
+                    }
                 }
             }
             else if (dragContentBoxResizeBarBottom) {
@@ -257,7 +266,14 @@
 
 
         function showBorder(element) {
-            element.style.border = "2px solid rgba(0, 0, 0, 1)"
+            element.style.border = "2px solid rgba(0, 0, 0, 1)";
+        }
+
+        //checkBox.checked = !checkBox.checked does not work for some reason
+        function toggleCheckBox(name) {
+            var checkBox = document.getElementsByName(name)[0];
+            checkBox.checked = parseInt(checkBox.value);
+            checkBox.value ^= 1;
         }
 
         function hideBorder(element){
@@ -273,7 +289,6 @@
             if (editable) {
                 textAreaDiv = document.getElementById("textAreaDiv");
                 instructionText = document.getElementById("textArea").innerText;
-                console.log(instructionText);
                 textAreaDiv.innerHTML = instructionText;
                 toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf044;</i>"
             } else {
@@ -283,6 +298,20 @@
             }
             editable = !editable;
             setContentBoxExtrasHeight();
+        }
+
+        var toggleAllElement = document.getElementById("selectAll");
+
+        function toggleAll() {
+            var checkBoxes = document.getElementsByClassName("partCheckBox");
+            for (i = 0; i < checkBoxes.length; i++) {
+                checkBoxes[i].checked = toggleAllElement.checked;
+                if (toggleAllElement.checked) {
+                    checkBoxes[i].value = "0";
+                } else {
+                    checkBoxes[i].value = "1";
+                }
+            }
         }
 	</script>
 </body>
