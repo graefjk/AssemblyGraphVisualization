@@ -365,6 +365,7 @@ namespace AGV
                 string id = string.Concat(s.Where(Char.IsDigit));
                 GameObject part = assembly.transform.Find(id).gameObject;
                 part.transform.localPosition = new Vector3(0, 0, 0);
+                part.transform.localRotation = Quaternion.identity;
                 part.GetComponent<Renderer>().material.color = Color.white;
                 Outline outline = part.GetComponent<Outline>();
                 outline.OutlineColor = Color.cyan;
@@ -415,6 +416,7 @@ namespace AGV
                 else
                 {
                     activePart.transform.localPosition = new Vector3(0, 0, 0);
+                    activePart.transform.localRotation = Quaternion.identity;
                     Debug.Log(assembly.transform.Find(edge.Tag[0] + "").transform.localPosition);
                 }
             }
@@ -497,6 +499,7 @@ namespace AGV
                     }
                     play = false;
                     part.transform.localPosition = Vector3.zero;
+                    part.transform.localRotation = Quaternion.identity;
                 }
 
             }
