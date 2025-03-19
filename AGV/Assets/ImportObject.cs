@@ -123,7 +123,11 @@ namespace AGV
             finished.transform.position = -assemblyBounds.center + new Vector3(partTableLenght / 2, assemblyBounds.extents.magnitude, 0);
             assembly.transform.position = -assemblyBounds.center + new Vector3(partTableLenght / 2, assemblyBounds.extents.magnitude, -assemblyBounds.extents.z - assemblyBounds.extents.magnitude - spacing);
             parts.transform.position = new Vector3(0, 0, -3 * assemblyBounds.extents.z - 2* assemblyBounds.extents.magnitude - 2 * spacing);
-            Debug.Log(assemblyBounds.extents);
+
+            assembly.GetComponent<RotateAssembly>().centerPosition = assembly.transform.position + assemblyBounds.center;
+            assembly.GetComponent<RotateAssembly>().initialPosition = assembly.transform.position;
+
+
             float xPosition = 0;
             int yPosition = 0;
             SortedSet<Transform> partsList = new SortedSet<Transform>(Comparer<Transform>.Create((a, b) => (a.GetComponent<Renderer>().bounds.extents.y >= b.GetComponent<Renderer>().bounds.extents.y ? 1: -1)));
