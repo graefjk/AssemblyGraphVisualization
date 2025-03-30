@@ -113,7 +113,7 @@ namespace PowerUI{
 				
 				// Grab the method info:
 				try{
-					#if WINDOWS_UWP
+					#if NETFX_CORE
 					MethodInfo method=type.GetTypeInfo().GetDeclaredMethod(methodName);
 					#else
 					MethodInfo method=type.GetMethod(methodName);

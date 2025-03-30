@@ -131,7 +131,7 @@ namespace Modular{
 			
 			if(Modular.Start.Started.Count==0){
 				
-				#if WINDOWS_UWP
+				#if NETFX_CORE
 				// This typically happens in the Editor.
 				Modular.Start.Now(GetType());
 				#else
@@ -199,7 +199,7 @@ namespace Modular{
 		/// <summary>Scans the assembly containing the given type now.</summary>
 		public void Scan(Type type){
 			
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			Scan(type.GetTypeInfo().Assembly);
 			#else
 			Scan(type.Assembly);
@@ -225,7 +225,7 @@ namespace Modular{
 			
 			int tcCount=set.Count;
 			
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			
 			// For each type..
 			foreach(TypeInfo type in asm.DefinedTypes){

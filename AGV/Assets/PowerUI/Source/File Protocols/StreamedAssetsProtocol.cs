@@ -1,4 +1,4 @@
-#if UNITY_STANDALONE || UNITY_ANDROID || UNITY_WSA || UNITY_IOS
+#if UNITY_STANDALONE || UNITY_ANDROID
 using UnityEngine;
 using Css;
 using Dom;
@@ -22,24 +22,16 @@ namespace PowerUI{
 		
 		/// <summary>Get the raw file data.</summary>
 		public override void OnGetDataNow(ContentPackage package){
-
-            // Path without the protocol:
-            //string rawPath=Application.streamingAssetsPath + "/" + package.location.Path;
-            string rawPath = Application.persistentDataPath + "/" + package.location.Path;
-
-
-            //Debug.LogError(GetType().ToString() + " OnGetDataNow rawPath => " + rawPath);
-
-            // If it contains a : and starts with / then chop it off:
-            if (rawPath!=null && rawPath.IndexOf(':')!=-1 && rawPath[0]=='/'){
+			
+			// Path without the protocol:
+			string rawPath=Application.streamingAssetsPath + "/ " + package.location.Path;
+			
+			// If it contains a : and starts with / then chop it off:
+			if(rawPath!=null && rawPath.IndexOf(':')!=-1 && rawPath[0]=='/'){
 				rawPath=rawPath.Substring(1);
 			}
-
-            //Debug.LogError("package.location.Path="+ package.location.Path);
-            //Debug.LogError("rawPath=" + rawPath);
-            //Debug.LogError("Application.dataPath=" + Application.dataPath);
-
-            if (File.Exists(rawPath)){
+			
+			if(File.Exists(rawPath)){
 				
 				// Partial?
 				int partialStart;
@@ -70,7 +62,7 @@ namespace PowerUI{
 					package.ReceivedHeaders(contentLength);
 					
 					// Ok!
-					//fs.Close();
+					fs.Close();
 					
 				}else{
 					

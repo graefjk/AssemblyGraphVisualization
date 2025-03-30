@@ -65,7 +65,7 @@ public static class UI{
 	}
 	
 	/// <summary>The default max update rate in fps. Note that input is decoupled from this.</summary>
-	public const int DefaultRate=30; //was 40
+	public const int DefaultRate=40;
 	
 	/// <summary>The PowerUI layer's index. Used to make sure the UI is not visible with other cameras.</summary>
 	public static int Layer;

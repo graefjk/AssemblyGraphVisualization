@@ -71,7 +71,7 @@ namespace PowerSlide{
 			
 			// Grab the method info:
 			
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			Method=type.GetTypeInfo().GetDeclaredMethod(methodName);
 			#else
 			Method=type.GetMethod(methodName);

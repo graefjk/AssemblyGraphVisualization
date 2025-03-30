@@ -12,10 +12,6 @@ Shader "PowerUI/StandardUI Cull Lit/Isolated" {
 		CGPROGRAM
 		
 		#pragma surface surf Lambert alpha:blend
-
-		#pragma shader_feature DIRECTIONAL_ALPHABEND_ON
-		#pragma shader_feature DIRECTIONAL_ALPHAPREMULTIPLY_ON
-		#pragma shader_feature DIRECTIONAL_ALPHATEST_ON
 		
 		struct Input {
 			float2 uv_MainTex;

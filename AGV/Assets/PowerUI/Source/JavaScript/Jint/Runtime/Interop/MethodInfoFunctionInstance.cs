@@ -38,7 +38,7 @@ namespace Jint.Runtime.Interop
 				}
 				
 				// If any are explicitly tagged as the JS method to use, use that:
-				#if WINDOWS_UWP
+				#if NETFX_CORE
 				var attribute = (JavaScriptAttribute)methodInfo.GetCustomAttribute(typeof(JavaScriptAttribute),false);
 				#else
 				var attribute = (JavaScriptAttribute)Attribute.GetCustomAttribute(methodInfo,typeof(JavaScriptAttribute),false);

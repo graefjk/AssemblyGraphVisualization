@@ -39,7 +39,7 @@ namespace PowerUI{
 			
 			Engine = new Jint.Engine(cfg => {
 				cfg.AllowClr()
-					#if WINDOWS_UWP
+					#if NETFX_CORE
 					.AllowClr(typeof(GameObject).GetTypeInfo().Assembly);
 					#else
 					.AllowClr(typeof(GameObject).Assembly);

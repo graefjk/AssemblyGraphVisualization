@@ -24,10 +24,6 @@ Shader "PowerUI/StandardUI Cull/Normal" {
 			#pragma fragment frag
 			#pragma fragmentoption ARB_precision_hint_fastest
 			#pragma glsl_no_auto_normalization
-
-			#pragma shader_feature DIRECTIONAL_ALPHABEND_ON
-			#pragma shader_feature DIRECTIONAL_ALPHAPREMULTIPLY_ON
-			#pragma shader_feature DIRECTIONAL_ALPHATEST_ON
 			
 			struct appdata_t {
 				float4 vertex : POSITION;

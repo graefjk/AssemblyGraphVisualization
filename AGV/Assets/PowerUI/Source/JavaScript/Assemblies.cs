@@ -27,7 +27,7 @@ namespace JavaScript{
 		/// <summary>The current executing assembly.</summary>
 		public static Assembly Current{
 			get{
-				#if WINDOWS_UWP
+				#if NETFX_CORE
 				return typeof(Assemblies).GetTypeInfo().Assembly;
 				#else
 				return Assembly.GetExecutingAssembly();
@@ -37,7 +37,7 @@ namespace JavaScript{
 		
 		/// <summary>Gets all available assemblies.</summary>
 		public static Assembly[] GetAll(){
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			return new Assembly[]{Current};
 			#else
 			return System.AppDomain.CurrentDomain.GetAssemblies();

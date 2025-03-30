@@ -19,18 +19,12 @@ Shader "Blaze Raster Draw" {
 		
 		Pass {
 			Name "BASE"
-			Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
-			Tags{ "LightMode" = "ForwardBase" }
 			
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma fragmentoption ARB_precision_hint_fastest
 			#pragma glsl_no_auto_normalization
-
-			#pragma shader_feature DIRECTIONAL_ALPHABEND_ON
-			#pragma shader_feature DIRECTIONAL_ALPHAPREMULTIPLY_ON
-			#pragma shader_feature DIRECTIONAL_ALPHATEST_ON
 			
 			#include "UnityCG.cginc"
 			

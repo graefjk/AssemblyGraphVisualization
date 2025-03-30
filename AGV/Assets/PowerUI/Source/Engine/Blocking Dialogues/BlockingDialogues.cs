@@ -102,7 +102,7 @@ namespace PowerUI{
 		/// <summary>Opens a blocking dialogue in the given window.</summary>
 		public static BlockingDialogue Open(string type,Window window,object message){
 			
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			Dom.Log.Add("Can't block prompt on .NET Core.");
 			return null;
 			#else

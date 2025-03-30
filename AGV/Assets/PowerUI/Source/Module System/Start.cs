@@ -38,7 +38,7 @@ namespace Modular{
 		/// </summary>
 		public static void Now(Type type){
 			
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			Now(type.GetTypeInfo().Assembly);
 			#else
 			Now(type.Assembly);
@@ -118,7 +118,7 @@ namespace Modular{
 			for(int i=0;i<methods.Length;i++){
 				
 				// Get the meta attribute:
-				#if WINDOWS_UWP
+				#if NETFX_CORE
 				Meta metaAttribute=methods[i].GetCustomAttribute(typeof(Meta),false) as Meta;
 				#else
 				Meta metaAttribute=Attribute.GetCustomAttribute(methods[i],typeof(Meta),false) as Meta;

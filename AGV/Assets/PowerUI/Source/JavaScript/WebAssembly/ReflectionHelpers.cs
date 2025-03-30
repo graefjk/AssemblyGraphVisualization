@@ -129,7 +129,7 @@ namespace WebAssembly{
 		/// Gets a constructor.
 		/// </summary>
 		public static ConstructorInfo GetConstructor(Type type,params Type[] parameterTypes){
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			ConstructorInfo result = type.GetConstructor(parameterTypes);
 			#else
 			var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -148,7 +148,7 @@ namespace WebAssembly{
 		/// <param name="parameterTypes"> The types of the parameters accepted by the method. </param>
 		/// <returns> The MethodInfo for the method. </returns>
 		public static MethodInfo GetInstanceMethod(Type type, string name, params Type[] parameterTypes){
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			MethodInfo result = type.GetMethod(name,parameterTypes);
 			#else
 			var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
@@ -167,7 +167,7 @@ namespace WebAssembly{
 		/// <param name="parameterTypes"> The types of the parameters accepted by the method. </param>
 		/// <returns> The MethodInfo for the method. </returns>
 		public static MethodInfo GetStaticMethod(Type type, string name, params Type[] parameterTypes){
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			MethodInfo result = type.GetMethod(name,parameterTypes);
 			#else
 			var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly;

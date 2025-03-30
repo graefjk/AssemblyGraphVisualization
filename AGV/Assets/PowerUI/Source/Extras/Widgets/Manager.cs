@@ -176,7 +176,7 @@ namespace Widgets{
 			}
 			
 			// Get the name attribute from it (don't inherit):
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			TagName tagName=type.GetTypeInfo().GetCustomAttribute(typeof(TagName),false) as TagName;
 			#else
 			TagName tagName=Attribute.GetCustomAttribute(type,typeof(TagName),false) as TagName;

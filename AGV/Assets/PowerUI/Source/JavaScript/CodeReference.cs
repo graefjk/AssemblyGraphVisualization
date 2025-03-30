@@ -39,7 +39,7 @@ namespace JavaScript{
 				Setup();
 			}
 			
-			#if !WINDOWS_UWP
+			#if !NETFX_CORE
 			// Unused on Windows Store.
 			
 			// For each assembly we have available..
@@ -67,7 +67,7 @@ namespace JavaScript{
 				Setup();
 			}
 			
-			#if WINDOWS_UWP && !UNITY_EDITOR
+			#if NETFX_CORE && !UNITY_EDITOR
 			// Used to find Nitro DLLs only.
 			
 			return Assembly.Load(new AssemblyName(name+", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"));
@@ -92,7 +92,7 @@ namespace JavaScript{
 			
 			CurrentAssembly=JavaScript.Assemblies.Current;
 			
-			#if !WINDOWS_UWP
+			#if !NETFX_CORE
 			Assembly[] assemblySet=JavaScript.Assemblies.GetAll();
 			Assemblies=new Dictionary<string,CodeAssembly>(assemblySet.Length);
 			
@@ -163,7 +163,7 @@ namespace JavaScript{
 		/// <param name="name">The name of the type to find.</param>
 		/// <returns>The system type, if found. Null otherwise.</returns>
 		public Type GetType(string name){
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			if(InAssembly==null){
 				return CurrentAssembly.GetType(Reference+"."+name);
 			}else{

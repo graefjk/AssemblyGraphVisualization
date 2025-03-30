@@ -712,7 +712,7 @@ namespace WebAssembly
 		/// <param name="method"> The method to call. </param>
 		public void Call(System.Reflection.MethodBase method)
 		{
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			if (method.IsStatic == true || method.DeclaringType.GetTypeInfo().IsValueType == true)
 			#else
 			if (method.IsStatic == true || method.DeclaringType.IsValueType == true)
@@ -819,7 +819,7 @@ namespace WebAssembly
 		{
 			if (method == null)
 				throw new ArgumentNullException("method");
-			#if WINDOWS_UWP
+			#if NETFX_CORE
 			if (method.IsStatic || method.DeclaringType.GetTypeInfo().IsValueType)
 			#else
 			if (method.IsStatic || method.DeclaringType.IsValueType)
