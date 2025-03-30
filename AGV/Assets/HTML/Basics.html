@@ -5,7 +5,7 @@
     }
 
     #content-box {
-        background: rgba(255, 255, 255, 1);
+        background: rgb(255, 255, 255);
         border: 5px solid rgba(0, 0, 0, 1);
         border-radius: 0px 0px 0px 0px;
         padding: 30px;
@@ -76,7 +76,7 @@
     #openFile {
         left: 0px;
         bottom: 0px;
-        zoom: 1.5;
+        zoom: 150%;
         position: fixed;
     }
 
@@ -104,9 +104,9 @@
     }
 
     .part {
-        background-color: red;
+        background-color: rgb(255, 141, 30);
         text-align: center;
-        border: 0px solid rgba(0, 0, 0, 1);
+        border: 0px solid rgb(0, 0, 0);
         margin-bottom: 2px;
         display: inline-block;
         font-size: 15px;
@@ -139,14 +139,15 @@
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="bootstrap.css">
+
 <html>
 <body>
-
     <div>
         <button onclick="openSidebar()" style="height: 20px; width: 20px; position: absolute; left: 0px; top: 0px;"><b>></b></button>
     </div>
 
     <div id='content-box' class='sidebar' style="display: block">
+        
         <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
         <div id="resize-bar-bottom" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBarBottom = true"></div>
         <!--<div id="content-box-padding"></div>-->
@@ -168,7 +169,7 @@
         <div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
         <button onclick="closePartsList()" style=" width: 20px; height: 20px; left: -5px; position: relative;"><b>X</b></button>
         <div id="parts-list">
-            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox'>&nbsp;<div class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)' id="test" style="background-color: mediumblue; color: black;">test</div>
+            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox'>&nbsp;<div class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)' id="test" style="background-color: rgb(0.565, 1.0, 0.118); color: black;">test</div>
         </div>
         <input type="checkbox" id="selectAll" onchange="toggleAll()">
     </div>

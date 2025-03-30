@@ -294,13 +294,13 @@ namespace AGV
 
         Color dodgerBlue = new Color(0.118f, 0.565f, 1f, 1f);
         Color red = new Color(1f, 0.118f, 0.125f, 1f);
-        string htmlRed = "rgba(1, 0.118, 0.125, 1)";
+        string htmlRed = "rgb(255, 30, 32)";
         Color orange = new Color(1f, 0.553f, 0.118f, 1f);
-        string htmlOrange = "rgba(1, 0.553, 0.118, 1)";
+        string htmlOrange = "rgb(255, 141, 30)";
         Color yellow = new Color(1f, 0.996f, 0.118f, 1f);
-        string htmlYellow = "rgba(1, 0.996, 0.118, 1)";
+        string htmlYellow = "rgb(255, 254, 30)";
         Color green = new Color(0.565f, 1f, 0.118f, 1f);
-        string htmlGreen = "rgba(0.565, 1, 0.118, 1)";
+        string htmlGreen = "rgb(144, 255, 30)";
 
         private void playEdgeTransition(STaggedEdge<string, int[]> edge)
         {
