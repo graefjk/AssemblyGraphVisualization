@@ -5,7 +5,7 @@
 //    if you have any issues, visit
 //        powerUI.kulestar.com
 //
-//    Copyright © 2013 Kulestar Ltd
+//    Copyright ï¿½ 2013 Kulestar Ltd
 //          www.kulestar.com
 //--------------------------------------
 
@@ -393,10 +393,10 @@ namespace PowerUI{
 					
 					return;
 				}
-				
-				// It's a command character:
-				
-				KeyCode key=pressEvent.unityKeyCode;
+
+                // It's a command character:
+
+                KeyCode key=pressEvent.unityKeyCode;
 				
 				if(key==KeyCode.LeftArrow){
 					MoveCaret(CaretIndex-1,true);
@@ -557,7 +557,7 @@ namespace PowerUI{
 		/// <summary>For text and password inputs, this relocates the caret to the given index.</summary>
 		/// <param name="index">The character index to move the caret to, starting at 0.</param>
 		public void MoveCaret(int index){
-			MoveCaret(index,false);
+			MoveCaret(index,true);
 		}
 		
 		/// <summary>For text and password inputs, this relocates the caret to the given index.</summary>

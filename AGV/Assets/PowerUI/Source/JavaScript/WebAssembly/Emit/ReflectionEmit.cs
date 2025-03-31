@@ -1,5 +1,6 @@
 #if UNITY_EDITOR || UNITY_WEBPLAYER || UNITY_STANDALONE || (UNITY_ANDROID && !ENABLE_IL2CPP)
-	#define AbleToCompile
+	//#define AbleToCompile
+    //###PHIL### was on
 #endif
 
 using System;

@@ -23,6 +23,10 @@ Shader "PowerUI/StandardUI Cull/Extruded" {
 			#pragma fragment frag
 			#pragma fragmentoption ARB_precision_hint_fastest
 
+			#pragma shader_feature DIRECTIONAL_ALPHABEND_ON
+			#pragma shader_feature DIRECTIONAL_ALPHAPREMULTIPLY_ON
+			#pragma shader_feature DIRECTIONAL_ALPHATEST_ON
+
 			#include "UnityCG.cginc"
 
 			struct appdata_t {

@@ -5,13 +5,14 @@
 //    if you have any issues, visit
 //        powerUI.kulestar.com
 //
-//    Copyright ï¿½ 2013 Kulestar Ltd
+//    Copyright © 2013 Kulestar Ltd
 //          www.kulestar.com
 //--------------------------------------
 
 #if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 	#define MOBILE
 #endif
+#define MOBILE
 
 #if !MOBILE && !UNITY_WEBGL && !UNITY_TVOS
 
@@ -19,7 +20,6 @@ using System;
 using Css;
 using UnityEngine;
 using Dom;
-using UnityEngine.Video;
 
 
 namespace PowerUI{
@@ -31,7 +31,7 @@ namespace PowerUI{
 	public class VideoFormat:ImageFormat{
 		
 		/// <summary>The video retrieved.</summary>
-		public VideoPlayer Video;
+		public MovieTexture Video;
 		/// <summary>An isolated material for this image.</summary>
 		private Material IsolatedMaterial;
 		
@@ -44,7 +44,7 @@ namespace PowerUI{
 			
 			if(IsolatedMaterial==null){
 				IsolatedMaterial=new Material(shader);
-				IsolatedMaterial.SetTexture("_MainTex",Video.texture);
+				IsolatedMaterial.SetTexture("_MainTex",Video);
 			}
 			
 			return IsolatedMaterial;
@@ -53,14 +53,14 @@ namespace PowerUI{
 		
 		public override Texture Texture{
 			get{
-				return Video.texture;
+				return Video;
 			}
 		}
 		
 		public override bool LoadFromAsset(UnityEngine.Object asset,ImagePackage package){
 			
 			// Video
-			Video=asset as VideoPlayer;
+			Video=asset as MovieTexture;
 			
 			if(Video!=null){
 				return true;
@@ -101,13 +101,13 @@ namespace PowerUI{
 		
 		public override int Height{
 			get{
-				return (int)Video.height;
+				return Video.height;
 			}
 		}
 		
 		public override int Width{
 			get{
-				return (int)Video.width;
+				return Video.width;
 			}
 		}
 		

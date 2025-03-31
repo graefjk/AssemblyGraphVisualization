@@ -5,7 +5,7 @@
 //    if you have any issues, visit
 //        powerUI.kulestar.com
 //
-//    Copyright ï¿½ 2013 Kulestar Ltd
+//    Copyright © 2013 Kulestar Ltd
 //          www.kulestar.com
 //--------------------------------------
 
@@ -13,12 +13,13 @@
 	#define MOBILE
 #endif
 
+#define MOBILE
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using Dom;
 using PowerUI.Http;
-using UnityEngine.Video;
 
 
 namespace PowerUI{
@@ -604,7 +605,7 @@ namespace PowerUI{
 		}
 		
 		#if !MOBILE && !UNITY_WEBGL && !UNITY_TVOS
-		internal virtual void ReceivedMovieTexture(VideoPlayer tex){
+		internal virtual void ReceivedMovieTexture(UnityEngine.MovieTexture tex){
 			
 			// Trigger a state 3:
 			readyState=3;

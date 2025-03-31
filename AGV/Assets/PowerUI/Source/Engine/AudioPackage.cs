@@ -5,13 +5,14 @@
 //    if you have any issues, visit
 //        powerUI.kulestar.com
 //
-//    Copyright ï¿½ 2013 Kulestar Ltd
+//    Copyright © 2013 Kulestar Ltd
 //          www.kulestar.com
 //--------------------------------------
 
 #if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-	#define MOBILE
+#define MOBILE
 #endif
+#define MOBILE
 
 using System;
 using UnityEngine;
@@ -19,7 +20,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Blaze;
 using Dom;
-using UnityEngine.Video;
 
 
 namespace PowerUI{
@@ -144,10 +144,10 @@ namespace PowerUI{
 		}
 		
 		#if !MOBILE && !UNITY_WEBGL && !UNITY_TVOS
-		internal override void ReceivedMovieTexture(VideoPlayer tex){
+		internal override void ReceivedMovieTexture(MovieTexture tex){
 			
 			// Apply it now:
-			AssignClip(tex.GetTargetAudioSource(0).clip);
+			AssignClip(tex.audioClip);
 			
 			base.ReceivedMovieTexture(tex);
 			

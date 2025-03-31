@@ -5,7 +5,7 @@
 //    if you have any issues, visit
 //        powerUI.kulestar.com
 //
-//    Copyright ï¿½ 2013 Kulestar Ltd
+//    Copyright © 2013 Kulestar Ltd
 //          www.kulestar.com
 //--------------------------------------
 
@@ -13,13 +13,14 @@
 	#define MOBILE
 #endif
 
+#define MOBILE
+
 using System;
 using Css;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Dom;
-using UnityEngine.Video;
 
 
 namespace PowerUI{
@@ -171,7 +172,7 @@ namespace PowerUI{
 		
 		#if !MOBILE && !UNITY_WEBGL && !UNITY_TVOS
 		/// <summary>The source movie texture.</summary>
-		public override VideoPlayer video{
+		public override MovieTexture video{
 			get{
 				// Grab the background image:
 				BackgroundImage image=RenderData.BGImage;
@@ -211,7 +212,7 @@ namespace PowerUI{
 		}
 		
 		/// <summary>The source movie texture.</summary>
-		public virtual VideoPlayer video{
+		public virtual MovieTexture video{
 			get{
 				return null;
 			}
@@ -233,7 +234,7 @@ namespace PowerUI{
 		
 		/// <summary>Stops the video.</summary>
 		public void stop(){
-			VideoPlayer movie=video;
+			MovieTexture movie=video;
 			
 			if(!movie.isPlaying){
 				return;
@@ -247,7 +248,7 @@ namespace PowerUI{
 		
 		/// <summary>Pauses the video.</summary>
 		public void pause(){
-			VideoPlayer movie=video;
+			MovieTexture movie=video;
 			
 			if(!movie.isPlaying){
 				return;
@@ -261,7 +262,7 @@ namespace PowerUI{
 		
 		/// <summary>Plays the video.</summary>
 		public void play(){
-			VideoPlayer movie=video;
+			MovieTexture movie=video;
 			
 			if(movie.isPlaying){
 				return;
@@ -336,7 +337,7 @@ namespace PowerUI{
 		/// <summary>Gets the audio track of the video.</summary>
 		public AudioClip audioTrack{
 			get{
-				return video.GetTargetAudioSource(0).clip;
+				return video.audioClip;
 			}
 		}
 		
