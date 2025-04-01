@@ -14,10 +14,10 @@ using NumSharp;
 using System.Xml.Linq;
 using NumSharp.Utilities;
 using UnityEngine.InputSystem.HID;
-using PowerUI;
+using SimpleWebBrowser;
 using SFB;
 using UnityEngine.InputSystem;
-using Dom;
+using MessageLibrary;
 
 namespace AGV
 {
@@ -37,19 +37,19 @@ namespace AGV
         [SerializeField]
         public bool reverse = false;
         public bool pause = false;
-        Dom.Element playPauseElement;
-
         [SerializeField] public float partTableLenght;
         public float spacing;
 
 
         AdjacencyGraph<string, STaggedEdge<string, int[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
         int childCount = 0;
-        HtmlDocument document;
+        public WebBrowser2D MainBrowser;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
+            MainBrowser = GameObject.Find("Browser2D").GetComponent<WebBrowser2D>();
+            MainBrowser.OnShowDialog += MainBrowser_OnJSQuery;
             assembly = transform.Find("Assembly").gameObject;
             parts = transform.Find("Parts").gameObject;
             finished = transform.Find("Finished").gameObject;
@@ -60,25 +60,12 @@ namespace AGV
             importOptions.zUp = false;
             importOptions.convertToDoubleSided = true;
             //importZIP(zipFile);
-
-            document = UI.document;
-            Dom.Element stepBackElement = document.getElementById("stepBack");
-            stepBackElement.onclick += stepBackward;
-            Dom.Element pauseElement = document.getElementById("repeat");
-            pauseElement.onclick += repeatAnimation;
-            Dom.Element stepForwardElement = document.getElementById("stepForward");
-            stepForwardElement.onclick += stepForward;
-            playPauseElement = document.getElementById("playPause");
-            playPauseElement.onclick += playPause;
-
-            Dom.Element openFileElement = document.getElementById("openFile");
-            openFileElement.onclick += importZIP;
         }
 
         public void mouseClick(string name)
         {
             Debug.Log(name);
-            playPauseElement.innerHTML = "&#xf04c;";
+            MainBrowser.RunJavaScript("document.getElementById('playPause').innerHTML = &#xf04c;");
             pause = false;
             if (UnityEngine.Input.GetKey(KeyCode.LeftShift)) // maybe add && currentVertex.Contains('"'+name+'"')
             {
@@ -94,16 +81,10 @@ namespace AGV
             }
         }
 
-        public void mouseClick(MouseEvent mouseEvent) 
-        {
-            mouseClick(mouseEvent.htmlTarget.id);
-        }
-
-
         private void selectPart(string name)
         {
             Debug.Log("Select Part " + name);
-            document.Execute("toggleCheckBox(" + name+")", document);
+            MainBrowser.RunJavaScript("toggleCheckBox(" + name+")");
         }
 
             
@@ -197,17 +178,29 @@ namespace AGV
 
         private void ObjImporter_ImportingComplete()
         {
-            GameObject.Find("New Game Object").AddComponent<MeshCollider>();
-            assemblyBounds = assembly.GetComponent<Renderer>().bounds;
+            assembly.transform.localPosition=Vector3.zero;
+            assembly.transform.localRotation=Quaternion.identity;
+            parts.transform.localPosition = Vector3.zero;
+            parts.transform.localRotation = Quaternion.identity;
+            finished.transform.localPosition = Vector3.zero;
+            finished.transform.localRotation = Quaternion.identity;
+
+            //GameObject.Find("New Game Object").AddComponent<MeshCollider>();
+            assemblyBounds = new Bounds();
+            Debug.Log("BOUNDS: " + assemblyBounds);
             float xPosition = 0;
-            Dom.Element partsList= document.getElementById("parts-list");
-            partsList.innerHTML = "";
+            //Dom.Element partsList= document.getElementById("parts-list");
+            //partsList.innerHTML = "";
+            MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML=''");
+            string partsListHTML = "";
             for (int i = 0; i < parts.transform.childCount; i++)
             {
                 Transform child = parts.transform.GetChild(i);
                 //add part to UI list
-                partsList.innerHTML += "<input type='checkbox' name='" + child.name + "' checked =\"0\" value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>";
-                
+                //partsList.innerHTML += "<input type='checkbox' name='" + child.name + "' checked =\"0\" value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>";
+                //MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML += <input type='checkbox' name='" + child.name + "' checked ='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>;");
+                partsListHTML += "<input type='checkbox' name='" + child.name + "' checked='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onclick='clickPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div><div style='width:100%'></div>";
+      
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
                 Outline outline = child.AddComponent<Outline>();
@@ -233,17 +226,19 @@ namespace AGV
                     maxY = renderer.bounds.extents.z;
                 }
             }
+            Debug.Log(partsListHTML);
+            MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML=\""+ partsListHTML + '"');
 
             for (int i = 0; i < parts.transform.childCount; i++)
             {
                 Transform child = parts.transform.GetChild(i);
                 OnMouseClick onMouseClick = child.GetComponent<OnMouseClick>();
-                Dom.Element childElement = document.getElementById(child.name);
-                childElement.onclick += mouseClick;
-                childElement.onmouseover = onMouseClick.onMouseEnter;
-                childElement.onmouseout = onMouseClick.onMouseExit;
+
+                //om.Element childElement = document.getElementById(child.name);
+                //childElement.onclick += mouseClick;
+                //childElement.onmouseover = onMouseClick.onMouseEnter;
+                //childElement.onmouseout = onMouseClick.onMouseExit;
             }
-            document.Execute("setPartsListExtrasHeight()",document);
 
             Debug.Log(assemblyBounds);
 
@@ -252,12 +247,22 @@ namespace AGV
             foreach (STaggedEdge<string, int[]> edge in edgeList)
             {
                 parts.transform.Find(edge.Tag[0] + "").GetComponent<Renderer>().material.color = green;
-                document.getElementById(edge.Tag[0] + "").style.backgroundColor = htmlGreen;
+                MainBrowser.RunJavaScript("document.getElementById('" + edge.Tag[0] + "').style.backgroundColor = '" + htmlGreen + "'");
                 addableParts.Add(edge.Tag[0] + "");
                 Debug.Log(edge);
             }
 
             placePartsOnTable(partTableLenght);
+        }
+
+        public void mouseEnterPart(string partName)
+        {
+            parts.transform.Find(partName).GetComponent<OnMouseClick>().OnMouseEnter();
+        }
+
+        public void mouseExitPart(string partName)
+        {
+            parts.transform.Find(partName).GetComponent<OnMouseClick>().OnMouseExit();
         }
 
         void assemblePart(string partName)
@@ -304,12 +309,12 @@ namespace AGV
 
         private void playEdgeTransition(STaggedEdge<string, int[]> edge)
         {
-            playPauseElement.innerHTML = "&#xf04c;";
+            MainBrowser.RunJavaScript("document.getElementById('playPause').innerHTML = &#xf04c;");
             pause = false;
             for (int i = 0; i < parts.transform.childCount; i++)
             {
                 parts.transform.Find(i + "").GetComponent<Renderer>().material.color = orange;
-                document.getElementById(i + "").style.backgroundColor = htmlOrange;
+                MainBrowser.RunJavaScript("document.getElementById(" + i + ").style.backgroundColor = '"+ htmlOrange + "'");
             }
             Debug.Log("current Vertex: " + currentVertex + " " + currentVertex.Split(','));
             string[] currentParts = currentVertex.ReplaceMultiple(removeChars, ' ').Replace(" ", "").Split(',');
@@ -342,12 +347,12 @@ namespace AGV
                 renderer.material.color = Color.gray;
                 if (s != "")
                 {
-                    document.getElementById(s).style.backgroundColor = "gray";
+                    MainBrowser.RunJavaScript("document.getElementById(" + s + ").style.backgroundColor = 'gray'");
                 }
                 if (graph.TryGetEdge(inVertex, currentVertex, out outEdge)) 
                 {
                     renderer.material.color = dodgerBlue;
-                    document.getElementById(s).style.backgroundColor = "dodgerblue";
+                    MainBrowser.RunJavaScript("document.getElementById(" + s + ").style.backgroundColor = 'dodgerblue'");
                     removableParts.Add(s);
                 }
             }
@@ -355,9 +360,9 @@ namespace AGV
             addableParts = new List<string>();
             foreach (STaggedEdge<string, int[]> edgeItem in edgeList)
             {
-                Debug.Log(edgeItem + " " + edgeItem.Tag[0] + " " + edgeItem.Tag[1]);
+                Debug.Log(edgeItem + " " + edgeItem.Tag[0] + " " + edgeItem.Tag[1] + " document.getElementById('" + edgeItem.Tag[0] + "').style.backgroundColor = '" + htmlGreen + "'");
                 parts.transform.Find(edgeItem.Tag[0] + "").GetComponent<Renderer>().material.color = green;
-                document.getElementById(edgeItem.Tag[0] + "").style.backgroundColor = htmlGreen;
+                MainBrowser.RunJavaScript("document.getElementById('" + edgeItem.Tag[0] + "').style.backgroundColor = '" + htmlGreen + "'");
                 addableParts.Add(edgeItem.Tag[0] + "");
             }
             foreach (string s in edge.Source.Split(','))
@@ -516,11 +521,14 @@ namespace AGV
 
         string directory;
 
-        public void importZIP(MouseEvent mouseEvent = null)
+        public void chooseZIP()
         {
-            string path = StandaloneFileBrowser.OpenFilePanel("Open File", "", "zip", false)[0];
-            Debug.Log(path);
-            importZIP(path);
+            string[] paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "zip", false);
+            if (paths.Length > 0)
+            {
+                Debug.Log(paths[0]);
+                importZIP(paths[0]);
+            }
         }
 
         void removeAllObjects()
@@ -563,7 +571,7 @@ namespace AGV
 
 
             //build graph
-
+            graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
             using (StreamReader r = new StreamReader(Path.Combine(directory ,"graph.json")))
             {
                 string json = r.ReadToEnd();
@@ -615,7 +623,7 @@ namespace AGV
             System.Diagnostics.Process.Start(getDotGraphURL(graph, edgeLabels));
         }
 
-        public void stepForward(MouseEvent mouseEvent = null)
+        public void stepForward()
         {
             if (timeLinePosition + 1 >= timeLine.Count)
             {
@@ -637,12 +645,12 @@ namespace AGV
             timeLinePosition++;
         }
 
-        public void log(MouseEvent mouseEvent)
+        public void log(string message)
         {
-            Debug.Log("a message from JavaScript!");
+            Debug.Log(message);
         }
 
-        public void stepBackward(MouseEvent mouseEvent = null)
+        public void stepBackward()
         {
             if (timeLinePosition - 1 < 0)
             {
@@ -664,23 +672,87 @@ namespace AGV
             timeLinePosition--;
         }
 
-        public void repeatAnimation(MouseEvent mouseEvent = null)
+        public void repeatAnimation()
         {
             //transitionObject.SetActive(true);
             //t = reverse ? 0 : matrixes.Count - 1;
             stepBackward();
             stepForward();
-            playPauseElement.innerHTML = "&#xf04c;";
+            MainBrowser.RunJavaScript("document.getElementById('playPause').innerHTML = &#xf04c;");
+
             pause = false;
         }
 
-        private void playPause(MouseEvent mouseEvent = null)
+        bool resizedOnce = false;
+
+        public void resizeUI()
+        {
+            MainBrowser.OnRectTransformDimensionsChange();
+        }
+
+        public void playPause()
         {
             if (play)
             {
                 pause = !pause;
-                playPauseElement.innerHTML = pause ? "&#xf04b;": "&#xf04c;";
+                if (pause)
+                {
+                    MainBrowser.RunJavaScript("document.getElementById('playPause').innerHTML = &#xf04b;");
+                }
+                else
+                {
+                    MainBrowser.RunJavaScript("document.getElementById('playPause').innerHTML = &#xf04c;");
+                }
             }
+        }
+
+        private void MainBrowser_OnJSQuery(string message, string prompt, DialogEventType type)
+        {
+
+            if(prompt == null)
+            {
+                Debug.Log("Hallo!!!! " + message);
+                this.GetType().GetMethod(message).Invoke(this, null);
+            }
+            else
+            {
+                Debug.Log("Hallo!!!! " + message + " " + prompt);
+                this.GetType().GetMethod(message).Invoke(this, new object[]{prompt});
+            }
+        }
+
+        public void copyText(string text)
+        {
+            Debug.Log("Copied " + text + " to clipboard");
+            System.Windows.Forms.Clipboard.SetText(text);
+        }
+
+        public void pasteText(string position)
+        {
+            Debug.Log("Pasted " + System.Windows.Forms.Clipboard.GetText());
+            MainBrowser.RunJavaScript("pasteToTextArea('" + System.Windows.Forms.Clipboard.GetText() + "');");
+        }
+
+        [SerializeField]
+        public Texture2D resizeCursor;
+        [SerializeField]
+        public Texture2D resizeCursorBottom;
+
+        public CursorMode cursorMode = CursorMode.Auto;
+
+        public void changeToResizeCursor()
+        {
+            Cursor.SetCursor(resizeCursor, new Vector2(11, 2), cursorMode);
+        }
+
+        public void changeToResizeCursorBottom()
+        {
+            Cursor.SetCursor(resizeCursorBottom, new Vector2(2, 11), cursorMode);
+        }
+
+        public void changeToNormalCursor()
+        {
+            Cursor.SetCursor(null, Vector2.zero, cursorMode);
         }
 
         // Update is called once per frame
