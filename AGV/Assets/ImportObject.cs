@@ -728,13 +728,13 @@ namespace AGV
         public void copyText(string text)
         {
             Debug.Log("Copied " + text + " to clipboard");
-            System.Windows.Forms.Clipboard.SetText(text);
+            GUIUtility.systemCopyBuffer = text;
         }
 
         public void pasteText(string position)
         {
-            Debug.Log("Pasted " + System.Windows.Forms.Clipboard.GetText());
-            MainBrowser.RunJavaScript("pasteToTextArea('" + System.Windows.Forms.Clipboard.GetText() + "');");
+            Debug.Log("Pasted " + GUIUtility.systemCopyBuffer);
+            MainBrowser.RunJavaScript("pasteToTextArea('" + GUIUtility.systemCopyBuffer + "');");
         }
 
         [SerializeField]
