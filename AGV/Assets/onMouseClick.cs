@@ -1,6 +1,8 @@
+using SimpleWebBrowser;
 using Unity.VisualScripting;
 using UnityEngine;
-using PowerUI;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace AGV
 {
@@ -10,6 +12,9 @@ namespace AGV
         GameObject assemblyPart;
         GameObject finishedPart;
         GameObject partsPart;
+        RawImage ui;
+
+        public WebBrowser2D MainBrowser;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
@@ -18,6 +23,8 @@ namespace AGV
             assemblyPart = GameObject.Find("Assembly").transform.Find(gameObject.name).gameObject;
             partsPart = GameObject.Find("Parts").transform.Find(gameObject.name).gameObject;
             finishedPart = GameObject.Find("Finished").transform.Find(gameObject.name).gameObject;
+            MainBrowser = GameObject.Find("Browser2D").GetComponent<WebBrowser2D>();
+            ui = GameObject.Find("Browser2D").GetComponent<RawImage>();
         }
 
         // Update is called once per frame
@@ -28,13 +35,19 @@ namespace AGV
 
         void OnMouseDown()
         {
-            parent.mouseClick(gameObject.name);
+            if (!isUI())
+            {
+                parent.mouseClick(gameObject.name);
+            }
             //      renderer.material.color = Color.black;
         }
 
+
+        bool mouseEntered = false;
         public void OnMouseEnter()
         {
-            if (UnityEngine.Input.GetMouseButton(1))
+
+            if (UnityEngine.Input.GetMouseButton(1) || isUI())
             {
                 return;
             }
@@ -49,7 +62,23 @@ namespace AGV
             assemblyPart.GetComponent<Outline>().enabled = true;
             finishedPart.GetComponent<Outline>().enabled = true;
             partsPart.GetComponent<Outline>().enabled = true;
-            PowerUI.UI.document.getElementById(gameObject.name).style.border = "2px solid rgba(0, 0, 0, 1)";
+            MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.border-color = 'black'");
+            mouseEntered = true;
+        }
+
+        public void OnMouseOver()
+        {
+            if (isUI())
+            {
+                if (mouseEntered)
+                    OnMouseExit();
+            }
+            else
+            {
+                if (!mouseEntered)
+                    OnMouseEnter();
+            }
+
         }
 
         public void OnMouseExit()
@@ -76,19 +105,14 @@ namespace AGV
                 finishedPart.GetComponent<Outline>().enabled = false;
                 partsPart.GetComponent<Outline>().enabled = false;
             }
-            PowerUI.UI.document.getElementById(gameObject.name).style.border = "0px solid rgba(0, 0, 0, 1)";
+            MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.border-color = 'white'");
+            mouseEntered = false;
         }
 
-        public void onMouseEnter(MouseEvent mouseEvent = null)
+        public bool isUI()
         {
-            Debug.Log("MouseEnter!!!");
-            OnMouseEnter();
-        }
-
-        public void onMouseExit(MouseEvent mouseEvent = null)
-        {
-            Debug.Log("MouseExit!!!");
-            OnMouseExit();
+            Vector2 screenCords = MainBrowser.GetScreenCoords();
+            return (((Texture2D)ui.texture).GetPixel((int)screenCords.x, (int)screenCords.y).a > 0);
         }
     }
 }
