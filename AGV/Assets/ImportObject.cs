@@ -27,7 +27,7 @@ namespace AGV
         public string zipFile;
         protected ImportOptions importOptions = new ImportOptions();
         public List<string> timeLine = new List<string>();
-        public int timeLinePosition = 0;
+        public int timeLinePosition = -1;
 
         ObjectImporter objImporter;
         GameObject assembly;
@@ -54,8 +54,6 @@ namespace AGV
             parts = transform.Find("Parts").gameObject;
             finished = transform.Find("Finished").gameObject;
             standardShader = Shader.Find("Standard");
-            addToTimeLine("[]");
-            timeLinePosition = 0;
             //importOptions.litDiffuse = true;
             importOptions.zUp = false;
             importOptions.convertToDoubleSided = true;
@@ -184,6 +182,12 @@ namespace AGV
             parts.transform.localRotation = Quaternion.identity;
             finished.transform.localPosition = Vector3.zero;
             finished.transform.localRotation = Quaternion.identity;
+
+            timeLine = new List<string>();
+            timeLinePosition = -1;
+            addToTimeLine("[]");
+            timeLinePosition = 0;
+            currentVertex = "[]";
 
             //GameObject.Find("New Game Object").AddComponent<MeshCollider>();
             assemblyBounds = new Bounds();
