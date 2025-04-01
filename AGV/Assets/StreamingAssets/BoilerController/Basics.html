@@ -187,8 +187,8 @@
             <button onclick="pageRight()" id="pageRight"><i class="fa" style="font-size: 20px">&#xf054;</i></button>
         </div>
 
-        <div id='textAreaDiv' onfocus="console.log('focus')" onblur="console.log('blur')">
-            <textarea id="textArea"></textarea>
+        <div id='textAreaDiv'>
+            <textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea>
         </div>
         <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
         <div id="resize-bar-bottom" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBarBottom = true"></div>
@@ -356,12 +356,20 @@
                 textAreaDiv.innerHTML = instructionText;
                 toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf044;</i>";
             } else {
-                textAreaDiv.innerHTML = "<textarea id='textArea'></textarea>";
+                textAreaDiv.innerHTML = "<textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea>";
                 document.getElementById("textArea").innerText = instructionText;
                 toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf046;</i>";
             }
             editable = !editable;
             setContentBoxExtrasHeight();
+        }
+
+        function textAreaFocus() {
+            prompt("textAreaFocus");
+        }
+
+        function textAreaBlur() {
+            prompt("textAreaBlur");
         }
 
         function pageLeft() {

@@ -1,4 +1,3 @@
-using Css.Properties;
 using UnityEngine;
 
 
@@ -26,12 +25,9 @@ namespace AGV
         // Update is called once per frame
         void Update()
         {
-            if (PowerUI.UI.document.activeElement != null)
+            if (importer.textAreaHasFocus)
             {
-                if (PowerUI.UI.document.activeElement.id == "textArea")
-                {
-                    return;
-                }
+                return;
             }
 
             Bounds bounds = importer.getAssemblyBounds();

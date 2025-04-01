@@ -755,6 +755,17 @@ namespace AGV
             Cursor.SetCursor(null, Vector2.zero, cursorMode);
         }
 
+        public bool textAreaHasFocus = false;
+        public void textAreaFocus()
+        {
+            textAreaHasFocus = true;
+        }
+
+        public void textAreaBlur()
+        {
+            textAreaHasFocus = false;
+        }
+
         // Update is called once per frame
         void Update()
         {
