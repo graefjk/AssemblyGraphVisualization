@@ -75,9 +75,16 @@
     }
 
     #openFile {
+        zoom: 200%;
+    }
+
+    #saveFile {
+        zoom: 200%;
+    }
+
+    #openOrSaveFile {
         left: 0px;
         bottom: 0px;
-        zoom: 150%;
         position: fixed;
     }
 
@@ -206,7 +213,11 @@
         <i class="fa" id="stepForward">&#xf051;</i>
     </div>
 
-    <button id="openFile"><i class="fa">&#xf07c;</i></button>
+    <div id="openOrSaveFile">
+        <button><i class="fa" id="openFile">&#xf07c;</i></button>
+        <button><i class="fa" id="saveFile">&#xf0c7;</i></button>
+    </div>
+
 
     <script>
         function log(message) {
@@ -334,6 +345,13 @@
                 instructionText = document.getElementById("textArea").innerText;
                 textAreaDiv.innerHTML = instructionText;
                 toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf044;</i>";
+                console.log("HALLO!!" + partsList.getElementsByClassName("partCheckBox").length + " " + partsList.getElementsByClassName("partCheckBox")[0].checked);
+                var checkBoxes = partsList.getElementsByClassName("partCheckBox");
+                var parts = partsList.getElementsByClassName("part");
+                for (var i = 0; i < parts.length; i++) {
+                    console.log(parts[i].style.backgroundColor);
+                }
+
             } else {
                 textAreaDiv.innerHTML = "<textarea id='textArea'></textarea>";
                 document.getElementById("textArea").innerText = instructionText;
