@@ -146,7 +146,7 @@
     .part {
         background-color: rgb(255, 141, 30);
         text-align: center;
-        border: 0px solid rgb(0, 0, 0);
+        border: 0px solid rgb(255, 141, 30);
         margin-bottom: 0px;
         font-size: 15px;
         padding-left: 30px;
@@ -173,6 +173,14 @@
     #pageRight {
         width: 30px;
         height: 30px;
+        left: 90px;
+        top: 0px;
+        position: absolute;
+    }
+
+    #addInstructions {
+        width: 30px;
+        height: 30px;
         left: 60px;
         top: 0px;
         position: absolute;
@@ -180,13 +188,17 @@
 
     #editDiv {
         top: -30px;
-        width: 90px;
+        width: 120px;
         height: auto;
         margin: 0 auto;
         position: relative;
     }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+
 
 <html>
 <body onmousedown="isKeyPressed(event)">
@@ -200,6 +212,7 @@
         <div id="editDiv">
             <button onclick="pageLeft()" id="pageLeft"><i class="fa" style="font-size: 20px">&#xf053;</i></button>
             <button onclick="toggleEdit()" id="toggleEdit"><i class="fa" style="font-size: 20px">&#xf046;</i></button>
+            <button onclick="addInstructions()" id="addInstructions"><i class="fa" style="font-size: 20px">&#xf196;</i></button> <!-- alternative icon: &#xf067; -->
             <button onclick="pageRight()" id="pageRight"><i class="fa" style="font-size: 20px">&#xf054;</i></button>
         </div>
 
@@ -237,6 +250,9 @@
         <button id="saveFile" onclick="saveFile()"><i class="fa">&#xf0c7;</i></button>
     </div>
 
+
+
+
     <script>
         var contentBox = document.getElementById('content-box');
         var partsList = document.getElementById('parts-list-container');
@@ -266,14 +282,14 @@
 
         document.addEventListener('mousemove', function (e) {
             if (dragContentBoxResizeBar) {
-                if ((e.clientX - 65) > 90) {
+                if ((e.clientX - 65) > 120) {
                     contentBox.style.width = (e.clientX - 65) + "px";
                 }
                 //right: 0px; does not work in powerUI for some reason
 
             }
             else if (dragPartsListResizeBar) {
-                if ((document.body.clientWidth - e.clientX + 5) > 30) {
+                if ((document.body.clientWidth - e.clientX + 5) > 90) {
                     document.getElementById('parts-list-container').style.width = document.body.clientWidth - e.clientX + 5 + "px";
                 }
             }
@@ -347,7 +363,7 @@
         }
 
         function hideBorder(element) {
-            element.style.borderColor = "white"
+            element.style.borderColor = element.style.backgroundColor;
             prompt("mouseExitPart", element.id);
         }
 
@@ -458,6 +474,8 @@
                 } else {
                     unAssembledParts.push(parts[i].id);
                 }
+
+                parts[i].style.borderColor = parts[i].style.backgroundColor;
             }
 
             for (var i = 0; i < instructions.length; i++) {
@@ -465,18 +483,19 @@
                     for (var k = 1; k < instructions[i].length; k++) {
                         if (isSuperset(unAssembledParts, instructions[i][k][0])) {
                             console.log("pushed: " + instructions[i][k][1]);
-                            instructionList.push(instructions[i][k][1]);
+                            instructionList.push([i, k]);
                         }
                     }
                 }
             }
             if (instructionList.length > 0) {
-                instructionText = instructionList[0];
+                instructionText = instructions[instructionList[0][0]][instructionList[0][1]][1];
             } else {
                 instructionText = "";
             }
             instructionsIndex = 0;
             updateInstructionText();
+            checkCheckBoxes();
         }
 
         function updateInstructionText() {
@@ -502,16 +521,31 @@
         function pageLeft() {
             if (instructionsIndex > 0) {
                 instructionsIndex -= 1;
-                instructionText = instructionList[instructionsIndex];
+                instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1]
                 updateInstructionText();
+                checkCheckBoxes();
             }
         }
 
         function pageRight() {
             if (instructionsIndex < instructionList.length - 1) {
                 instructionsIndex += 1;
-                instructionText = instructionList[instructionsIndex];
+                instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1]
                 updateInstructionText();
+                checkCheckBoxes();
+            }
+        }
+
+        function checkCheckBoxes() {
+            var selectedAssembledParts = instructions[instructionList[instructionsIndex][0]][0];
+            var selectedUnAssembledParts = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][0];
+            var checkBoxes = partsList.getElementsByTagName("input");
+            for (var i = 0; i < checkBoxes.length; i++) {
+                checkBoxes[i].disabled = true;
+                checkBoxes[i].checked = false;
+                if (selectedAssembledParts.includes(checkBoxes[i].name) || selectedUnAssembledParts.includes(checkBoxes[i].name)) {
+                    checkBoxes[i].checked = true;
+                }
             }
         }
 
