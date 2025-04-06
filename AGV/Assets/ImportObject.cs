@@ -39,7 +39,7 @@ namespace AGV
         public bool pause = false;
         [SerializeField] public float partTableLenght;
         public float spacing;
-
+        public string directory;
 
         AdjacencyGraph<string, STaggedEdge<string, int[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
         int childCount = 0;
@@ -82,10 +82,10 @@ namespace AGV
         private void selectPart(string name)
         {
             Debug.Log("Select Part " + name);
-            MainBrowser.RunJavaScript("toggleCheckBox(" + name+")");
+            MainBrowser.RunJavaScript("toggleCheckBox(" + name + ")");
         }
 
-            
+
         private void OnValidate()
         {
             Debug.Log("partTableLenght changed to: " + partTableLenght);
@@ -101,7 +101,7 @@ namespace AGV
             float maxExtent = Math.Max(assemblyBounds.extents.x, Math.Max(assemblyBounds.extents.y, assemblyBounds.extents.z));
             finished.transform.position = -assemblyBounds.center + new Vector3(partTableLenght / 2, assemblyBounds.extents.magnitude, 0);
             assembly.transform.position = -assemblyBounds.center + new Vector3(partTableLenght / 2, assemblyBounds.extents.magnitude, -assemblyBounds.extents.z - assemblyBounds.extents.magnitude - spacing);
-            parts.transform.position = new Vector3(0, 0, -3 * assemblyBounds.extents.z - 2* assemblyBounds.extents.magnitude - 2 * spacing);
+            parts.transform.position = new Vector3(0, 0, -3 * assemblyBounds.extents.z - 2 * assemblyBounds.extents.magnitude - 2 * spacing);
 
             assembly.GetComponent<RotateAssembly>().centerPosition = assembly.transform.position + assemblyBounds.center;
             assembly.GetComponent<RotateAssembly>().initialPosition = assembly.transform.position;
@@ -109,7 +109,7 @@ namespace AGV
 
             float xPosition = 0;
             int yPosition = 0;
-            SortedSet<Transform> partsList = new SortedSet<Transform>(Comparer<Transform>.Create((a, b) => (a.GetComponent<Renderer>().bounds.extents.y >= b.GetComponent<Renderer>().bounds.extents.y ? 1: -1)));
+            SortedSet<Transform> partsList = new SortedSet<Transform>(Comparer<Transform>.Create((a, b) => (a.GetComponent<Renderer>().bounds.extents.y >= b.GetComponent<Renderer>().bounds.extents.y ? 1 : -1)));
 
             for (int i = 0; i < parts.transform.childCount; i++)
             {
@@ -131,7 +131,7 @@ namespace AGV
                 {
                     xPosition += bounds.extents.x;
                 }
-                part.transform.localPosition = new Vector3(xPosition - bounds.center.x + part.transform.position.x, (1 * (bounds.extents.z - bounds.center.z + part.transform.position.z) - (2 * maxY * yPosition + yPosition)) , part.transform.position.y - bounds.center.y + bounds.extents.y);
+                part.transform.localPosition = new Vector3(xPosition - bounds.center.x + part.transform.position.x, (1 * (bounds.extents.z - bounds.center.z + part.transform.position.z) - (2 * maxY * yPosition + yPosition)), part.transform.position.y - bounds.center.y + bounds.extents.y);
 
                 //part.position = new Vector3(0,0,0);
                 xPosition += bounds.extents.x + 0.1f;
@@ -142,7 +142,7 @@ namespace AGV
         {
             string sourceVertex = currentVertex.Replace('"' + name + '"', "").Replace(",,", ",").Replace("[,", "[").Replace(",]", "]");
             graph.TryGetEdge(sourceVertex, currentVertex, out outEdge);
-            Debug.Log("source: " + sourceVertex + " target: "+ currentVertex + " " + outEdge);
+            Debug.Log("source: " + sourceVertex + " target: " + currentVertex + " " + outEdge);
             currentVertex = sourceVertex;
             addToTimeLine(currentVertex);
             reverse = true;
@@ -176,8 +176,8 @@ namespace AGV
 
         private void ObjImporter_ImportingComplete()
         {
-            assembly.transform.localPosition=Vector3.zero;
-            assembly.transform.localRotation=Quaternion.identity;
+            assembly.transform.localPosition = Vector3.zero;
+            assembly.transform.localRotation = Quaternion.identity;
             parts.transform.localPosition = Vector3.zero;
             parts.transform.localRotation = Quaternion.identity;
             finished.transform.localPosition = Vector3.zero;
@@ -204,7 +204,7 @@ namespace AGV
                 //partsList.innerHTML += "<input type='checkbox' name='" + child.name + "' checked =\"0\" value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>";
                 //MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML += <input type='checkbox' name='" + child.name + "' checked ='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>;");
                 partsListHTML += "<input type='checkbox' name='" + child.name + "' checked='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onclick='clickPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div><div style='width:100%'></div>";
-      
+
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
                 Outline outline = child.AddComponent<Outline>();
@@ -215,7 +215,7 @@ namespace AGV
                 finishedCopy.name = child.name;
                 Transform copy = Instantiate(child, assembly.transform);
                 copy.name = child.name;
-                
+
                 //copy.AddComponent<OnMouseClickDisassemble>();
                 assemblyBounds.Encapsulate(copy.gameObject.GetComponent<Renderer>().bounds);
                 copy.gameObject.SetActive(false);
@@ -231,7 +231,7 @@ namespace AGV
                 }
             }
             Debug.Log(partsListHTML);
-            MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML=\""+ partsListHTML + '"');
+            MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML=\"" + partsListHTML + '"');
 
             for (int i = 0; i < parts.transform.childCount; i++)
             {
@@ -256,12 +256,20 @@ namespace AGV
                 Debug.Log(edge);
             }
 
+            //import instructions
+            using (StreamReader r = new StreamReader(Path.Combine(directory, "instructions.json")))
+            {
+                string json = r.ReadToEnd().Trim();
+                MainBrowser.RunJavaScript("importJsonInstructions('" + json + "');");
+                MainBrowser.RunJavaScript("prompt('log', 'instructions: ' + instructions);");
+            }
+
             placePartsOnTable(partTableLenght);
         }
 
         public void mouseEnterPart(string partName)
         {
-            parts.transform.Find(partName).GetComponent<OnMouseClick>().OnMouseEnter();
+            parts.transform.Find(partName).GetComponent<OnMouseClick>().OnMouseEnterDontCheckUI();
         }
 
         public void mouseExitPart(string partName)
@@ -318,7 +326,7 @@ namespace AGV
             for (int i = 0; i < parts.transform.childCount; i++)
             {
                 parts.transform.Find(i + "").GetComponent<Renderer>().material.color = orange;
-                MainBrowser.RunJavaScript("document.getElementById(" + i + ").style.backgroundColor = '"+ htmlOrange + "'");
+                MainBrowser.RunJavaScript("document.getElementById(" + i + ").style.backgroundColor = '" + htmlOrange + "'");
             }
             Debug.Log("current Vertex: " + currentVertex + " " + currentVertex.Split(','));
             string[] currentParts = currentVertex.ReplaceMultiple(removeChars, ' ').Replace(" ", "").Split(',');
@@ -353,7 +361,7 @@ namespace AGV
                 {
                     MainBrowser.RunJavaScript("document.getElementById(" + s + ").style.backgroundColor = 'gray'");
                 }
-                if (graph.TryGetEdge(inVertex, currentVertex, out outEdge)) 
+                if (graph.TryGetEdge(inVertex, currentVertex, out outEdge))
                 {
                     renderer.material.color = dodgerBlue;
                     MainBrowser.RunJavaScript("document.getElementById(" + s + ").style.backgroundColor = 'dodgerblue'");
@@ -437,6 +445,8 @@ namespace AGV
             {
                 loadAndPlayTransition(edge.Tag[0], edge.Tag[1]);
             }
+
+            MainBrowser.RunJavaScript("loadInstructions();");
         }
 
         string path = "";
@@ -449,7 +459,7 @@ namespace AGV
             {
                 Debug.Log(path);
                 matrixes = new List<Matrix4x4>();
-                path = Path.Combine(directory, "steps", transitionID+"", "transformationMatrices.npz");
+                path = Path.Combine(directory, "steps", transitionID + "", "transformationMatrices.npz");
                 Debug.Log(path);
                 NpzDictionary<Array> dict;
                 var data = np.Load_Npz(path, out dict);
@@ -523,7 +533,7 @@ namespace AGV
 
         }
 
-        string directory;
+
 
         public void chooseZIP()
         {
@@ -550,7 +560,8 @@ namespace AGV
                 Destroy(child.gameObject);
             }
         }
-
+        string folderName;
+        string basePath;
         public void importZIP(string zipFile)
         {
             removeAllObjects();
@@ -558,15 +569,15 @@ namespace AGV
             objImporter = gameObject.AddComponent<ObjectImporter>();
             objImporter.ImportingComplete += ObjImporter_ImportingComplete;
 
-            string basePath = Path.GetDirectoryName(zipFile);
-            string folderName = Path.GetFileNameWithoutExtension(zipFile);
-            directory = Path.Combine(basePath ,folderName);
+            basePath = Path.GetDirectoryName(zipFile);
+            folderName = Path.GetFileNameWithoutExtension(zipFile);
+            directory = Path.Combine(basePath, folderName);
 
             //ZipFile.ExtractToDirectory("C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00013.zip", "C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00013",true);
             ZipFile.ExtractToDirectory(zipFile, directory, true);
             //import objects
 
-            foreach (string file in Directory.GetFiles(Path.Combine(directory , "objects")))
+            foreach (string file in Directory.GetFiles(Path.Combine(directory, "objects")))
             {
                 objImporter.ImportModelAsync(Path.GetFileNameWithoutExtension(file), file, parts.transform, importOptions);
                 childCount++;
@@ -576,7 +587,7 @@ namespace AGV
 
             //build graph
             graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
-            using (StreamReader r = new StreamReader(Path.Combine(directory ,"graph.json")))
+            using (StreamReader r = new StreamReader(Path.Combine(directory, "graph.json")))
             {
                 string json = r.ReadToEnd();
                 JObject array = (JObject)JsonConvert.DeserializeObject(json);
@@ -713,7 +724,7 @@ namespace AGV
         private void MainBrowser_OnJSQuery(string message, string prompt, DialogEventType type)
         {
 
-            if(prompt == null)
+            if (prompt == null)
             {
                 Debug.Log("Hallo!!!! " + message);
                 this.GetType().GetMethod(message).Invoke(this, null);
@@ -721,7 +732,7 @@ namespace AGV
             else
             {
                 Debug.Log("Hallo!!!! " + message + " " + prompt);
-                this.GetType().GetMethod(message).Invoke(this, new object[]{prompt});
+                this.GetType().GetMethod(message).Invoke(this, new object[] { prompt });
             }
         }
 
@@ -768,6 +779,24 @@ namespace AGV
         public void textAreaBlur()
         {
             textAreaHasFocus = false;
+        }
+
+        public void saveFile(string instructionJSON)
+        {
+            Debug.Log("saving File to " + Path.Combine(directory, "instructions.json"));
+            using (StreamWriter outputFile = new StreamWriter(Path.Combine(directory, "instructions.json")))
+            {
+                outputFile.WriteLine(instructionJSON);
+                outputFile.Flush();
+                outputFile.Close();
+                outputFile.Dispose();
+            }
+            string fileName = StandaloneFileBrowser.SaveFilePanel("save File", basePath, folderName, "zip");
+            if (fileName != "")
+            {
+                ZipFile.CreateFromDirectory(directory, fileName);
+                Debug.Log("File saved to " + fileName);
+            }
         }
 
         // Update is called once per frame

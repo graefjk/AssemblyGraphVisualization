@@ -91,10 +91,26 @@
 
     #openFile {
         left: 0px;
-        padding: 4px;
         bottom: 0px;
         width: 30px;
         height: 30px;
+        position: absolute;
+        font-size: 18px;
+    }
+
+    #saveFile {
+        left: 30px;
+        bottom: 0px;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        font-size: 18px;
+    }
+
+    #openOrSave {
+        left: 0px;
+        padding: 4px;
+        bottom: 0px;
         zoom: 150%;
         position: absolute;
         font-size: 18px;
@@ -201,10 +217,10 @@
     </div>
 
     <div id='parts-list-container'>
-        <div id="resize-bar-parts-list" onmousedown="dragPartsListResizeBar = true"></div>
+        <div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
         <button onclick="closePartsList()" style="left: -5px; position: relative;font-size: 20px;width: 30px;height: 30px;"><b>X</b></button>
         <div id="parts-list">
-            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox'>&nbsp;<div class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)' id="test" style="background-color: rgb(0.565, 1.0, 0.118); color: black;">test</div>
+            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox'>&nbsp;<div class='part' id="test" style="background-color: rgb(0.565, 1.0, 0.118); color: black;">test</div>
         </div>
         <input type="checkbox" id="selectAll" onchange="toggleAll()">
     </div>
@@ -216,15 +232,10 @@
         <i class="fa" id="stepForward" onclick="prompt('stepForward')">&#xf051;</i>
     </div>
 
-    <button id="openFile" onclick="prompt('chooseZIP')"><i class="fa">&#xf07c;</i></button>
-
-    <script>
-        function log(message) {
-            console.log(message);
-        }
-    </script>
-
-
+    <div id="openOrSave">
+        <button id="openFile" onclick="prompt('chooseZIP')"><i class="fa">&#xf07c;</i></button>
+        <button id="saveFile" onclick="saveFile()"><i class="fa">&#xf0c7;</i></button>
+    </div>
 
     <script>
         var contentBox = document.getElementById('content-box');
@@ -355,6 +366,7 @@
                 instructionText = document.getElementById("textArea").value;
                 textAreaDiv.innerHTML = instructionText;
                 toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf044;</i>";
+                saveInstructions();
             } else {
                 textAreaDiv.innerHTML = "<textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea>";
                 document.getElementById("textArea").innerText = instructionText;
@@ -362,6 +374,121 @@
             }
             editable = !editable;
             setContentBoxExtrasHeight();
+        }
+        var instructions = [];
+        var instructionsIndex = 0;
+
+        function isSuperset(set, subset) {
+            if (subset.length === 0) {
+                return true;
+            }
+            for (const elem of subset) {
+                if (!set.includes(elem)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function areArraysEqual(a, b) {
+            return a.length === b.length && [...a].every(value => b.includes(value));
+        }
+
+        function saveInstructions() {
+            var parts = partsList.getElementsByClassName("part");
+            var checkBoxes = partsList.getElementsByClassName("partCheckBox");
+            var assembledParts = [];
+            var unAssembledParts = [];
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue")) {
+                        assembledParts.push(parts[i].id);
+                    } else {
+                        unAssembledParts.push(parts[i].id);
+                    }
+                }
+            }
+
+            var index = instructions.findIndex(function findSet(e) {
+                if (e.length < 1) {
+                    return false;
+                } else {
+                    return areArraysEqual(e[0], assembledParts)
+                }
+            });
+            if (index === -1) {
+                instructions.push([assembledParts, [unAssembledParts, instructionText]])
+            } else {
+                var secondIndex = instructions[index].findIndex(function findSet(e) {
+                    if ((e.length < 1) || !Array.isArray(e)) {
+                        return false;
+                    } else {
+                        return areArraysEqual(e[0], unAssembledParts)
+                    }
+                });
+                if (secondIndex === -1) {
+                    instructions[index].push([unAssembledParts, instructionText])
+                }
+                else {
+                    instructions[index][secondIndex][1] = instructionText;
+                }
+            }
+
+
+            return encodeURI(JSON.stringify(instructions));
+            return window.URL.createObjectURL(new Blob([JSON.stringify(instructions)], { type: "application/json" }));
+        }
+
+        function importJsonInstructions(jsonString) {
+            instructions = JSON.parse(jsonString);
+            loadInstructions();
+        }
+
+        var instructionList = [];
+        var instructionListIndex = 0;
+        function loadInstructions() {
+            var parts = partsList.getElementsByClassName("part");
+            var assembledParts = [];
+            var unAssembledParts = [];
+            instructionList = [];
+            instructionListIndex = 0;
+            for (var i = 0; i < parts.length; i++) {
+                if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue")) {
+                    assembledParts.push(parts[i].id);
+                } else {
+                    unAssembledParts.push(parts[i].id);
+                }
+            }
+
+            for (var i = 0; i < instructions.length; i++) {
+                if (isSuperset(assembledParts, instructions[i][0])) {
+                    for (var k = 1; k < instructions[i].length; k++) {
+                        if (isSuperset(unAssembledParts, instructions[i][k][0])) {
+                            console.log("pushed: " + instructions[i][k][1]);
+                            instructionList.push(instructions[i][k][1]);
+                        }
+                    }
+                }
+            }
+            if (instructionList.length > 0) {
+                instructionText = instructionList[0];
+            } else {
+                instructionText = "";
+            }
+            instructionsIndex = 0;
+            updateInstructionText();
+        }
+
+        function updateInstructionText() {
+            if (editable) {
+                document.getElementById("textArea").value = instructionText;
+            } else {
+                textAreaDiv.innerHTML = instructionText;
+            }
+        }
+
+        function saveFile() {
+            prompt("saveFile", JSON.stringify(instructions))
         }
 
         function textAreaFocus() {
@@ -373,12 +500,19 @@
         }
 
         function pageLeft() {
-            console.log("pageLeft is not implemented yet");
-            bodyElement.style.height = "500px";
+            if (instructionsIndex > 0) {
+                instructionsIndex -= 1;
+                instructionText = instructionList[instructionsIndex];
+                updateInstructionText();
+            }
         }
 
         function pageRight() {
-            console.log("pageRight is not implemented yet");
+            if (instructionsIndex < instructionList.length - 1) {
+                instructionsIndex += 1;
+                instructionText = instructionList[instructionsIndex];
+                updateInstructionText();
+            }
         }
 
         var toggleAllElement = document.getElementById("selectAll");
