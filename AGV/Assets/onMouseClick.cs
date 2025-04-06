@@ -66,7 +66,7 @@ namespace AGV
             assemblyPart.GetComponent<Outline>().enabled = true;
             finishedPart.GetComponent<Outline>().enabled = true;
             partsPart.GetComponent<Outline>().enabled = true;
-            MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.border-color = 'black'");
+            MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.borderColor = 'black'");
             mouseEntered = true;
         }
 
@@ -110,7 +110,7 @@ namespace AGV
                 finishedPart.GetComponent<Outline>().enabled = false;
                 partsPart.GetComponent<Outline>().enabled = false;
             }
-            MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.border-color = 'white'");
+            MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.borderColor = document.getElementById(" + gameObject.name + ").style.backgroundColor");
             mouseEntered = false;
         }
 
