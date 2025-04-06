@@ -46,11 +46,15 @@ namespace AGV
         bool mouseEntered = false;
         public void OnMouseEnter()
         {
-
             if (UnityEngine.Input.GetMouseButton(1) || isUI())
             {
                 return;
             }
+            OnMouseEnterDontCheckUI();
+        }
+
+        public void OnMouseEnterDontCheckUI()
+        {
             if (parent.canBeAssembled(gameObject.name) || parent.isAssembled(gameObject.name))
             {
                 assemblyPart.SetActive(true);
@@ -65,6 +69,7 @@ namespace AGV
             MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.border-color = 'black'");
             mouseEntered = true;
         }
+
 
         public void OnMouseOver()
         {

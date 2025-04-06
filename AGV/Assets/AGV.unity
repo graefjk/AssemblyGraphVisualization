@@ -2094,6 +2094,7 @@ MonoBehaviour:
   resizeCursor: {fileID: 2800000, guid: 394235fe51f928247bbdf40c909c80e1, type: 3}
   resizeCursorBottom: {fileID: 2800000, guid: 0cce760ff0f2ba1498d417a115e8cdd6, type: 3}
   cursorMode: 0
+  textAreaHasFocus: 0
 --- !u!4 &1048240935
 Transform:
   m_ObjectHideFlags: 0
