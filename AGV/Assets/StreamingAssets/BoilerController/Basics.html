@@ -497,6 +497,7 @@
             instructionsIndex = 0;
             updateInstructionText();
             checkCheckBoxes();
+            disOrEnAbleButtons();
         }
 
         function updateInstructionText() {
@@ -519,13 +520,18 @@
             prompt("textAreaBlur");
         }
 
+        var pageLeftButton = document.getElementById("pageLeft");
+        var pageRightButton = document.getElementById("pageRight");
+
         function pageLeft() {
             if (instructionsIndex > 0) {
                 instructionsIndex -= 1;
                 instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1];
                 updateInstructionText();
                 checkCheckBoxes();
+                disOrEnAbleButtons();
             }
+
         }
 
         function pageRight() {
@@ -534,6 +540,18 @@
                 instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1];
                 updateInstructionText();
                 checkCheckBoxes();
+                disOrEnAbleButtons();
+            }
+        }
+
+        function disOrEnAbleButtons() {
+            pageLeftButton.disabled = false;
+            pageRightButton.disabled = false;
+            if (instructionsIndex === 0) {
+                pageLeftButton.disabled = true;
+            }
+            if (instructionsIndex >= instructionList.length - 1) {
+                pageRightButton.disabled = true;
             }
         }
 
@@ -580,6 +598,7 @@
                     instructionsIndex = i;
                     instructionText = instructions[instructionList[i][0]][instructionList[i][1]][1];
                     updateInstructionText();
+                    disOrEnAbleButtons();
                     return;
                 }
             }
@@ -587,6 +606,7 @@
             instructionsIndex = instructionList.length;
             instructionText = "";
             updateInstructionText();
+            disOrEnAbleButtons();
         }
 
         prompt('resizeUI');
