@@ -44,6 +44,7 @@ namespace AGV
         AdjacencyGraph<string, STaggedEdge<string, int[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
         int childCount = 0;
         public WebBrowser2D MainBrowser;
+        public bool previewPartsThatCannotBeAssembledRightNow = false;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()

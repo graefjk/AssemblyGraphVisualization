@@ -55,7 +55,7 @@ namespace AGV
 
         public void OnMouseEnterDontCheckUI()
         {
-            if (parent.canBeAssembled(gameObject.name) || parent.isAssembled(gameObject.name))
+            if (parent.canBeAssembled(gameObject.name) || parent.isAssembled(gameObject.name) || parent.previewPartsThatCannotBeAssembledRightNow)
             {
                 assemblyPart.SetActive(true);
             }
@@ -88,7 +88,7 @@ namespace AGV
 
         public void OnMouseExit()
         {
-            if (parent.canBeAssembled(gameObject.name) && ((parent.activePart != assemblyPart) || (parent.reverse && !parent.play)))
+            if ((parent.canBeAssembled(gameObject.name) || parent.previewPartsThatCannotBeAssembledRightNow) && ((parent.activePart != assemblyPart) || (parent.reverse && !parent.play)))
             {
                 assemblyPart.SetActive(false);
                 //Debug.Log(gameObject.name);

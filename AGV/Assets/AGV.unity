@@ -2081,7 +2081,9 @@ MonoBehaviour:
   pause: 0
   partTableLenght: 13.5
   spacing: 0
+  directory: 
   MainBrowser: {fileID: 0}
+  previewPartsThatCannotBeAssembledRightNow: 1
   maxY: 0
   currentVertex: '[]'
   assemblyBounds:
@@ -3751,12 +3753,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf392ec64524774197c70abaed147f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HtmlFile: {fileID: 4900000, guid: 06c56c9cd87078540b8a63965d26421e, type: 3}
-  Url: 
-  WatchForChanges: 1
-  LengthScale: 1
-  AutomaticallyHandleDpi: 1
-  HtmlFilePath: 
 --- !u!4 &2001936752
 Transform:
   m_ObjectHideFlags: 0
