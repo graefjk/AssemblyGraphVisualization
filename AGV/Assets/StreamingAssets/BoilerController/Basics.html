@@ -173,7 +173,7 @@
     #pageRight {
         width: 30px;
         height: 30px;
-        left: 90px;
+        left: 60px;
         top: 0px;
         position: absolute;
     }
@@ -188,7 +188,7 @@
 
     #editDiv {
         top: -30px;
-        width: 120px;
+        width: 90px;
         height: auto;
         margin: 0 auto;
         position: relative;
@@ -211,13 +211,13 @@
         <button onclick="closeSidebar()" id="closeSidebar"><b>X</b></button>
         <div id="editDiv">
             <button onclick="pageLeft()" id="pageLeft"><i class="fa" style="font-size: 20px">&#xf053;</i></button>
-            <button onclick="toggleEdit()" id="toggleEdit"><i class="fa" style="font-size: 20px">&#xf046;</i></button>
-            <button onclick="addInstructions()" id="addInstructions"><i class="fa" style="font-size: 20px">&#xf196;</i></button> <!-- alternative icon: &#xf067; -->
+            <button onclick="toggleEdit()" id="toggleEdit"><i class="fa" style="font-size: 20px">&#xf044;</i></button>
+            <!-- <button onclick="addInstructions()" id="addInstructions"><i class="fa" style="font-size: 20px">&#xf196;</i></button>  alternative icon: &#xf067; -->
             <button onclick="pageRight()" id="pageRight"><i class="fa" style="font-size: 20px">&#xf054;</i></button>
         </div>
 
         <div id='textAreaDiv'>
-            <textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea>
+            <!-- <textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
         </div>
         <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
         <div id="resize-bar-bottom" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBarBottom = true"></div>
@@ -233,7 +233,7 @@
         <div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
         <button onclick="closePartsList()" style="left: -5px; position: relative;font-size: 20px;width: 30px;height: 30px;"><b>X</b></button>
         <div id="parts-list">
-            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox'>&nbsp;<div class='part' id="test" style="background-color: rgb(0.565, 1.0, 0.118); color: black;">test</div>
+            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div class='part' id="test" style="background-color: rgb(0.565, 1.0, 0.118); color: black;">test</div>
         </div>
         <input type="checkbox" id="selectAll" onchange="toggleAll()">
     </div>
@@ -282,7 +282,7 @@
 
         document.addEventListener('mousemove', function (e) {
             if (dragContentBoxResizeBar) {
-                if ((e.clientX - 65) > 120) {
+                if ((e.clientX - 65) > 90) {
                     contentBox.style.width = (e.clientX - 65) + "px";
                 }
                 //right: 0px; does not work in powerUI for some reason
@@ -373,7 +373,7 @@
 
         var instructionText = "";
         var textAreaDiv = document.getElementById("textAreaDiv");
-        var editable = true;
+        var editable = false;
         var toggleEditButton = document.getElementById("toggleEdit");
 
         function toggleEdit() {
@@ -462,6 +462,7 @@
 
         var instructionList = [];
         var instructionListIndex = 0;
+
         function loadInstructions() {
             var parts = partsList.getElementsByClassName("part");
             var assembledParts = [];
@@ -507,7 +508,7 @@
         }
 
         function saveFile() {
-            prompt("saveFile", JSON.stringify(instructions))
+            prompt("saveFile", JSON.stringify(instructions));
         }
 
         function textAreaFocus() {
@@ -521,7 +522,7 @@
         function pageLeft() {
             if (instructionsIndex > 0) {
                 instructionsIndex -= 1;
-                instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1]
+                instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1];
                 updateInstructionText();
                 checkCheckBoxes();
             }
@@ -530,7 +531,7 @@
         function pageRight() {
             if (instructionsIndex < instructionList.length - 1) {
                 instructionsIndex += 1;
-                instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1]
+                instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1];
                 updateInstructionText();
                 checkCheckBoxes();
             }
@@ -541,7 +542,7 @@
             var selectedUnAssembledParts = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][0];
             var checkBoxes = partsList.getElementsByTagName("input");
             for (var i = 0; i < checkBoxes.length; i++) {
-                checkBoxes[i].disabled = true;
+                //checkBoxes[i].disabled = true;
                 checkBoxes[i].checked = false;
                 if (selectedAssembledParts.includes(checkBoxes[i].name) || selectedUnAssembledParts.includes(checkBoxes[i].name)) {
                     checkBoxes[i].checked = true;
@@ -555,12 +556,37 @@
             var checkBoxes = document.getElementsByClassName("partCheckBox");
             for (i = 0; i < checkBoxes.length; i++) {
                 checkBoxes[i].checked = toggleAllElement.checked;
-                if (toggleAllElement.checked) {
-                    checkBoxes[i].value = "0";
-                } else {
-                    checkBoxes[i].value = "1";
+            }
+            checkBoxClicked();
+        }
+
+        function checkBoxClicked() {
+            var parts = partsList.getElementsByClassName("part");
+            var checkBoxes = partsList.getElementsByClassName("partCheckBox");
+            var assembledParts = [];
+            var unAssembledParts = [];
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue")) {
+                        assembledParts.push(parts[i].id);
+                    } else {
+                        unAssembledParts.push(parts[i].id);
+                    }
                 }
             }
+
+            for (var i = 0; i < instructionList.length; i++) {
+                if (areArraysEqual(instructions[instructionList[i][0]][0], assembledParts) && areArraysEqual(instructions[instructionList[i][0]][instructionList[i][1]][0], unAssembledParts)) {
+                    instructionsIndex = i;
+                    instructionText = instructions[instructionList[i][0]][instructionList[i][1]][1];
+                    updateInstructionText();
+                    return;
+                }
+            }
+
+            instructionsIndex = instructionList.length;
+            instructionText = "";
+            updateInstructionText();
         }
 
         prompt('resizeUI');

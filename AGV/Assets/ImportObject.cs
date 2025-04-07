@@ -203,7 +203,7 @@ namespace AGV
                 //add part to UI list
                 //partsList.innerHTML += "<input type='checkbox' name='" + child.name + "' checked =\"0\" value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>";
                 //MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML += <input type='checkbox' name='" + child.name + "' checked ='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>;");
-                partsListHTML += "<input type='checkbox' name='" + child.name + "' checked='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' style='background-color: rgb(255, 141, 30)' onclick='clickPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div><div style='width:100%'></div>";
+                partsListHTML += "<input type='checkbox' name='" + child.name + "' checked='0' class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='" + child.name + "' class='part' style='background-color: rgb(255, 141, 30)' onclick='clickPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div><div style='width:100%'></div>";
 
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
