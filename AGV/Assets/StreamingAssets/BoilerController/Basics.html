@@ -193,6 +193,15 @@
         margin: 0 auto;
         position: relative;
     }
+
+    #addObject {
+        right: 0px;
+        bottom: 0px;
+        width: 45px;
+        height: 45px;
+        position: absolute;
+        font-size: 18px;
+    }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -219,7 +228,7 @@
         <div id='textAreaDiv'>
             <!-- <textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
         </div>
-        <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
+        <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>  
         <div id="resize-bar-bottom" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBarBottom = true"></div>
         <p id="demo"></p>
     </div>
@@ -246,10 +255,10 @@
     </div>
 
     <div id="openOrSave">
-        <button id="openFile" onclick="prompt('chooseZIP')"><i class="fa">&#xf07c;</i></button>
-        <button id="saveFile" onclick="saveFile()"><i class="fa">&#xf0c7;</i></button>
+        <button id="openFile" onclick="prompt('chooseZIP')" title="open File"><i class="fa">&#xf07c;</i></button>
+        <button id="saveFile" onclick="saveFile()" title="save File"><i class="fa">&#xf0c7;</i></button>
     </div>
-
+    <button id="addObject"><img style="zoom:125%" src="cube-add.svg"/></button>
 
 
 
@@ -387,6 +396,7 @@
                 textAreaDiv.innerHTML = "<textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea>";
                 document.getElementById("textArea").innerText = instructionText;
                 toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf046;</i>";
+                textArea = document.getElementById("textArea");
             }
             editable = !editable;
             setContentBoxExtrasHeight();
