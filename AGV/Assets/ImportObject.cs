@@ -54,7 +54,7 @@ namespace AGV
             parts = transform.Find("Parts").gameObject;
             finished = transform.Find("Finished").gameObject;
             extraParts = transform.Find("ExtraParts").gameObject;
-            standardShader = Shader.Find("Standard");
+            standardShader = Shader.Find("Universal Render Pipeline/Lit");
             //importOptions.litDiffuse = true;
             importOptions.zUp = false;
             importOptions.convertToDoubleSided = true;
@@ -269,6 +269,16 @@ namespace AGV
             }
             MainBrowser.RunJavaScript("setPartsBorderColors();");
             placePartsOnTable(partTableLenght);
+
+            for (int i = 0; i < finished.transform.childCount; i++)
+            {
+                finished.transform.GetChild(i).GetComponent<Renderer>().material.shader = standardShader;
+            }
+
+            for (int i = 0; i < assembly.transform.childCount; i++)
+            {
+                assembly.transform.GetChild(i).GetComponent<Renderer>().material.shader = standardShader;
+            }
         }
 
         public void mouseEnterPart(string partName)
@@ -804,10 +814,11 @@ namespace AGV
         }
 
         ObjectImporter extraPartsImporter;
+        string[] extraPartsPaths;
         public void addExtraPart() {
             extraPartsImporter = extraParts.AddComponent<ObjectImporter>();
-            string[] paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "obj", false);
-            foreach (string path in paths) {
+            extraPartsPaths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "obj", true);
+            foreach (string path in extraPartsPaths) {
                 extraPartsImporter.ImportModelAsync(Path.GetFileNameWithoutExtension(path), path, extraParts.transform, importOptions);
                 extraPartsImporter.ImportingComplete += extraPartImportComplete;
             }
@@ -815,7 +826,16 @@ namespace AGV
 
         void extraPartImportComplete()
         {
-            Debug.Log("Finished Importing Extra Part");
+            foreach(string path in extraPartsPaths)
+            {
+                string name = Path.GetFileNameWithoutExtension(path);
+                Transform part = extraParts.transform.Find(name);
+                //part.AddComponent<onMouseClickExtraPart>();
+                part.GetComponent<Renderer>().material.shader = standardShader;
+                part.AddComponent<MeshCollider>();
+                part.gameObject.layer = 3;
+            }
+            Debug.Log("Finished Importing Extra Parts");
         }
 
 
