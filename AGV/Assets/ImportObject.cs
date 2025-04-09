@@ -13,10 +13,8 @@ using System.Linq;
 using NumSharp;
 using System.Xml.Linq;
 using NumSharp.Utilities;
-using UnityEngine.InputSystem.HID;
 using SimpleWebBrowser;
 using SFB;
-using UnityEngine.InputSystem;
 using MessageLibrary;
 
 namespace AGV
@@ -33,6 +31,7 @@ namespace AGV
         GameObject assembly;
         GameObject parts;
         GameObject finished;
+        GameObject extraParts;
         public GameObject activePart;
         [SerializeField]
         public bool reverse = false;
@@ -54,6 +53,7 @@ namespace AGV
             assembly = transform.Find("Assembly").gameObject;
             parts = transform.Find("Parts").gameObject;
             finished = transform.Find("Finished").gameObject;
+            extraParts = transform.Find("ExtraParts").gameObject;
             standardShader = Shader.Find("Standard");
             //importOptions.litDiffuse = true;
             importOptions.zUp = false;
@@ -802,6 +802,22 @@ namespace AGV
                 Debug.Log("File saved to " + fileName);
             }
         }
+
+        ObjectImporter extraPartsImporter;
+        public void addExtraPart() {
+            extraPartsImporter = extraParts.AddComponent<ObjectImporter>();
+            string[] paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "obj", false);
+            foreach (string path in paths) {
+                extraPartsImporter.ImportModelAsync(Path.GetFileNameWithoutExtension(path), path, extraParts.transform, importOptions);
+                extraPartsImporter.ImportingComplete += extraPartImportComplete;
+            }
+        }
+
+        void extraPartImportComplete()
+        {
+            Debug.Log("Finished Importing Extra Part");
+        }
+
 
         // Update is called once per frame
         void Update()
