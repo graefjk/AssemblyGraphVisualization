@@ -1,4 +1,6 @@
+using SimpleWebBrowser;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace AGV
@@ -12,7 +14,8 @@ namespace AGV
         [SerializeField]
         public float distanceFactor = 3;
         ImportObject importer;
-
+        WebBrowser2D MainBrowser;
+        RawImage ui;
 
         GameObject assembly;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -20,6 +23,8 @@ namespace AGV
         {
             assembly = GameObject.Find("Assembly");
             importer = GameObject.Find("Importer").GetComponent<ImportObject>();
+            MainBrowser = GameObject.Find("Browser2D").GetComponent<WebBrowser2D>();
+            ui = GameObject.Find("Browser2D").GetComponent<RawImage>();
         }
 
         // Update is called once per frame
@@ -66,7 +71,7 @@ namespace AGV
                 transform.position -= transform.up * speed * Time.deltaTime;
             }
 
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButton(1) && !isUI())
             {
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 transform.eulerAngles += new Vector3(-Input.mousePositionDelta.y, Input.mousePositionDelta.x, 0) * rotationSpeed * Time.deltaTime;
@@ -108,6 +113,12 @@ namespace AGV
                 transform.position = bounds.center + new Vector3(0, 0, distanceFactor * bounds.extents.z);
                 transform.rotation = Quaternion.Euler(0, 180, 0);
             }
+        }
+
+        public bool isUI()
+        {
+            Vector2 screenCords = MainBrowser.GetScreenCoords();
+            return (((Texture2D)ui.texture).GetPixel((int)screenCords.x, (int)screenCords.y).a > 0);
         }
     }
 }
