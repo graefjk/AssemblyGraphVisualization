@@ -80,6 +80,12 @@ namespace AGV
             }
             else
             {
+                if (Input.GetKey(KeyCode.Mouse2))
+                {
+                    Debug.Log("Middle? Mouse button pressed!");
+                    MainBrowser.RunJavaScript("selectPartWithName(" + gameObject.name + ");");
+
+                }
                 if (!mouseEntered)
                     OnMouseEnter();
             }
