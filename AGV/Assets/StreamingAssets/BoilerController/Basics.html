@@ -47,7 +47,7 @@
         height: 100%;
         position: relative;
         overflow: auto;
-        word-break: break-all;
+        word-break: break-word;
     }
 
     #partTextAreaDiv {
@@ -56,7 +56,7 @@
         height: calc(100% - 21px);
         position: relative;
         overflow: auto;
-        word-break: break-all;
+        word-break: break-word;
     }
 
     #textArea {
@@ -299,11 +299,7 @@
         padding-top: 2px;
     }
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-
-
+<link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
 
 <html>
 <body onmousedown="isKeyPressed(event)">
@@ -371,7 +367,7 @@
         <div id="resize-bar-bottom-part" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBarBottom = true"></div>
         <div id="editPartDiv">
             <button onclick="toggleEditPart()" id="toggleEditPart"><i class="fa" style="font-size: 20px">&#xf044;</i></button>
-            <button id="addObject"><img src="cube-add.svg" /></button>
+            <button id="addObject" onclick="prompt('addExtraPart')"><img src="cube-add.svg" /></button>
             <!-- <button onclick="addInstructions()" id="addInstructions"><i class="fa" style="font-size: 20px">&#xf196;</i></button>  alternative icon: &#xf067; -->
         </div>
     </div>
@@ -524,12 +520,12 @@
             prompt("mouseClick", element.id);
         }
 
-        function selectPart(element) {
+        function selectPartWithName(name) {
             prompt("log", "auxClick");
-            partName.innerHTML = "Name: " + element.id;
-            partName.name = element.id;
-            if (partDescriptions.has(element.id)) {
-                partDescription = partDescriptions.get(element.id);
+            partName.innerHTML = "Name: " + name;
+            partName.name = name;
+            if (partDescriptions.has(name)) {
+                partDescription = partDescriptions.get(name);
             } else {
                 partDescription = "";
             }
@@ -538,6 +534,10 @@
             } else {
                 partTextAreaDiv.innerHTML = partDescription;
             }
+        }
+
+        function selectPart(element) {
+            selectPartWithName(element.id);
         }
 
         var instructionText = "";
