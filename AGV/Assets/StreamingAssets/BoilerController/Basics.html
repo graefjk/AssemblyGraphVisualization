@@ -26,17 +26,59 @@
         height: 200px;
     }
 
+    #partDescriptionDiv {
+        background: rgb(255, 255, 255);
+        border: 5px solid rgba(0, 0, 0, 1);
+        border-radius: 0px 0px 0px 0px;
+        padding: 30px;
+        width: 300px;
+        color: black;
+        right: 0px;
+        position: absolute;
+        max-height: 100%;
+        bottom: 0px;
+        cursor: alias;
+        height: 200px;
+    }
+
     #textAreaDiv {
         left: 0px;
         width: 100%;
         height: 100%;
         position: relative;
         overflow: auto;
+        word-break: break-all;
+    }
+
+    #partTextAreaDiv {
+        left: 0px;
+        width: 100%;
+        height: calc(100% - 21px);
+        position: relative;
+        overflow: auto;
+        word-break: break-all;
     }
 
     #textArea {
         width: calc(100% - 8px);
         height: calc(100% - 10px);
+        font-size: inherit;
+        margin: 0px;
+        padding: 0px;
+        top: 0px;
+        position: absolute;
+        resize: none;
+    }
+
+    #partTextArea {
+        width: calc(100% - 8px);
+        height: calc(100% - 10px);
+        font-size: inherit;
+        margin: 0px;
+        padding: 0px;
+        top: 0px;
+        position: absolute;
+        resize: none;
     }
 
     #resize-bar {
@@ -51,6 +93,26 @@
 
     #resize-bar-bottom {
         bottom: -5px;
+        left: 0px;
+        width: 100%;
+        height: 5px;
+        background: rgba(0, 0, 0,1);
+        position: absolute;
+        cursor: n-resize;
+    }
+
+    #resize-bar-part {
+        top: 0px;
+        left: -5px;
+        width: 5px;
+        height: 100%;
+        background: rgba(0, 0, 0,1);
+        position: absolute;
+        cursor: ew-resize;
+    }
+
+    #resize-bar-bottom-part {
+        top: -5px;
         left: 0px;
         width: 100%;
         height: 5px;
@@ -125,12 +187,22 @@
         font-size: math;
         color: white;
         text-shadow: 1px 1px black;
+        font-size: 16px;
     }
 
     #closeSidebar {
         width: 30px;
         height: 30px;
         right: 0px;
+        top: 0px;
+        position: absolute;
+        font-size: 20px;
+    }
+
+    #closePartDescription {
+        width: 30px;
+        height: 30px;
+        left: 0px;
         top: 0px;
         position: absolute;
         font-size: 20px;
@@ -143,12 +215,18 @@
         top: 0px;
     }
 
+    #openPartDescription {
+        position: absolute;
+        margin-left: auto;
+        right: 0px;
+        bottom: 0px;
+    }
+
     .part {
         background-color: rgb(255, 141, 30);
         text-align: center;
         border: 0px solid rgb(255, 141, 30);
         margin-bottom: 0px;
-        font-size: 15px;
         padding-left: 30px;
         flex-grow: 1;
         border: 2px solid white;
@@ -159,6 +237,14 @@
         height: 30px;
         left: 30px;
         top: 0px;
+        position: absolute;
+    }
+
+    #toggleEditPart {
+        width: 30px;
+        height: 30px;
+        left: 30px;
+        bottom: 0px;
         position: absolute;
     }
 
@@ -194,13 +280,23 @@
         position: relative;
     }
 
+    #editPartDiv {
+        bottom: -30px;
+        width: 90px;
+        height: auto;
+        margin: 0 auto;
+        position: relative;
+    }
+
     #addObject {
         right: 0px;
         bottom: 0px;
-        width: 45px;
-        height: 45px;
+        width: 30px;
+        height: 30px;
         position: absolute;
         font-size: 18px;
+        padding: 0px;
+        padding-top: 2px;
     }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -215,7 +311,7 @@
         <button onclick="openSidebar()" style="height: 30px; width: 30px; position: absolute; left: 0px; top: 0px;font-size: 20px;"><b>&gt;</b></button>
     </div>
 
-    <div id='content-box' class='sidebar' style="display: block">
+    <div id='content-box' style="display: block">
         <!--<div id="content-box-padding"></div>-->
         <button onclick="closeSidebar()" id="closeSidebar"><b>X</b></button>
         <div id="editDiv">
@@ -228,7 +324,7 @@
         <div id='textAreaDiv'>
             <!-- <textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
         </div>
-        <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>  
+        <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
         <div id="resize-bar-bottom" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBarBottom = true"></div>
         <p id="demo"></p>
     </div>
@@ -242,10 +338,16 @@
         <div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
         <button onclick="closePartsList()" style="left: -5px; position: relative;font-size: 20px;width: 30px;height: 30px;"><b>X</b></button>
         <div id="parts-list">
-            &nbsp;<input type="checkbox" name="test" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div class='part' id="test" style="background-color: rgb(0.565, 1.0, 0.118); color: black;">test</div>
+            <input type="checkbox" name="test1" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test1' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test1 </div><div style='width:100%'></div>
+            <input type="checkbox" name="test2" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test2' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test2 </div><div style='width:100%'></div>
+            <input type="checkbox" name="test3" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test3' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test3 </div><div style='width:100%'></div>
+
+
         </div>
         <input type="checkbox" id="selectAll" onchange="toggleAll()">
     </div>
+
+
 
     <div id='controls'>
         <i class="fa" id="stepBack" onclick="prompt('stepBackward')">&#xf048;</i>&nbsp;
@@ -254,11 +356,33 @@
         <i class="fa" id="stepForward" onclick="prompt('stepForward')">&#xf051;</i>
     </div>
 
+    <div id="openPartDescription">
+        <button onclick="openPartDescription()" style=" height: 30px; width: 30px;font-size: 20px;"><b>&lt;</b></button>
+    </div>
+
+    <div id='partDescriptionDiv' style="display: flex; flex-flow: wrap;">
+        <!--<div id="content-box-padding"></div>-->
+        <button onclick="closePartDescription()" id="closePartDescription"><b>X</b></button>
+        <p id="partName" style="margin: 0px;" name="test">Name: </p>
+        <div id='partTextAreaDiv'>
+            <!-- <textarea id='partTextArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
+        </div>
+        <div id="resize-bar-part" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBar = true"></div>
+        <div id="resize-bar-bottom-part" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBarBottom = true"></div>
+        <div id="editPartDiv">
+            <button onclick="toggleEditPart()" id="toggleEditPart"><i class="fa" style="font-size: 20px">&#xf044;</i></button>
+            <button id="addObject"><img src="cube-add.svg" /></button>
+            <!-- <button onclick="addInstructions()" id="addInstructions"><i class="fa" style="font-size: 20px">&#xf196;</i></button>  alternative icon: &#xf067; -->
+        </div>
+    </div>
+
+
+
     <div id="openOrSave">
         <button id="openFile" onclick="prompt('chooseZIP')" title="open File"><i class="fa">&#xf07c;</i></button>
         <button id="saveFile" onclick="saveFile()" title="save File"><i class="fa">&#xf0c7;</i></button>
     </div>
-    <button id="addObject"><img style="zoom:125%" src="cube-add.svg"/></button>
+
 
 
 
@@ -268,6 +392,7 @@
         var resizeBar = document.getElementById('resize-bar');
         var resizeBarBottom = document.getElementById('resize-bar-bottom');
         var textArea = document.getElementById('textArea');
+        var partTextArea = document.getElementById('partTextArea');
         var closeSideBar = document.getElementById('closeSidebar');
         var dragContentBoxResizeBar = false;
         var dragContentBoxResizeBarBottom = false;
@@ -276,12 +401,18 @@
         var partsListResizeBar = document.getElementById('resize-bar-parts-list');
         var dragPartsListResizeBar = false;
 
+        var partDescriptionDiv = document.getElementById('partDescriptionDiv');
+        var dragPartDescriptionResizeBar = false;
+        var dragPartDescriptionResizeBarBottom = false;
+
         var normalCursor = true;
         document.addEventListener('mouseup', function (e) {
             // Turn off dragging flag when user mouse is up
             dragPartsListResizeBar = false;
             dragContentBoxResizeBar = false;
             dragContentBoxResizeBarBottom = false;
+            dragPartDescriptionResizeBar = false;
+            dragPartDescriptionResizeBarBottom = false;
             if (!normalCursor) {
                 changeToNormalCursor()
             }
@@ -294,19 +425,26 @@
                 if ((e.clientX - 65) > 90) {
                     contentBox.style.width = (e.clientX - 65) + "px";
                 }
-                //right: 0px; does not work in powerUI for some reason
-
             }
             else if (dragPartsListResizeBar) {
-                if ((document.body.clientWidth - e.clientX + 5) > 90) {
-                    document.getElementById('parts-list-container').style.width = document.body.clientWidth - e.clientX + 5 + "px";
+                if ((document.body.clientWidth - e.clientX - 15) > 90) {
+                    partsList.style.width = document.body.clientWidth - e.clientX - 15 + "px";
                 }
             }
             else if (dragContentBoxResizeBarBottom) {
                 if ((e.clientY - 65) > 20) {
                     contentBox.style.height = e.clientY - 65 + "px";
                 }
-
+            }
+            else if (dragPartDescriptionResizeBar) {
+                if ((document.body.clientWidth - e.clientX - 70) > 90) {
+                    partDescriptionDiv.style.width = document.body.clientWidth - e.clientX - 70 + "px";
+                }
+            }
+            else if (dragPartDescriptionResizeBarBottom) {
+                if ((document.body.clientHeight - e.clientY - 70) > 20) {
+                    partDescriptionDiv.style.height = document.body.clientHeight - e.clientY - 70 + "px";
+                }
             }
         });
 
@@ -319,7 +457,7 @@
             prompt('changeToResizeCursorBottom');
         }
         function changeToNormalCursor() {
-            if (!(dragContentBoxResizeBar || dragPartsListResizeBar || dragContentBoxResizeBarBottom)) {
+            if (!(dragContentBoxResizeBar || dragPartsListResizeBar || dragContentBoxResizeBarBottom || dragPartDescriptionResizeBar || dragPartDescriptionResizeBarBottom)) {
                 normalCursor = true;
                 prompt('changeToNormalCursor');
             }
@@ -346,6 +484,12 @@
         }
         function closePartsList() {
             partsList.style.display = 'none';
+        }
+        function openPartDescription() {
+            partDescriptionDiv.style.display = 'block';
+        }
+        function closePartDescription() {
+            partDescriptionDiv.style.display = 'none';
         }
 
         function setContentBoxExtrasHeight(element) {
@@ -380,6 +524,22 @@
             prompt("mouseClick", element.id);
         }
 
+        function selectPart(element) {
+            prompt("log", "auxClick");
+            partName.innerHTML = "Name: " + element.id;
+            partName.name = element.id;
+            if (partDescriptions.has(element.id)) {
+                partDescription = partDescriptions.get(element.id);
+            } else {
+                partDescription = "";
+            }
+            if (partEditable) {
+                partTextArea.value = partDescription;
+            } else {
+                partTextAreaDiv.innerHTML = partDescription;
+            }
+        }
+
         var instructionText = "";
         var textAreaDiv = document.getElementById("textAreaDiv");
         var editable = false;
@@ -394,13 +554,40 @@
                 saveInstructions();
             } else {
                 textAreaDiv.innerHTML = "<textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea>";
-                document.getElementById("textArea").innerText = instructionText;
-                toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf046;</i>";
                 textArea = document.getElementById("textArea");
+                textArea.value = instructionText;
+                toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf046;</i>";
             }
             editable = !editable;
             setContentBoxExtrasHeight();
         }
+
+        var partEditable = false;
+        var partTextAreaDiv = document.getElementById("partTextAreaDiv");
+
+        var partDescription = "";
+        var partDescriptions = new Map([]);
+        function toggleEditPart() {
+            if (partEditable) {
+                partTextAreaDiv = document.getElementById("partTextAreaDiv");
+                partDescription = document.getElementById("partTextArea").value;
+                partTextAreaDiv.innerHTML = partDescription;
+                toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf044;</i>";
+                savePartDescription();
+            } else {
+                partTextAreaDiv.innerHTML = "<textarea id='partTextArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea>";
+                partTextArea = document.getElementById("partTextArea");
+                partTextArea.innerText = partDescription;
+                toggleEditButton.innerHTML = "<i class='fa' style='font-size: 20px'>&#xf046;</i>";
+            }
+            partEditable = !partEditable;
+        }
+
+        var partName = document.getElementById('partName');
+        function savePartDescription() {
+            partDescriptions.set(partName.name, partDescription);
+        }
+
         var instructions = [];
         var instructionsIndex = 0;
 
@@ -466,7 +653,9 @@
         }
 
         function importJsonInstructions(jsonString) {
-            instructions = JSON.parse(jsonString);
+            let jsonData = JSON.parse(jsonString);
+            instructions = jsonData[0];
+            partDescriptions = new Map(jsonData[1]);
             loadInstructions();
         }
 
@@ -510,6 +699,13 @@
             disOrEnAbleButtons();
         }
 
+        function setPartsBorderColors() {
+            var parts = partsList.getElementsByClassName("part");
+            for (var i = 0; i < parts.length; i++) {
+                parts[i].style.borderColor = parts[i].style.backgroundColor;
+            }
+        }
+
         function updateInstructionText() {
             if (editable) {
                 document.getElementById("textArea").value = instructionText;
@@ -519,7 +715,7 @@
         }
 
         function saveFile() {
-            prompt("saveFile", JSON.stringify(instructions));
+            prompt("saveFile", JSON.stringify([instructions, Array.from(partDescriptions)]));
         }
 
         function textAreaFocus() {
@@ -619,14 +815,24 @@
             disOrEnAbleButtons();
         }
 
-        prompt('resizeUI');
-    </script>
 
-    <script>
+
+
+
+
+        prompt('resizeUI');
+        var zoom = 1.0;
+        var fontSize = 16;
         var ctrlKey = false;
+        var shiftKey = false;
         document.addEventListener('keydown', function (event) {
             switch (event.keyCode) {
-                case 306:
+                case 303: //right shift
+                case 304: //left shift
+                    shiftKey = true;
+                    break;
+                case 305: //right ctrl
+                case 306: //left ctrl
                     ctrlKey = true;
                     break;
                 case 99: //c
@@ -636,30 +842,83 @@
                     break;
                 case 97: //a
                     if (ctrlKey) {
-                        textArea.select();
+                        document.activeElement.select();
                     }
                     break;
                 case 118: //v
-                    if (ctrlKey && (document.activeElement === textArea)) {
-                        prompt("pasteText", "" + textArea.selectionStart);
+                    if (ctrlKey && ((document.activeElement === textArea) || (document.activeElement === partTextArea))) {
+                        prompt("pasteText");
                     }
                     break;
+                case 120: //x
+                    if (ctrlKey && (window.getSelection().toString() != "")) {
+                        prompt("copyText", window.getSelection().toString());
+                        var startPosition = document.activeElement.selectionStart;
+                        var endPosition = document.activeElement.selectionEnd;
+                        var before = document.activeElement.value.substring(0, startPosition);
+                        var after = document.activeElement.value.substring(endPosition, document.activeElement.value.length);
+                        document.activeElement.value = before + after;
+                        document.activeElement.selectionStart = document.activeElement.selectionEnd = startPosition;
+                    }
+                    break;
+                case 270: //+
+                case 93: //+
+                    if (ctrlKey) {
+                        zoom += 0.1;
+                        document.body.style.zoom = zoom;
+                        document.body.style.width = ((document.body.offsetWidth * (zoom - 0.1)) / zoom) + "px";
+                        document.body.style.height = ((document.body.offsetHeight * (zoom - 0.1)) / zoom) + "px";
+                    }
+                    if (shiftKey) {
+                        fontSize++;
+                        document.body.style.fontSize = fontSize + "px";
+                        partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - partName.offsetHeight - 70) + "px";
+                    }
+                    break;
+                case 269: //-
+                case 47: //-
+                    if (ctrlKey && (zoom>=0.2)) {
+                        zoom -= 0.1;
+                        document.body.style.zoom = zoom;
+                        document.body.style.width = ((document.body.offsetWidth * (zoom + 0.1)) / zoom) + "px";
+                        document.body.style.height = ((document.body.offsetHeight * (zoom + 0.1))/ zoom) + "px";
+                    }
+                    if (shiftKey) {
+                        fontSize--;
+                        document.body.style.fontSize = fontSize + "px";
+                        partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - partName.offsetHeight - 75) + "px";
+                    }
+                    break;
+                default:
+                    prompt("log", event.keyCode);
             }
         });
 
 
         document.addEventListener('keyup', function (event) {
-            if (event.keyCode === 306) {
-                ctrlKey = false;
+            switch (event.keyCode) {
+                case 303: //right shift
+                case 304: //left shift
+                    shiftKey = false;
+                    break;
+                case 305: //right ctrl
+                case 306: //left ctrl
+                    ctrlKey = false;
+                    break;
             }
         });
 
+        function resizeWindow(width, height) {
+            document.body.style.width = (width / zoom) + "px";
+            document.body.style.height = (height / zoom) + "px";
+        }
+
         function pasteToTextArea(text) {
-            var position = textArea.selectionStart;
-            var before = textArea.value.substring(0, position);
-            var after = textArea.value.substring(position, textArea.value.length);
-            textArea.value = before + text + after;
-            textArea.selectionStart = textArea.selectionEnd = position + text.length;
+            var position = document.activeElement.selectionStart;
+            var before = document.activeElement.value.substring(0, position);
+            var after = document.activeElement.value.substring(position, document.activeElement.value.length);
+            document.activeElement.value = before + text + after;
+            document.activeElement.selectionStart = document.activeElement.selectionEnd = position + text.length;
         }
     </script>
 </body>
