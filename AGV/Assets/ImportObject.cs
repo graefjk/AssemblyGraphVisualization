@@ -204,7 +204,7 @@ namespace AGV
                 //add part to UI list
                 //partsList.innerHTML += "<input type='checkbox' name='" + child.name + "' checked =\"0\" value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>";
                 //MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML += <input type='checkbox' name='" + child.name + "' checked ='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>;");
-                partsListHTML += "<input type='checkbox' name='" + child.name + "' checked='0' class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='" + child.name + "' class='part' style='background-color: rgb(255, 141, 30)' onclick='clickPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div><div style='width:100%'></div>";
+                partsListHTML += "<input type='checkbox' name='" + child.name + "' checked='0' class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='" + child.name + "' class='part' style='background-color: rgb(255, 141, 30)' onclick='clickPart(this)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div><div style='width:100%'></div>";
 
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
@@ -258,13 +258,16 @@ namespace AGV
             }
 
             //import instructions
-            using (StreamReader r = new StreamReader(Path.Combine(directory, "instructions.json")))
+            if (File.Exists(Path.Combine(directory, "instructions.json")))
             {
-                string json = r.ReadToEnd().Trim();
-                MainBrowser.RunJavaScript("importJsonInstructions('" + json + "');");
-                MainBrowser.RunJavaScript("prompt('log', 'instructions: ' + instructions);");
+                using (StreamReader r = new StreamReader(Path.Combine(directory, "instructions.json")))
+                {
+                    string json = r.ReadToEnd().Trim();
+                    MainBrowser.RunJavaScript("importJsonInstructions('" + json + "');");
+                    MainBrowser.RunJavaScript("prompt('log', 'instructions: ' + instructions);");
+                }
             }
-
+            MainBrowser.RunJavaScript("setPartsBorderColors();");
             placePartsOnTable(partTableLenght);
         }
 
@@ -743,7 +746,7 @@ namespace AGV
             GUIUtility.systemCopyBuffer = text;
         }
 
-        public void pasteText(string position)
+        public void pasteText()
         {
             Debug.Log("Pasted " + GUIUtility.systemCopyBuffer);
             MainBrowser.RunJavaScript("pasteToTextArea('" + GUIUtility.systemCopyBuffer + "');");
