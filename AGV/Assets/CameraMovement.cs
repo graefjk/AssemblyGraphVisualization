@@ -1,4 +1,5 @@
 using SimpleWebBrowser;
+using TransformHandles.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,12 +37,12 @@ namespace AGV
             }
 
             Bounds bounds = importer.getAssemblyBounds();
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.LeftControl))
             {
                 speed *= 2;
             }
 
-            if (Input.GetKeyUp(KeyCode.LeftShift))
+            if (Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.LeftShift))
             {
                 speed /= 2;
             }

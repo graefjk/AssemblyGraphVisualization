@@ -4,15 +4,17 @@
 TagManager:
   serializedVersion: 3
   tags:
+  - Selected
+  - Handles
   - PowerUI
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Handles
   - Water
   - UI
-  - 
+  - Scene
   - 
   - PowerUI
   - 

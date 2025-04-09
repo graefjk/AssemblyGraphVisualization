@@ -382,7 +382,6 @@ namespace SimpleWebBrowser
         {
             var _raycaster = GetComponentInParent<GraphicRaycaster>();
             var _input = FindObjectOfType<StandaloneInputModule>();
-            Debug.Log(_input == null);
             if (_raycaster != null && _input != null && _mainEngine.Initialized)
             {
                 while (Application.isPlaying)

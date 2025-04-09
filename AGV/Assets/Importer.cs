@@ -1,7 +1,6 @@
 using UnityEngine;
 using NumSharp;
 using System;
-using Css.Keywords;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -54,7 +53,7 @@ public class Importer : MonoBehaviour
         {
             object1.transform.localPosition = matrixes[t].GetPosition();
             object1.transform.localRotation = matrixes[t--].rotation;
-
+            
             //object1.transform.Translate(matrixes[t++].GetPosition());
             //object1.transform.Rotate(matrixes[t++].rotation.eulerAngles);
             LastTick = Time.time;

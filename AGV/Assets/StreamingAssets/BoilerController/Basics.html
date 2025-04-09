@@ -151,6 +151,16 @@
         cursor: e-resize;
     }
 
+    #openSidebar {
+        height: 30px;
+        width: 30px;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        font-size: 20px;
+        user-select: none;
+    }
+
     #openFile {
         left: 0px;
         bottom: 0px;
@@ -158,6 +168,7 @@
         height: 30px;
         position: absolute;
         font-size: 18px;
+        user-select: none;
     }
 
     #saveFile {
@@ -167,6 +178,7 @@
         height: 30px;
         position: absolute;
         font-size: 18px;
+        user-select: none;
     }
 
     #openOrSave {
@@ -176,6 +188,7 @@
         zoom: 150%;
         position: absolute;
         font-size: 18px;
+        user-select: none;
     }
 
     #controls {
@@ -188,6 +201,7 @@
         color: white;
         text-shadow: 1px 1px black;
         font-size: 16px;
+        user-select: none;
     }
 
     #closeSidebar {
@@ -197,6 +211,7 @@
         top: 0px;
         position: absolute;
         font-size: 20px;
+        user-select: none;
     }
 
     #closePartDescription {
@@ -206,6 +221,7 @@
         top: 0px;
         position: absolute;
         font-size: 20px;
+        user-select: none;
     }
 
     #openPartsList {
@@ -213,6 +229,7 @@
         margin-left: auto;
         right: 0px;
         top: 0px;
+        user-select: none;
     }
 
     #openPartDescription {
@@ -220,6 +237,7 @@
         margin-left: auto;
         right: 0px;
         bottom: 0px;
+        user-select: none;
     }
 
     .part {
@@ -278,6 +296,7 @@
         height: auto;
         margin: 0 auto;
         position: relative;
+        user-select: none;
     }
 
     #editPartDiv {
@@ -304,7 +323,7 @@
 <html>
 <body onmousedown="isKeyPressed(event)">
     <div>
-        <button onclick="openSidebar()" style="height: 30px; width: 30px; position: absolute; left: 0px; top: 0px;font-size: 20px;"><b>&gt;</b></button>
+        <button onclick="openSidebar()" style="font-size: 20px;"><b>&gt;</b></button>
     </div>
 
     <div id='content-box' style="display: block">
@@ -877,11 +896,11 @@
                     break;
                 case 269: //-
                 case 47: //-
-                    if (ctrlKey && (zoom>=0.2)) {
+                    if (ctrlKey && (zoom >= 0.2)) {
                         zoom -= 0.1;
                         document.body.style.zoom = zoom;
                         document.body.style.width = ((document.body.offsetWidth * (zoom + 0.1)) / zoom) + "px";
-                        document.body.style.height = ((document.body.offsetHeight * (zoom + 0.1))/ zoom) + "px";
+                        document.body.style.height = ((document.body.offsetHeight * (zoom + 0.1)) / zoom) + "px";
                     }
                     if (shiftKey) {
                         fontSize--;
