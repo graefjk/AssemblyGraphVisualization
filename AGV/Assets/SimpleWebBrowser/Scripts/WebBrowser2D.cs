@@ -223,8 +223,9 @@ namespace SimpleWebBrowser
         {
             if (resizedOnce)
             {
-                RunJavaScript("document.getElementsByTagName('body')[0].style.height = '" + Screen.height + "px'");
-                RunJavaScript("document.getElementsByTagName('body')[0].style.width = '" + Screen.width + "px'");
+                //RunJavaScript("document.getElementsByTagName('body')[0].style.height = '" + Screen.height + "px'");
+                //RunJavaScript("document.getElementsByTagName('body')[0].style.width = '" + Screen.width + "px'");
+                RunJavaScript("resizeWindow("+ Screen.width + "," + Screen.height + ");");
             }
             resizedOnce = true;
         }
