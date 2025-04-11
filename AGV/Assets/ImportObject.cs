@@ -16,6 +16,8 @@ using NumSharp.Utilities;
 using SimpleWebBrowser;
 using SFB;
 using MessageLibrary;
+using UnityEditor;
+using System.Text.Json;
 
 namespace AGV
 {
@@ -44,6 +46,7 @@ namespace AGV
         int childCount = 0;
         public WebBrowser2D MainBrowser;
         public bool previewPartsThatCannotBeAssembledRightNow = false;
+        public Material dottetLine;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
@@ -574,8 +577,11 @@ namespace AGV
                 Destroy(child.gameObject);
             }
         }
+        
         string folderName;
         string basePath;
+        SerializableList<DottetLine.LineData> dottetLines;
+
         public void importZIP(string zipFile)
         {
             removeAllObjects();
@@ -598,6 +604,23 @@ namespace AGV
             }
 
 
+            string extraPartsFolder = Path.Combine(directory, "extraParts");
+            if (File.Exists(Path.Combine(directory, "extraParts.json")))
+            {
+                ObjectImporter extraPartsFileImporter = assembly.AddComponent<ObjectImporter>();
+                extraPartsFileImporter.ImportingComplete += extraPartsInitialImportComplete;
+                using (StreamReader reader = new StreamReader(Path.Combine(directory, "extraParts.json")))
+                {
+                    string json = reader.ReadToEnd();
+                    dottetLines = JsonUtility.FromJson<SerializableList<DottetLine.LineData>>(json);
+                    foreach(DottetLine.LineData line in dottetLines.list)
+                    {
+                        Debug.Log(line.partName + " , " + Path.Combine(extraPartsFolder, line.partName + ".obj"));
+                        extraPartsFileImporter.ImportModelAsync(line.partName, Path.Combine(extraPartsFolder, line.partName +".obj"), extraParts.transform, importOptions);
+                    }
+                }
+            }
+
 
             //build graph
             graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
@@ -617,6 +640,28 @@ namespace AGV
                 }
             }
             Debug.Log(exportDotGraph(graph));
+        }
+
+        private void extraPartsInitialImportComplete()
+        {
+            Debug.Log(dottetLines.list[0].partName);
+            extraPartsImportComplete();
+            for (int i = 0; i < extraParts.transform.childCount; i++)
+            {
+                Transform part = extraParts.transform.GetChild(i);
+                DottetLine dottetLine = part.GetComponent<DottetLine>();
+                Debug.Log(part.name + dottetLines.list[0].partName);
+                int index = dottetLines.list.FindIndex(line => { Debug.Log(line.partName + " " + part.name); return line.partName == part.name; });
+                DottetLine.LineData lineData = dottetLines.list[index];
+                dottetLines.list.RemoveAt(index);
+                dottetLine.lineData = lineData;
+                part.position = lineData.position;
+                part.rotation = lineData.rotation;
+                part.localScale = lineData.scale;
+                dottetLine.meshRenderer = part.GetComponent<MeshRenderer>();
+                dottetLine.lineRenderer = part.GetComponent<LineRenderer>();
+                dottetLine.setLine(lineData.axis, lineData.start, lineData.end);
+            }
         }
 
         //you can visualize the output here: https://dreampuf.github.io/GraphvizOnline
@@ -795,6 +840,12 @@ namespace AGV
             textAreaHasFocus = false;
         }
 
+        [System.Serializable]
+        public class SerializableList<T>
+        {
+            public List<T> list = new List<T>();
+        }
+
         public void saveFile(string instructionJSON)
         {
             Debug.Log("saving File to " + Path.Combine(directory, "instructions.json"));
@@ -805,6 +856,24 @@ namespace AGV
                 outputFile.Close();
                 outputFile.Dispose();
             }
+
+
+
+            SerializableList<DottetLine.LineData> dottetLines = new SerializableList<DottetLine.LineData>();
+            for (int i = 0; i < extraParts.transform.childCount; i++)
+            {
+                Transform part = extraParts.transform.GetChild(i);
+                dottetLines.list.Add(part.GetComponent<DottetLine>().getLineData());
+            }
+
+            using (StreamWriter outputFile = new StreamWriter(Path.Combine(directory, "extraParts.json")))
+            {
+                outputFile.WriteLine(JsonUtility.ToJson(dottetLines));
+                outputFile.Flush();
+                outputFile.Close();
+                outputFile.Dispose();
+            }
+
             string fileName = StandaloneFileBrowser.SaveFilePanel("save File", basePath, folderName, "zip");
             if (fileName != "")
             {
@@ -815,27 +884,74 @@ namespace AGV
 
         ObjectImporter extraPartsImporter;
         string[] extraPartsPaths;
-        public void addExtraPart() {
+        public void addExtraPart()
+        {
             extraPartsImporter = extraParts.AddComponent<ObjectImporter>();
             extraPartsPaths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "obj", true);
-            foreach (string path in extraPartsPaths) {
+            string extraPartsFolderPath = Path.Combine(directory, "extraParts");
+            Directory.CreateDirectory(extraPartsFolderPath);
+            foreach (string path in extraPartsPaths)
+            {
+                if (!File.Exists(Path.Combine(extraPartsFolderPath, Path.GetFileName(path))))
+                {
+                    File.Copy(path, Path.Combine(extraPartsFolderPath, Path.GetFileName(path)), false);
+                }
                 extraPartsImporter.ImportModelAsync(Path.GetFileNameWithoutExtension(path), path, extraParts.transform, importOptions);
-                extraPartsImporter.ImportingComplete += extraPartImportComplete;
+                extraPartsImporter.ImportingComplete += extraPartsImportComplete;
             }
         }
 
-        void extraPartImportComplete()
+        void extraPartsImportComplete()
         {
-            foreach(string path in extraPartsPaths)
+            for (int i = 0; i < extraParts.transform.childCount; i++)
             {
-                string name = Path.GetFileNameWithoutExtension(path);
-                Transform part = extraParts.transform.Find(name);
+                Transform part = extraParts.transform.GetChild(i);
+                if (part.GetComponent<DottetLine>() != null) {
+                    continue; 
+                }
                 //part.AddComponent<onMouseClickExtraPart>();
-                part.GetComponent<Renderer>().material.shader = standardShader;
+                Renderer renderer = part.GetComponent<Renderer>();
+                renderer.material.shader = standardShader;
                 part.AddComponent<MeshCollider>();
+                LineRenderer lineRenderer = part.AddComponent<LineRenderer>();
+                part.AddComponent<DottetLine>();
+                lineRenderer.material = dottetLine;
+                lineRenderer.useWorldSpace = false;
+                lineRenderer.SetPosition(0, part.transform.InverseTransformPoint(renderer.bounds.center));
+                lineRenderer.textureMode = LineTextureMode.Tile;
+                lineRenderer.widthMultiplier = 0.3f;
+                lineRenderer.enabled = false;
                 part.gameObject.layer = 3;
             }
             Debug.Log("Finished Importing Extra Parts");
+        }
+
+        public void setExtraPartLine(string args)
+        {
+            string[] arguments = args.Split(',');
+            string name = arguments[0];
+            string axis = arguments[1];
+            float start;
+            float end;
+            if (name != "undefined")
+            {
+                if (!float.TryParse(arguments[2], out start))
+                {
+                    start = 0;
+                }
+                if (!float.TryParse(arguments[3], out end))
+                {
+                    end = 0;
+                }
+                for (int i = 0; i < extraParts.transform.childCount; i++)
+                {
+                    Transform part = extraParts.transform.GetChild(i);
+                    if(part.name == name)
+                    {
+                        part.GetComponent<DottetLine>().setLine(axis, start, end);
+                    }
+                }
+            }
         }
 
 
