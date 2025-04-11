@@ -4127,7 +4127,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 329334258726714484, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.45
+      value: 11.58
       objectReference: {fileID: 0}
     - target: {fileID: 329334258726714484, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4161,9 +4161,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4497722249917553475, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
+      propertyPath: m_Loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497722249917553475, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
+      propertyPath: m_UseWorldSpace
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497722249917553475, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
+      propertyPath: m_Parameters.alignment
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497722249917553475, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
+      propertyPath: m_ApplyActiveColorSpace
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497722249917553475, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
+      propertyPath: m_Parameters.generateLightingData
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4611053055863371599, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
       propertyPath: m_Name
       value: drawingPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611053055863371599, guid: 4ec7dd9a5247f1d47b9ab08583b297b0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

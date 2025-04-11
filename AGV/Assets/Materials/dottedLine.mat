@@ -120,6 +120,7 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _speed: 1
     - _square: 1
     - heigth: 0.25
     - width: 0.5
