@@ -1,5 +1,6 @@
 using SimpleWebBrowser;
 using TransformHandles.Utils;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ namespace AGV
         ImportObject importer;
         WebBrowser2D MainBrowser;
         RawImage ui;
+        public float scrollSpeed;
 
         GameObject assembly;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -114,6 +116,8 @@ namespace AGV
                 transform.position = bounds.center + new Vector3(0, 0, distanceFactor * bounds.extents.z);
                 transform.rotation = Quaternion.Euler(0, 180, 0);
             }
+
+            Camera.main.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
         }
 
         public bool isUI()
