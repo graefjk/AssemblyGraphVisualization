@@ -378,7 +378,19 @@
     <div id='partDescriptionDiv' style="display: flex; flex-flow: wrap;">
         <!--<div id="content-box-padding"></div>-->
         <button onclick="closePartDescription()" id="closePartDescription"><b>X</b></button>
-        <p id="partName" style="margin: 0px;" name="test">Name: </p>
+        <div id="nonTextBoxDescription">
+            <div id="partName" style="margin: 0px; width: 100%;" name="test">Name: </div>
+            <div id="innerPartDescription">
+                Axis: X:<input id="xCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
+                Y:<input id="yCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
+                Z:<input id="zCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
+                <div>
+                    Start: <input id="lineStart" type="number" step="0.1" style="width: 60px" onchange="setLine()" value="10">
+                    End: <input id="lineEnd" type="number" step="0.1" style="width: 60px" onchange="setLine()" value="10">
+                </div>
+                <button onclick="setLine()" hidden>set Axis</button>
+            </div>
+        </div>
         <div id='partTextAreaDiv'>
             <!-- <textarea id='partTextArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
         </div>
@@ -421,6 +433,9 @@
         var dragPartDescriptionResizeBarBottom = false;
 
         var normalCursor = true;
+        var innerPartDescription = document.getElementById('innerPartDescription');
+        var editPartDiv = document.getElementById('editPartDiv');
+
         document.addEventListener('mouseup', function (e) {
             // Turn off dragging flag when user mouse is up
             dragPartsListResizeBar = false;
@@ -834,10 +849,51 @@
             disOrEnAbleButtons();
         }
 
+        var partDescriptionCheckBoxes = document.getElementsByClassName("partDescriptionCheckBox");
+        function partDescriptionCheckBoxClicked(element) {
+            if (element.checked) {
+                for (var i = 0; i < partDescriptionCheckBoxes.length; i++) {
+                    if (partDescriptionCheckBoxes[i] != element) {
+                        partDescriptionCheckBoxes[i].checked = false;
+                    }
+                }
+                setLine();
+            }
+        }
+
+        var xCheckBox = document.getElementById("xCheckbox");
+        var yCheckBox = document.getElementById("yCheckbox");
+        var zCheckBox = document.getElementById("zCheckbox");
+        var lineStart = document.getElementById("lineStart");
+        var lineEnd = document.getElementById("lineEnd");
+        function setLine() {
+            if (xCheckBox.checked) {
+                prompt("setExtraPartLine", partName.name + ",x," + lineStart.value + "," + lineEnd.value)
+            }
+            else if (yCheckBox.checked) {
+                prompt("setExtraPartLine", partName.name + ",y," + lineStart.value + "," + lineEnd.value)
+            }
+            else if (zCheckBox.checked) {
+                prompt("setExtraPartLine", partName.name + ",z," + lineStart.value + "," + lineEnd.value)
+            } else {
+                prompt("setExtraPartLine", partName.name + ",none," + lineStart.value + "," + lineEnd.value)
+            }
+        }
+
+        function formatPartDescription(extraHidden, name) {
+            innerPartDescription.hidden = extraHidden;
+            if (extraHidden) {
+                partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - nonTextBoxDescription.offsetHeight - 70) + 'px';
+            } else {
+                partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - nonTextBoxDescription.offsetHeight - 80) + 'px';
+            }
+
+            selectPartWithName(name);
+        }
 
 
-
-
+        nonTextBoxDescription = document.getElementById("nonTextBoxDescription");
+        partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - nonTextBoxDescription.offsetHeight - 70) + "px";
 
         prompt('resizeUI');
         var zoom = 1.0;
@@ -888,10 +944,10 @@
                         document.body.style.width = ((document.body.offsetWidth * (zoom - 0.1)) / zoom) + "px";
                         document.body.style.height = ((document.body.offsetHeight * (zoom - 0.1)) / zoom) + "px";
                     }
-                    if (shiftKey) {
+                    if (shiftKey && (document.activeElement.tagName != "TEXTAREA")) {
                         fontSize++;
                         document.body.style.fontSize = fontSize + "px";
-                        partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - partName.offsetHeight - 70) + "px";
+                        partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - nonTextBoxDescription.offsetHeight - 70) + "px";
                     }
                     break;
                 case 269: //-
@@ -902,14 +958,14 @@
                         document.body.style.width = ((document.body.offsetWidth * (zoom + 0.1)) / zoom) + "px";
                         document.body.style.height = ((document.body.offsetHeight * (zoom + 0.1)) / zoom) + "px";
                     }
-                    if (shiftKey) {
+                    if (shiftKey && (document.activeElement.tagName != "TEXTAREA")) {
                         fontSize--;
                         document.body.style.fontSize = fontSize + "px";
-                        partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - partName.offsetHeight - 75) + "px";
+                        partTextAreaDiv.style.height = (partDescriptionDiv.offsetHeight - nonTextBoxDescription.offsetHeight - 70) + "px";
                     }
                     break;
                 default:
-                    prompt("log", event.keyCode);
+                //prompt("log", event.keyCode);
             }
         });
 
