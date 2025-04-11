@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Mono.WebBrowser;
 using SimpleWebBrowser;
 using TransformHandles;
 using TransformHandles.Utils;
@@ -85,7 +86,7 @@ public class ObjSelector : MonoBehaviour
             }
         }
         // Remove the object from handle
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(1))
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit))
@@ -103,7 +104,7 @@ public class ObjSelector : MonoBehaviour
         }
 
         // Create new handle for object
-        if (Input.GetMouseButton(2))
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButton(2))
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (!Physics.Raycast(ray, out var hit, 1000f, layerMask)) return;
@@ -137,6 +138,9 @@ public class ObjSelector : MonoBehaviour
     private void CreateHandle(Transform hitTransform)
     {
         Handle handle = _manager.CreateHandle(hitTransform);
+        handle.type = HandleType.All;
+        _manager.ChangeHandleSpace(handle, Space.Self);
+        TransformHandleManager.ChangeHandleType(handle, HandleType.PositionRotation);
         handle.target.transform.position = hitTransform.GetComponent<MeshCollider>().bounds.center;
         _lastHandle = handle;
 
