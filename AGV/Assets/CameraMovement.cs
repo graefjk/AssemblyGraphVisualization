@@ -39,6 +39,7 @@ namespace AGV
             }
 
             Bounds bounds = importer.getAssemblyBounds();
+            Vector3 center = assembly.GetComponent<RotateAssembly>().centerPosition;
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.LeftControl))
             {
                 speed *= 2;
@@ -76,8 +77,15 @@ namespace AGV
 
             if (Input.GetMouseButton(1) && !isUI())
             {
-                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-                transform.eulerAngles += new Vector3(-Input.mousePositionDelta.y, Input.mousePositionDelta.x, 0) * rotationSpeed * Time.deltaTime;
+                if (UnityEngine.Cursor.lockState == CursorLockMode.Locked)
+                {
+                    transform.eulerAngles += new Vector3(-Input.mousePositionDelta.y, Input.mousePositionDelta.x, 0) * rotationSpeed * Time.deltaTime;
+                }
+                else
+                {
+                    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                }
+
             }
             else
             {
@@ -88,32 +96,32 @@ namespace AGV
 
             if (Input.GetKey("1"))
             {
-                transform.position = bounds.center - new Vector3(distanceFactor * bounds.extents.x, 0, 0);
+                transform.position = bounds.center + assembly.transform.position - new Vector3(distanceFactor * bounds.extents.x, 0, 0);
                 transform.rotation = Quaternion.Euler(0, 90, 0);
             }
             if (Input.GetKey("2"))
             {
-                transform.position = bounds.center + new Vector3(distanceFactor * bounds.extents.x, 0, 0);
+                transform.position = bounds.center + assembly.transform.position + new Vector3(distanceFactor * bounds.extents.x, 0, 0);
                 transform.rotation = Quaternion.Euler(0, -90, 0);
             }
             if (Input.GetKey("3"))
             {
-                transform.position = bounds.center - new Vector3(0, distanceFactor * bounds.extents.y, 0);
+                transform.position = bounds.center + assembly.transform.position - new Vector3(0, distanceFactor * bounds.extents.y, 0);
                 transform.rotation = Quaternion.Euler(-90, 0, 0);
             }
             if (Input.GetKey("4"))
             {
-                transform.position = bounds.center + new Vector3(0, distanceFactor * bounds.extents.y, 0);
+                transform.position = bounds.center + assembly.transform.position + new Vector3(0, distanceFactor * bounds.extents.y, 0);
                 transform.rotation = Quaternion.Euler(90, 0, 0);
             }
             if (Input.GetKey("5"))
             {
-                transform.position = bounds.center - new Vector3(0, 0, distanceFactor * bounds.extents.z);
+                transform.position = bounds.center + assembly.transform.position - new Vector3(0, 0, distanceFactor * bounds.extents.z);
                 transform.rotation = Quaternion.Euler(0, 0, 0);
             }
             if (Input.GetKey("6"))
             {
-                transform.position = bounds.center + new Vector3(0, 0, distanceFactor * bounds.extents.z);
+                transform.position = bounds.center + assembly.transform.position + new Vector3(0, 0, distanceFactor * bounds.extents.z);
                 transform.rotation = Quaternion.Euler(0, 180, 0);
             }
 
