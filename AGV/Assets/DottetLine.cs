@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Xml;
+using AGV;
 using SimpleWebBrowser;
 using UnityEngine;
 using UnityEngine.UI;
+using static DottetLine;
 
 public class DottetLine : MonoBehaviour
 {
@@ -9,6 +13,8 @@ public class DottetLine : MonoBehaviour
     public MeshRenderer meshRenderer;
     WebBrowser2D MainBrowser;
     RawImage ui;
+    Outline outline;
+    ImportObject importer;
 
     [System.Serializable]
     public struct LineData
@@ -17,11 +23,16 @@ public class DottetLine : MonoBehaviour
         public float start;
         public float end;
         public string axis;
+        public bool reverse;
         public Vector3 position;
         public Quaternion rotation;
         public Vector3 scale;
+        public string id;
+        public List<string> assembledParts;
     }
     public LineData lineData = new LineData();
+    public bool selected = false;
+    public bool assembled = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,17 +41,24 @@ public class DottetLine : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         MainBrowser = GameObject.Find("Browser2D").GetComponent<WebBrowser2D>();
         ui = GameObject.Find("Browser2D").GetComponent<RawImage>();
-        lineData.partName = gameObject.name;
-        lineData.start = 10f;
-        lineData.end = 10f;
-        lineData.axis = "none";
+        outline = GetComponent<Outline>();
+        importer = GameObject.Find("Importer").GetComponent<ImportObject>();
+        if (lineData.partName == null)
+        {
+            lineData.partName = gameObject.name;
+            lineData.start = 10f;
+            lineData.end = 10f;
+            lineData.axis = "none";
+            lineData.id = Guid.NewGuid() + "";
+        }
     }
 
-    public void setLine(string axis, float start, float end)
+    public void setLine(string axis, bool reverse, float start, float end)
     {
         lineData.start = start;
         lineData.end = end;
         lineData.axis = axis;
+        lineData.reverse = reverse;
         Vector3 startPosition = meshRenderer.bounds.center;
         Vector3 endPosition = meshRenderer.bounds.center;
         switch (axis)
@@ -64,8 +82,15 @@ public class DottetLine : MonoBehaviour
                 lineRenderer.enabled = false;
                 return;
         }
-        lineRenderer.SetPosition(0, transform.InverseTransformPoint(startPosition));
-        lineRenderer.SetPosition(1, transform.InverseTransformPoint(endPosition));
+        if (reverse)
+        {
+            lineRenderer.SetPosition(1, transform.InverseTransformPoint(startPosition));
+            lineRenderer.SetPosition(0, transform.InverseTransformPoint(endPosition));
+        }
+        else { 
+            lineRenderer.SetPosition(0, transform.InverseTransformPoint(startPosition));
+            lineRenderer.SetPosition(1, transform.InverseTransformPoint(endPosition)); 
+        }
         lineRenderer.enabled = true;
     }
 
@@ -95,6 +120,23 @@ public class DottetLine : MonoBehaviour
                     return;
             }
             MainBrowser.RunJavaScript("lineStart.value = '" + lineData.start + "'; lineEnd.value = '" + lineData.end + "';");
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        if (!isUI() && !Input.GetKey(KeyCode.LeftShift))
+        {
+            selected = !selected;
+            outline.enabled = selected;
+            if (selected)
+            {
+                importer.selectedExtraParts.Add(this);
+            }
+            else
+            {
+                importer.selectedExtraParts.Remove(this);
+            }
         }
     }
 

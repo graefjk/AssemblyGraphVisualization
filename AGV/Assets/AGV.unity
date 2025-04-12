@@ -1563,7 +1563,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1048240935}
@@ -2268,7 +2268,7 @@ MonoBehaviour:
   directory: 
   MainBrowser: {fileID: 0}
   previewPartsThatCannotBeAssembledRightNow: 1
-  dottetLine: {fileID: 2100000, guid: 44aa5ba403dc18d49ac3453efe7e968a, type: 2}
+  dottetLineMaterial: {fileID: 2100000, guid: 44aa5ba403dc18d49ac3453efe7e968a, type: 2}
   maxY: 0
   currentVertex: '[]'
   assemblyBounds:
@@ -2282,6 +2282,7 @@ MonoBehaviour:
   resizeCursorBottom: {fileID: 2800000, guid: 0cce760ff0f2ba1498d417a115e8cdd6, type: 3}
   cursorMode: 0
   textAreaHasFocus: 0
+  selectedExtraParts: []
 --- !u!4 &1048240935
 Transform:
   m_ObjectHideFlags: 0
@@ -2770,7 +2771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 251be001b1813e6409f8481c0873ffe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 1
+  rotationSpeed: 0.25
   centerPosition: {x: 0, y: 0, z: 0}
   initialPosition: {x: 0, y: 0, z: 0}
 --- !u!23 &1368284753
