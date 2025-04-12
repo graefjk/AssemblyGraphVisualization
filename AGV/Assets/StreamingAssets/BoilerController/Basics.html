@@ -245,7 +245,6 @@
         text-align: center;
         border: 0px solid rgb(255, 141, 30);
         margin-bottom: 0px;
-        padding-left: 30px;
         flex-grow: 1;
         border: 2px solid white;
     }
@@ -359,7 +358,12 @@
 
 
         </div>
-        <input type="checkbox" id="selectAll" onchange="toggleAll()">
+        <div style="display: flex;padding-right: 10px;flex-flow: wrap;">
+            <input type="checkbox" id="selectAll" onchange="toggleAll()">
+            <div style="flex-grow: 1; justify-content: center; display: flex;">
+                <button onclick="saveExtraParts()">save extra parts</button>
+            </div>
+        </div>
     </div>
 
 
@@ -384,6 +388,7 @@
                 Axis: X:<input id="xCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
                 Y:<input id="yCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
                 Z:<input id="zCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
+                Reverse<input id="reverseCheckbox" type="checkbox" onclick='setLine()' />
                 <div>
                     Start: <input id="lineStart" type="number" step="0.1" style="width: 60px" onchange="setLine()" value="10">
                     End: <input id="lineEnd" type="number" step="0.1" style="width: 60px" onchange="setLine()" value="10">
@@ -849,6 +854,20 @@
             disOrEnAbleButtons();
         }
 
+        function saveExtraParts() {
+            var parts = partsList.getElementsByClassName("part");
+            var checkBoxes = partsList.getElementsByClassName("partCheckBox");
+            var assembledParts = [];
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked && ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue"))) {
+                    assembledParts.push(parts[i].id);
+                }
+            }
+            if (assembledParts.length > 0) {
+                prompt("saveExtraParts", assembledParts);
+            }
+        }
+
         var partDescriptionCheckBoxes = document.getElementsByClassName("partDescriptionCheckBox");
         function partDescriptionCheckBoxClicked(element) {
             if (element.checked) {
@@ -864,19 +883,20 @@
         var xCheckBox = document.getElementById("xCheckbox");
         var yCheckBox = document.getElementById("yCheckbox");
         var zCheckBox = document.getElementById("zCheckbox");
+        var reverseCheckBox = document.getElementById("reverseCheckbox");
         var lineStart = document.getElementById("lineStart");
         var lineEnd = document.getElementById("lineEnd");
         function setLine() {
             if (xCheckBox.checked) {
-                prompt("setExtraPartLine", partName.name + ",x," + lineStart.value + "," + lineEnd.value)
+                prompt("setExtraPartLine", partName.name + ",x," + reverseCheckBox.checked + "," + lineStart.value + "," + lineEnd.value)
             }
             else if (yCheckBox.checked) {
-                prompt("setExtraPartLine", partName.name + ",y," + lineStart.value + "," + lineEnd.value)
+                prompt("setExtraPartLine", partName.name + ",y," + reverseCheckBox.checked + "," + lineStart.value + "," + lineEnd.value)
             }
             else if (zCheckBox.checked) {
-                prompt("setExtraPartLine", partName.name + ",z," + lineStart.value + "," + lineEnd.value)
+                prompt("setExtraPartLine", partName.name + ",z," + reverseCheckBox.checked + "," + lineStart.value + "," + lineEnd.value)
             } else {
-                prompt("setExtraPartLine", partName.name + ",none," + lineStart.value + "," + lineEnd.value)
+                prompt("setExtraPartLine", partName.name + ",none," + reverseCheckBox.checked + "," + lineStart.value + "," + lineEnd.value)
             }
         }
 

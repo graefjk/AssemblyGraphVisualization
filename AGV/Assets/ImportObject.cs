@@ -18,6 +18,8 @@ using SFB;
 using MessageLibrary;
 using UnityEditor;
 using System.Text.Json;
+using UnityEditor.VersionControl;
+using static DottetLine;
 
 namespace AGV
 {
@@ -46,7 +48,7 @@ namespace AGV
         int childCount = 0;
         public WebBrowser2D MainBrowser;
         public bool previewPartsThatCannotBeAssembledRightNow = false;
-        public Material dottetLine;
+        public Material dottetLineMaterial;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
@@ -335,6 +337,7 @@ namespace AGV
         string htmlYellow = "rgb(255, 254, 30)";
         Color green = new Color(0.565f, 1f, 0.118f, 1f);
         string htmlGreen = "rgb(144, 255, 30)";
+        public List<string> assembledParts = new List<string>();
 
         private void playEdgeTransition(STaggedEdge<string, int[]> edge)
         {
@@ -347,6 +350,7 @@ namespace AGV
             }
             Debug.Log("current Vertex: " + currentVertex + " " + currentVertex.Split(','));
             string[] currentParts = currentVertex.ReplaceMultiple(removeChars, ' ').Replace(" ", "").Split(',');
+            this.assembledParts = currentParts.ToList();
             for (int i = 0; i < assembly.transform.childCount; i++)
             {
                 GameObject child = assembly.transform.GetChild(i).gameObject;
@@ -444,7 +448,9 @@ namespace AGV
 
             activePart.SetActive(true);
             activePart.GetComponent<Renderer>().material.color = yellow;
+            MainBrowser.RunJavaScript("document.getElementById('" + activePart.name + "').style.backgroundColor = '" + htmlYellow + "';");
             //document.getElementById(activePart.name).style.backgroundColor = "yellow";
+
             if (edge.Tag[1] == -1)
             {
                 if (reverse)
@@ -464,6 +470,57 @@ namespace AGV
             }
 
             MainBrowser.RunJavaScript("loadInstructions();");
+            showExtraParts();
+        }
+
+        void showExtraParts()
+        {
+            if (!reverse)
+            {
+                for (int i = 0; i < extraParts.transform.childCount; i++)
+                {
+                    GameObject extraPart = extraParts.transform.GetChild(i).gameObject;
+                    DottetLine line = extraPart.GetComponent<DottetLine>();
+                    if (!line.assembled && (line.lineData.assembledParts.Except(assembledParts).Count() == 0))
+                    {
+                        extraPart.SetActive(true);
+                        line.assembled = true;
+                    }
+                    else
+                    {
+                        extraPart.SetActive(false);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < extraParts.transform.childCount; i++)
+                {
+                    GameObject extraPart = extraParts.transform.GetChild(i).gameObject;
+                    DottetLine line = extraPart.GetComponent<DottetLine>();
+                    if (extraPart.activeSelf && (line.lineData.assembledParts.Except(assembledParts).Count() > 0))
+                    {
+                        Debug.Log("TRUE");
+                        line.assembled = false;
+                        extraPart.SetActive(false);
+                    }
+                    else if (line.assembled){
+                        bool hasPartThatCanBeDisassembled = false;
+                        foreach (string part in line.lineData.assembledParts)
+                        {
+                            if (removableParts.Contains(part))
+                            {
+                                hasPartThatCanBeDisassembled = true;
+                                break;
+                            }
+                        }
+                        if (hasPartThatCanBeDisassembled)
+                        {
+                            extraPart.SetActive(true);
+                        }
+                    }
+                }
+            }
         }
 
         string path = "";
@@ -577,7 +634,7 @@ namespace AGV
                 Destroy(child.gameObject);
             }
         }
-        
+
         string folderName;
         string basePath;
         SerializableList<DottetLine.LineData> dottetLines;
@@ -613,10 +670,10 @@ namespace AGV
                 {
                     string json = reader.ReadToEnd();
                     dottetLines = JsonUtility.FromJson<SerializableList<DottetLine.LineData>>(json);
-                    foreach(DottetLine.LineData line in dottetLines.list)
+                    foreach (DottetLine.LineData line in dottetLines.list)
                     {
                         Debug.Log(line.partName + " , " + Path.Combine(extraPartsFolder, line.partName + ".obj"));
-                        extraPartsFileImporter.ImportModelAsync(line.partName, Path.Combine(extraPartsFolder, line.partName +".obj"), extraParts.transform, importOptions);
+                        extraPartsFileImporter.ImportModelAsync(line.partName, Path.Combine(extraPartsFolder, line.partName + ".obj"), extraParts.transform, importOptions);
                     }
                 }
             }
@@ -646,6 +703,7 @@ namespace AGV
         {
             Debug.Log(dottetLines.list[0].partName);
             extraPartsImportComplete();
+            selectedExtraParts.Clear();
             for (int i = 0; i < extraParts.transform.childCount; i++)
             {
                 Transform part = extraParts.transform.GetChild(i);
@@ -660,7 +718,10 @@ namespace AGV
                 part.localScale = lineData.scale;
                 dottetLine.meshRenderer = part.GetComponent<MeshRenderer>();
                 dottetLine.lineRenderer = part.GetComponent<LineRenderer>();
-                dottetLine.setLine(lineData.axis, lineData.start, lineData.end);
+                dottetLine.setLine(lineData.axis, lineData.reverse, lineData.start, lineData.end);
+                part.GetComponent<Outline>().enabled = false;
+                dottetLine.selected = false;
+                part.gameObject.SetActive(false);
             }
         }
 
@@ -901,27 +962,39 @@ namespace AGV
             }
         }
 
+        public List<DottetLine> selectedExtraParts;
+
         void extraPartsImportComplete()
         {
             for (int i = 0; i < extraParts.transform.childCount; i++)
             {
                 Transform part = extraParts.transform.GetChild(i);
-                if (part.GetComponent<DottetLine>() != null) {
-                    continue; 
+                if (part.GetComponent<DottetLine>() != null)
+                {
+                    continue;
                 }
                 //part.AddComponent<onMouseClickExtraPart>();
                 Renderer renderer = part.GetComponent<Renderer>();
                 renderer.material.shader = standardShader;
                 part.AddComponent<MeshCollider>();
                 LineRenderer lineRenderer = part.AddComponent<LineRenderer>();
-                part.AddComponent<DottetLine>();
-                lineRenderer.material = dottetLine;
+                DottetLine dottetLine = part.AddComponent<DottetLine>();
+                dottetLine.selected = true;
+                selectedExtraParts.Add(dottetLine);
+                Outline outline = part.AddComponent<Outline>();
+                lineRenderer.material = dottetLineMaterial;
                 lineRenderer.useWorldSpace = false;
                 lineRenderer.SetPosition(0, part.transform.InverseTransformPoint(renderer.bounds.center));
                 lineRenderer.textureMode = LineTextureMode.Tile;
                 lineRenderer.widthMultiplier = 0.3f;
                 lineRenderer.enabled = false;
+                outline.OutlineColor = Color.green;
                 part.gameObject.layer = 3;
+                part.transform.position = assemblyBounds.center + assembly.transform.position - new Vector3(assemblyBounds.size.magnitude, 0, 0);
+                if (part.transform.position == Vector3.zero)
+                {
+                    part.transform.position = -Vector3.one * 3;
+                }
             }
             Debug.Log("Finished Importing Extra Parts");
         }
@@ -931,26 +1004,45 @@ namespace AGV
             string[] arguments = args.Split(',');
             string name = arguments[0];
             string axis = arguments[1];
+            bool reverse = false;
             float start;
             float end;
             if (name != "undefined")
             {
-                if (!float.TryParse(arguments[2], out start))
+                if (arguments[2] == "true")
+                {
+                    reverse = true;
+                }
+                if (!float.TryParse(arguments[3], out start))
                 {
                     start = 0;
                 }
-                if (!float.TryParse(arguments[3], out end))
+                if (!float.TryParse(arguments[4], out end))
                 {
                     end = 0;
                 }
                 for (int i = 0; i < extraParts.transform.childCount; i++)
                 {
                     Transform part = extraParts.transform.GetChild(i);
-                    if(part.name == name)
+                    if (part.name == name)
                     {
-                        part.GetComponent<DottetLine>().setLine(axis, start, end);
+                        part.GetComponent<DottetLine>().setLine(axis, reverse, start, end);
                     }
                 }
+            }
+        }
+
+        public void saveExtraParts(string parts)
+        {
+            List<string> selectedParts = new List<string>();
+            Hashset<string> hashset = new Hashset<string>();
+            foreach (string part in parts.Split(','))
+            {
+                selectedParts.Add(part);
+            }
+            foreach (DottetLine line in selectedExtraParts)
+            {
+                line.lineData.assembledParts = selectedParts;
             }
         }
 
