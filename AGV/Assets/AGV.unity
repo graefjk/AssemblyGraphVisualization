@@ -950,9 +950,25 @@ PrefabInstance:
       value: BoilerController
       objectReference: {fileID: 0}
     - target: {fileID: 114000013104010366, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013104010366, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013104010366, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013104010366, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013104010366, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
       propertyPath: m_Texture
       value: 
-      objectReference: {fileID: 2800000, guid: 2cf627d1478412f44ab332a5201bf2ec, type: 3}
+      objectReference: {fileID: 10916, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 222000011260344028, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
       propertyPath: m_CullTransparentMesh
       value: 0
