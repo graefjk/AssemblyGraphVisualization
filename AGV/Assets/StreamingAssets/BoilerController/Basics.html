@@ -390,8 +390,8 @@
                 Z:<input id="zCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
                 Reverse<input id="reverseCheckbox" type="checkbox" onclick='setLine()' />
                 <div>
-                    Start: <input id="lineStart" type="number" step="0.1" style="width: 60px" onchange="setLine()" value="10">
-                    End: <input id="lineEnd" type="number" step="0.1" style="width: 60px" onchange="setLine()" value="10">
+                    Start: <input id="lineStart" type="number" step="0.1" style="width: 60px" onchange="setLine()" onfocus='textAreaFocus()' onblur='textAreaBlur()' value="10">
+                    End: <input id="lineEnd" type="number" step="0.1" style="width: 60px" onchange="setLine()" onfocus='textAreaFocus()' onblur='textAreaBlur()' value="10">
                 </div>
                 <button onclick="setLine()" hidden>set Axis</button>
             </div>
