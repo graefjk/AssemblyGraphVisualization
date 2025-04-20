@@ -20,6 +20,7 @@ using UnityEditor;
 using System.Text.Json;
 using UnityEditor.VersionControl;
 using static DottetLine;
+using System.Globalization;
 
 namespace AGV
 {
@@ -570,7 +571,6 @@ namespace AGV
         {
             if ((Time.time - LastTick > tickTime) && (t >= 0) && (t < matrixes.Count))
             {
-                //Debug.Log(t);
                 part.transform.localPosition = matrixes[t].GetPosition();
                 part.transform.localRotation = matrixes[t].rotation;
                 t += reverse ? 1 : -1;
@@ -1005,21 +1005,19 @@ namespace AGV
             string name = arguments[0];
             string axis = arguments[1];
             bool reverse = false;
-            float start;
-            float end;
             if (name != "undefined")
             {
                 if (arguments[2] == "true")
                 {
                     reverse = true;
                 }
-                if (!float.TryParse(arguments[3], out start))
+                if (!float.TryParse(arguments[3], NumberStyles.Any, CultureInfo.InvariantCulture, out float start))
                 {
-                    start = 0;
+                    start = 0f;
                 }
-                if (!float.TryParse(arguments[4], out end))
+                if (!float.TryParse(arguments[4], NumberStyles.Any, CultureInfo.InvariantCulture, out float end))
                 {
-                    end = 0;
+                    end = 0f;
                 }
                 for (int i = 0; i < extraParts.transform.childCount; i++)
                 {
