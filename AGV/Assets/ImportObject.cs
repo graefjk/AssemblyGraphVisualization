@@ -8,18 +8,12 @@ using Newtonsoft.Json.Linq;
 using System;
 using Unity.VisualScripting;
 using System.Collections.Generic;
-using QuikGraph.Collections;
 using System.Linq;
 using NumSharp;
-using System.Xml.Linq;
 using NumSharp.Utilities;
 using SimpleWebBrowser;
 using SFB;
 using MessageLibrary;
-using UnityEditor;
-using System.Text.Json;
-using UnityEditor.VersionControl;
-using static DottetLine;
 using System.Globalization;
 
 namespace AGV
