@@ -9,16 +9,22 @@ namespace AGV
         public Vector3 centerPosition;
         public Vector3 initialPosition;
         Transform extraParts;
+        ImportObject importer;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        void Start()
         {
             extraParts = transform.parent.Find("ExtraParts");
+            importer = GameObject.Find("Importer").GetComponent<ImportObject>();
         }
 
         // Update is called once per frame
         void Update()
         {
+            if (importer.textAreaHasFocus)
+            {
+                return;
+            }
             if (Input.GetKey(KeyCode.Keypad4))
             {
                 transform.RotateAround(centerPosition, new Vector3(1, 0, 0), rotationSpeed);
