@@ -338,6 +338,10 @@ namespace AGV
         string htmlGreen = "rgb(144, 255, 30)";
         public List<string> assembledParts = new List<string>();
 
+        Outline activePartOutline;
+        Outline finishedOutline;
+        Outline partOutline;
+
         private void playEdgeTransition(STaggedEdge<string, int[]> edge)
         {
             MainBrowser.RunJavaScript("document.getElementById('playPause').innerHTML = &#xf04c;");
@@ -413,12 +417,8 @@ namespace AGV
                 outline.enabled = false;
             }
             GameObject activePart = assembly.transform.Find(edge.Tag[0] + "").gameObject;
-            Outline activePartOutline;
-            Outline finishedOutline;
-            Outline partOutline;
             if (this.activePart != null)
             {
-
                 activePartOutline = this.activePart.GetComponent<Outline>();
                 activePartOutline.OutlineColor = Color.cyan;
                 activePartOutline.enabled = false;
@@ -432,22 +432,24 @@ namespace AGV
                 partOutline.enabled = false;
             }
             this.activePart = activePart;
+            if (!reverse)
+            {
+                activePartOutline = activePart.GetComponent<Outline>();
+                activePartOutline.OutlineColor = yellow;
+                activePartOutline.enabled = true;
 
-            activePartOutline = this.activePart.GetComponent<Outline>();
-            activePartOutline.OutlineColor = yellow;
-            activePartOutline.enabled = true;
+                finishedOutline = finished.transform.Find(this.activePart.name).GetComponent<Outline>();
+                finishedOutline.OutlineColor = yellow;
+                finishedOutline.enabled = true;
 
-            finishedOutline = finished.transform.Find(this.activePart.name).GetComponent<Outline>();
-            finishedOutline.OutlineColor = yellow;
-            finishedOutline.enabled = true;
+                partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
+                partOutline.OutlineColor = yellow;
+                partOutline.enabled = true;
 
-            partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
-            partOutline.OutlineColor = yellow;
-            partOutline.enabled = true;
-
+                MainBrowser.RunJavaScript("document.getElementById('" + activePart.name + "').style.backgroundColor = '" + htmlYellow + "';");
+                activePart.GetComponent<Renderer>().material.color = yellow;
+            }
             activePart.SetActive(true);
-            activePart.GetComponent<Renderer>().material.color = yellow;
-            MainBrowser.RunJavaScript("document.getElementById('" + activePart.name + "').style.backgroundColor = '" + htmlYellow + "';");
             //document.getElementById(activePart.name).style.backgroundColor = "yellow";
 
             if (edge.Tag[1] == -1)
@@ -461,6 +463,7 @@ namespace AGV
                     activePart.transform.localPosition = new Vector3(0, 0, 0);
                     activePart.transform.localRotation = Quaternion.identity;
                     Debug.Log(assembly.transform.Find(edge.Tag[0] + "").transform.localPosition);
+                    activePartOutline.enabled = false;
                 }
             }
             else
@@ -469,7 +472,6 @@ namespace AGV
             }
 
             MainBrowser.RunJavaScript("loadInstructions();");
-            showExtraParts();
         }
 
         void showExtraParts()
@@ -595,8 +597,9 @@ namespace AGV
                     play = false;
                     part.transform.localPosition = Vector3.zero;
                     part.transform.localRotation = Quaternion.identity;
+                    showExtraParts();
+                    activePartOutline.enabled = false;
                 }
-
             }
         }
 
@@ -711,8 +714,8 @@ namespace AGV
                 DottetLine.LineData lineData = dottetLines.list[index];
                 dottetLines.list.RemoveAt(index);
                 dottetLine.lineData = lineData;
-                part.position = lineData.position;
-                part.rotation = lineData.rotation;
+                part.localPosition = lineData.position;
+                part.localRotation = lineData.rotation;
                 part.localScale = lineData.scale;
                 dottetLine.meshRenderer = part.GetComponent<MeshRenderer>();
                 dottetLine.lineRenderer = part.GetComponent<LineRenderer>();

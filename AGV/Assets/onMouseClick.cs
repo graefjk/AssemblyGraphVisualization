@@ -115,6 +115,10 @@ namespace AGV
                 finishedPart.GetComponent<Outline>().enabled = false;
                 partsPart.GetComponent<Outline>().enabled = false;
             }
+            else if (!parent.play)
+            {
+                assemblyPart.GetComponent<Outline>().enabled = false;
+            }
             MainBrowser.RunJavaScript("document.getElementById(" + gameObject.name + ").style.borderColor = document.getElementById(" + gameObject.name + ").style.backgroundColor");
             mouseEntered = false;
         }
