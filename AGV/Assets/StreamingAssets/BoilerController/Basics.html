@@ -653,7 +653,7 @@
             var unAssembledParts = [];
             for (var i = 0; i < checkBoxes.length; i++) {
                 if (checkBoxes[i].checked) {
-                    if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue")) {
+                    if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue") || (parts[i].style.backgroundColor === "rgb(255, 254, 30)")) {
                         assembledParts.push(parts[i].id);
                     } else {
                         unAssembledParts.push(parts[i].id);
@@ -708,7 +708,7 @@
             instructionList = [];
             instructionListIndex = 0;
             for (var i = 0; i < parts.length; i++) {
-                if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue")) {
+                if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue") || (parts[i].style.backgroundColor === "rgb(255, 254, 30)")) {
                     assembledParts.push(parts[i].id);
                 } else {
                     unAssembledParts.push(parts[i].id);
@@ -830,7 +830,7 @@
             var unAssembledParts = [];
             for (var i = 0; i < checkBoxes.length; i++) {
                 if (checkBoxes[i].checked) {
-                    if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue")) {
+                    if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue") || (parts[i].style.backgroundColor === "rgb(255, 254, 30)")) {
                         assembledParts.push(parts[i].id);
                     } else {
                         unAssembledParts.push(parts[i].id);
@@ -859,7 +859,7 @@
             var checkBoxes = partsList.getElementsByClassName("partCheckBox");
             var assembledParts = [];
             for (var i = 0; i < checkBoxes.length; i++) {
-                if (checkBoxes[i].checked && ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue"))) {
+                if (checkBoxes[i].checked && ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue") || (parts[i].style.backgroundColor === "rgb(255, 254, 30)"))) {
                     assembledParts.push(parts[i].id);
                 }
             }
