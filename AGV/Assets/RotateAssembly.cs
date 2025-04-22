@@ -59,7 +59,7 @@ namespace AGV
 
             if (Input.GetKey(KeyCode.Keypad0))
             {
-                transform.localPosition = initialPosition;
+                transform.position = initialPosition;
                 transform.localRotation = Quaternion.identity;
                 extraParts.localRotation = Quaternion.identity;
                 extraParts.localPosition = Vector3.zero;
