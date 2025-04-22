@@ -97,6 +97,7 @@ namespace AGV
         }
 
         public float maxY = 0;
+        public float xSpacing = 0;
         void placePartsOnTable(float length)
         {
             float maxExtent = Math.Max(assemblyBounds.extents.x, Math.Max(assemblyBounds.extents.y, assemblyBounds.extents.z));
@@ -109,7 +110,8 @@ namespace AGV
 
 
             float xPosition = 0;
-            int yPosition = 0;
+            int xIndex = 0;
+            int yIndex = 0;
             SortedSet<Transform> partsList = new SortedSet<Transform>(Comparer<Transform>.Create((a, b) => (a.GetComponent<Renderer>().bounds.extents.y >= b.GetComponent<Renderer>().bounds.extents.y ? 1 : -1)));
 
             for (int i = 0; i < parts.transform.childCount; i++)
@@ -126,13 +128,15 @@ namespace AGV
                 {
                     //Debug.Log(part.name);
                     xPosition = 0;
-                    yPosition++;
+                    xIndex = 0;
+                    yIndex++;
                 }
                 else if (xPosition != 0)
                 {
                     xPosition += bounds.extents.x;
+                    xIndex++;
                 }
-                part.transform.localPosition = new Vector3(xPosition - bounds.center.x + part.transform.position.x, (1 * (bounds.extents.z - bounds.center.z + part.transform.position.z) - (2 * maxY * yPosition + yPosition)), part.transform.position.y - bounds.center.y + bounds.extents.y);
+                part.transform.localPosition = new Vector3(xIndex*xSpacing+xPosition - bounds.center.x + part.transform.position.x, (1 * (bounds.extents.z - bounds.center.z + part.transform.position.z) - (2 * maxY * yIndex + yIndex)), part.transform.position.y - bounds.center.y + bounds.extents.y);
 
                 //part.position = new Vector3(0,0,0);
                 xPosition += bounds.extents.x + 0.1f;

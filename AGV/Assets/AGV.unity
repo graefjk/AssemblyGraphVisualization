@@ -1569,6 +1569,7 @@ MonoBehaviour:
   previewPartsThatCannotBeAssembledRightNow: 1
   dottetLineMaterial: {fileID: 2100000, guid: 44aa5ba403dc18d49ac3453efe7e968a, type: 2}
   maxY: 0
+  xSpacing: 0.75
   currentVertex: '[]'
   assemblyBounds:
     m_Center: {x: 0, y: 0, z: 0}
