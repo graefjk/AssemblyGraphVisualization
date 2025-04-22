@@ -142,8 +142,8 @@ public class DottetLine : MonoBehaviour
 
     public LineData getLineData()
     {
-        lineData.position = transform.position;
-        lineData.rotation = transform.rotation;
+        lineData.position = transform.localPosition;
+        lineData.rotation = transform.localRotation;
         lineData.scale = transform.localScale;
         return lineData;
     }
