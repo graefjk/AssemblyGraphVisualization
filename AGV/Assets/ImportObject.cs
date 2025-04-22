@@ -1041,6 +1041,7 @@ namespace AGV
             foreach (DottetLine line in selectedExtraParts)
             {
                 line.lineData.assembledParts = selectedParts;
+                line.assembled = true;
             }
         }
 
