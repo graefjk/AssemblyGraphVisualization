@@ -702,7 +702,6 @@ namespace AGV
 
         private void extraPartsInitialImportComplete()
         {
-            Debug.Log(dottetLines.list[0].partName);
             extraPartsImportComplete();
             selectedExtraParts.Clear();
             for (int i = 0; i < extraParts.transform.childCount; i++)
@@ -910,10 +909,10 @@ namespace AGV
 
         public void saveFile(string instructionJSON)
         {
-            Debug.Log("saving File to " + Path.Combine(directory, "instructions.json"));
+            Debug.Log("saving JSON:" + instructionJSON + " to " + Path.Combine(directory, "instructions.json"));
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(directory, "instructions.json")))
             {
-                outputFile.WriteLine(instructionJSON);
+                outputFile.WriteLine(instructionJSON.Replace(@"\",@"\\"));
                 outputFile.Flush();
                 outputFile.Close();
                 outputFile.Dispose();
