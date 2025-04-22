@@ -59,10 +59,10 @@ namespace AGV
 
             if (Input.GetKey(KeyCode.Keypad0))
             {
-                transform.position = initialPosition;
+                transform.localPosition = initialPosition;
                 transform.localRotation = Quaternion.identity;
-                extraParts.rotation = Quaternion.identity;
-                extraParts.position = Vector3.zero;
+                extraParts.localRotation = Quaternion.identity;
+                extraParts.localPosition = Vector3.zero;
             }
         }
     } }
