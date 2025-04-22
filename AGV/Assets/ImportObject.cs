@@ -1050,7 +1050,7 @@ namespace AGV
             {
                 playTransition(transitionObject, reverse);
             }
-            if (UnityEngine.Input.GetKeyDown("r"))
+            if (UnityEngine.Input.GetKeyDown("r") && !textAreaHasFocus)
             {
                 repeatAnimation();
             }
