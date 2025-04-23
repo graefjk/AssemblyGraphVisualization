@@ -384,12 +384,12 @@ namespace AGV
                 renderer.material.color = Color.gray;
                 if (s != "")
                 {
-                    MainBrowser.RunJavaScript("document.getElementById(" + s + ").style.backgroundColor = 'gray'");
+                    MainBrowser.RunJavaScript("document.getElementById('" + s + "').style.backgroundColor = 'gray'");
                 }
                 if (graph.TryGetEdge(inVertex, currentVertex, out outEdge))
                 {
                     renderer.material.color = dodgerBlue;
-                    MainBrowser.RunJavaScript("document.getElementById(" + s + ").style.backgroundColor = 'dodgerblue'");
+                    MainBrowser.RunJavaScript("document.getElementById('" + s + "').style.backgroundColor = 'dodgerblue'");
                     removableParts.Add(s);
                 }
             }
