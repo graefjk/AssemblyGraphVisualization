@@ -39,7 +39,7 @@ namespace AGV
         public float spacing;
         public string directory;
 
-        AdjacencyGraph<string, STaggedEdge<string, int[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
+        AdjacencyGraph<string, STaggedEdge<string, string[]>> graph = new AdjacencyGraph<string, STaggedEdge<string, string[]>>();
         int childCount = 0;
         public WebBrowser2D MainBrowser;
         public bool previewPartsThatCannotBeAssembledRightNow = false;
@@ -170,7 +170,7 @@ namespace AGV
             return addableParts.Contains(partName);
         }
 
-        IEnumerable<STaggedEdge<string, int[]>> edgeList;
+        IEnumerable<STaggedEdge<string, string[]>> edgeList;
         Shader standardShader;
         public Bounds assemblyBounds;
 
@@ -197,7 +197,6 @@ namespace AGV
             //GameObject.Find("New Game Object").AddComponent<MeshCollider>();
             assemblyBounds = new Bounds();
             Debug.Log("BOUNDS: " + assemblyBounds);
-            float xPosition = 0;
             //Dom.Element partsList= document.getElementById("parts-list");
             //partsList.innerHTML = "";
             MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML=''");
@@ -253,7 +252,7 @@ namespace AGV
 
             graph.TryGetOutEdges("[]", out edgeList);
             addableParts = new List<string>();
-            foreach (STaggedEdge<string, int[]> edge in edgeList)
+            foreach (STaggedEdge<string, string[]> edge in edgeList)
             {
                 parts.transform.Find(edge.Tag[0] + "").GetComponent<Renderer>().material.color = green;
                 MainBrowser.RunJavaScript("document.getElementById('" + edge.Tag[0] + "').style.backgroundColor = '" + htmlGreen + "'");
@@ -298,7 +297,7 @@ namespace AGV
         void assemblePart(string partName)
         {
             graph.TryGetOutEdges(currentVertex, out edgeList);
-            foreach (STaggedEdge<string, int[]> edge in edgeList)
+            foreach (STaggedEdge<string, string[]> edge in edgeList)
             {
                 if ("" + edge.Tag[0] == partName)
                 {
@@ -325,7 +324,7 @@ namespace AGV
         HashSet<char> removeChars = new HashSet<char> { '"', '[', ']' };
         List<string> removableParts = new List<string>();
         public List<string> addableParts = new List<string>();
-        STaggedEdge<string, int[]> outEdge = new STaggedEdge<string, int[]>();
+        STaggedEdge<string, string[]> outEdge = new STaggedEdge<string, string[]>();
 
         Color dodgerBlue = new Color(0.118f, 0.565f, 1f, 1f);
         Color red = new Color(1f, 0.118f, 0.125f, 1f);
@@ -342,14 +341,16 @@ namespace AGV
         Outline finishedOutline;
         Outline partOutline;
 
-        private void playEdgeTransition(STaggedEdge<string, int[]> edge)
+        private void playEdgeTransition(STaggedEdge<string, string[]> edge)
         {
             MainBrowser.RunJavaScript("document.getElementById('playPause').innerHTML = &#xf04c;");
             pause = false;
+
             for (int i = 0; i < parts.transform.childCount; i++)
             {
-                parts.transform.Find(i + "").GetComponent<Renderer>().material.color = orange;
-                MainBrowser.RunJavaScript("document.getElementById(" + i + ").style.backgroundColor = '" + htmlOrange + "'");
+                string partName = parts.transform.GetChild(i).name;
+                parts.transform.Find(partName).GetComponent<Renderer>().material.color = orange;
+                MainBrowser.RunJavaScript("document.getElementById(" + partName + ").style.backgroundColor = '" + htmlOrange + "'");
             }
             Debug.Log("current Vertex: " + currentVertex + " " + currentVertex.Split(','));
             string[] currentParts = currentVertex.ReplaceMultiple(removeChars, ' ').Replace(" ", "").Split(',');
@@ -394,7 +395,7 @@ namespace AGV
             }
             graph.TryGetOutEdges(currentVertex, out edgeList);
             addableParts = new List<string>();
-            foreach (STaggedEdge<string, int[]> edgeItem in edgeList)
+            foreach (STaggedEdge<string, string[]> edgeItem in edgeList)
             {
                 Debug.Log(edgeItem + " " + edgeItem.Tag[0] + " " + edgeItem.Tag[1] + " document.getElementById('" + edgeItem.Tag[0] + "').style.backgroundColor = '" + htmlGreen + "'");
                 parts.transform.Find(edgeItem.Tag[0] + "").GetComponent<Renderer>().material.color = green;
@@ -407,7 +408,8 @@ namespace AGV
                 {
                     continue;
                 }
-                string id = string.Concat(s.Where(Char.IsDigit));
+                Debug.Log(s);
+                string id = s.Replace("[", "").Replace("]", "").Replace("\"","");
                 GameObject part = assembly.transform.Find(id).gameObject;
                 part.transform.localPosition = new Vector3(0, 0, 0);
                 part.transform.localRotation = Quaternion.identity;
@@ -452,7 +454,7 @@ namespace AGV
             activePart.SetActive(true);
             //document.getElementById(activePart.name).style.backgroundColor = "yellow";
 
-            if (edge.Tag[1] == -1)
+            if (edge.Tag[1] == "-1")
             {
                 if (reverse)
                 {
@@ -528,13 +530,13 @@ namespace AGV
         public bool play = false;
         GameObject transitionObject;
         List<Matrix4x4> matrixes;
-        void loadAndPlayTransition(int partID, int transitionID)
+        void loadAndPlayTransition(string partID, string transitionID)
         {
             if (!(path.Contains("\\" + transitionID + "\\") || path.Contains("/" + transitionID + "/")))
             {
                 Debug.Log(path);
                 matrixes = new List<Matrix4x4>();
-                path = Path.Combine(directory, "steps", transitionID + "", "transformationMatrices.npz");
+                path = Path.Combine(directory, "steps", transitionID, "transformationMatrices.npz");
                 Debug.Log(path);
                 NpzDictionary<Array> dict;
                 var data = np.Load_Npz(path, out dict);
@@ -542,7 +544,7 @@ namespace AGV
                 {
                     matrixes.Add(NDArrayToMatrix4x4(item.Value));
                 }
-                transitionObject = assembly.transform.Find(partID + "").gameObject;
+                transitionObject = assembly.transform.Find(partID).gameObject;
                 dict.Dispose();
             }
             t = reverse ? 0 : matrixes.Count - 1;
@@ -661,7 +663,6 @@ namespace AGV
                 childCount++;
             }
 
-
             string extraPartsFolder = Path.Combine(directory, "extraParts");
             if (File.Exists(Path.Combine(directory, "extraParts.json")))
             {
@@ -679,9 +680,8 @@ namespace AGV
                 }
             }
 
-
             //build graph
-            graph = new AdjacencyGraph<string, STaggedEdge<string, int[]>>();
+            graph = new AdjacencyGraph<string, STaggedEdge<string, string[]>>();
             using (StreamReader r = new StreamReader(Path.Combine(directory, "graph.json")))
             {
                 string json = r.ReadToEnd();
@@ -694,7 +694,7 @@ namespace AGV
                 }
                 foreach (dynamic item in array["links"]) //add all edges to the graph
                 {
-                    graph.AddEdge(new STaggedEdge<string, int[]>(item["source"].ToString(Formatting.None), item["target"].ToString(Formatting.None), new int[] { item["moveID"].ToObject<int>(), item["edgeID"].ToObject<int>() }));
+                    graph.AddEdge(new STaggedEdge<string, string[]>(item["source"].ToString(Formatting.None), item["target"].ToString(Formatting.None), new string[] { item["moveID"].ToObject<string>(), item["edgeID"].ToObject<string>() }));
                 }
             }
             Debug.Log(exportDotGraph(graph));
@@ -726,7 +726,7 @@ namespace AGV
         }
 
         //you can visualize the output here: https://dreampuf.github.io/GraphvizOnline
-        public string exportDotGraph(AdjacencyGraph<string, STaggedEdge<string, int[]>> graph, bool edgeLabels = true)
+        public string exportDotGraph(AdjacencyGraph<string, STaggedEdge<string, string[]>> graph, bool edgeLabels = true)
         {
             string graphString = "";
             graphString += "digraph G {\n";
@@ -734,7 +734,7 @@ namespace AGV
             {
                 graphString += "\"" + s.Replace("\"", "") + "\";\n";
             }
-            foreach (STaggedEdge<string, int[]> edge in graph.Edges)
+            foreach (STaggedEdge<string, string[]> edge in graph.Edges)
             {
                 if (edgeLabels)
                 {
@@ -748,12 +748,12 @@ namespace AGV
             return graphString + "}";
         }
 
-        public string getDotGraphURL(AdjacencyGraph<string, STaggedEdge<string, int[]>> graph, bool edgeLabels = true)
+        public string getDotGraphURL(AdjacencyGraph<string, STaggedEdge<string, string[]>> graph, bool edgeLabels = true)
         {
             return "https://dreampuf.github.io/GraphvizOnline/?engine=dot#" + Uri.EscapeDataString(exportDotGraph(graph, edgeLabels));
         }
 
-        public void openGraphVisualization(AdjacencyGraph<string, STaggedEdge<string, int[]>> graph, bool edgeLabels = true)
+        public void openGraphVisualization(AdjacencyGraph<string, STaggedEdge<string, string[]>> graph, bool edgeLabels = true)
         {
             System.Diagnostics.Process.Start(getDotGraphURL(graph, edgeLabels));
         }
@@ -764,7 +764,7 @@ namespace AGV
             {
                 return;
             }
-            STaggedEdge<string, int[]> edge;
+            STaggedEdge<string, string[]> edge;
             if (timeLine[timeLinePosition].Length > timeLine[timeLinePosition + 1].Length)
             {
                 graph.TryGetEdge(timeLine[timeLinePosition + 1], timeLine[timeLinePosition], out edge);
@@ -791,7 +791,7 @@ namespace AGV
             {
                 return;
             }
-            STaggedEdge<string, int[]> edge;
+            STaggedEdge<string, string[]> edge;
             if (timeLine[timeLinePosition].Length > timeLine[timeLinePosition - 1].Length)
             {
                 graph.TryGetEdge(timeLine[timeLinePosition - 1], timeLine[timeLinePosition], out edge);
