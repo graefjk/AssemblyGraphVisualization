@@ -208,7 +208,7 @@ namespace AGV
                 //partsList.innerHTML += "<input type='checkbox' name='" + child.name + "' checked =\"0\" value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>";
                 //MainBrowser.RunJavaScript("document.getElementById('parts-list').innerHTML += <input type='checkbox' name='" + child.name + "' checked ='0' value=true class='partCheckBox'>&nbsp;<div id='" + child.name + "' class='part' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div>;");
                 partsListHTML += "<input type='checkbox' name='" + child.name + "' checked='0' class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='" + child.name + "' class='part' style='background-color: rgb(255, 141, 30)' onclick='clickPart(this)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'>" + child.name + "</div><div style='width:100%'></div>";
-
+                Debug.Log(child.name);
                 child.localScale = new Vector3(1, 1, -1);
                 child.AddComponent<MeshCollider>();
                 Outline outline = child.AddComponent<Outline>();
@@ -266,8 +266,21 @@ namespace AGV
                 using (StreamReader r = new StreamReader(Path.Combine(directory, "instructions.json")))
                 {
                     string json = r.ReadToEnd().Trim();
-                    MainBrowser.RunJavaScript("importJsonInstructions('" + json + "');");
-                    MainBrowser.RunJavaScript("prompt('log', 'instructions: ' + instructions);");
+                    Debug.Log("JSON Length:" + json.Length);
+                    int length = 0;
+
+                    for(int i = 0; i< json.Length; i += 8000)
+                    {
+                        if (i + 8000 > json.Length) {
+                            length = json.Length - i;
+                        }
+                        else
+                        {
+                            length = 8000;
+                        }
+                        MainBrowser.RunJavaScript("appendToInstructionJSON('" + json.Substring(i, length) + "');");
+                    }
+                    MainBrowser.RunJavaScript("importJsonInstructions();");
                 }
             }
             MainBrowser.RunJavaScript("setPartsBorderColors();");
@@ -907,9 +920,16 @@ namespace AGV
             public List<T> list = new List<T>();
         }
 
-        public void saveFile(string instructionJSON)
+        string instructionJSON = "";
+
+        public void appendToInstructions(string instructions)
         {
-            Debug.Log("saving JSON:" + instructionJSON + " to " + Path.Combine(directory, "instructions.json"));
+            instructionJSON += instructions;
+        }
+
+        public void saveFile()
+        {
+            //Debug.Log("saving JSON:" + instructionJSON + " to " + Path.Combine(directory, "instructions.json"));
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(directory, "instructions.json")))
             {
                 outputFile.WriteLine(instructionJSON.Replace(@"\",@"\\"));
@@ -1057,11 +1077,11 @@ namespace AGV
             {
                 repeatAnimation();
             }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow) && !textAreaHasFocus)
             {
                 stepBackward();
             }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow) && !textAreaHasFocus)
             {
                 stepForward();
             }

@@ -316,6 +316,10 @@
         padding: 0px;
         padding-top: 2px;
     }
+
+    a {
+        pointer-events: none; /*disable clicking on links*/
+    }
 </style>
 <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
 
@@ -352,10 +356,10 @@
         <div id="resize-bar-parts-list" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartsListResizeBar = true"></div>
         <button onclick="closePartsList()" style="left: -5px; position: relative;font-size: 20px;width: 30px;height: 30px;"><b>X</b></button>
         <div id="parts-list">
-            <input type="checkbox" name="test1" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test1' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test1 </div><div style='width:100%'></div>
-            <input type="checkbox" name="test2" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test2' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test2 </div><div style='width:100%'></div>
-            <input type="checkbox" name="test3" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test3' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test3 </div><div style='width:100%'></div>
-
+            <!-- <input type="checkbox" name="test1" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test1' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test1 </div><div style='width:100%'></div>
+    <input type="checkbox" name="test2" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test2' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test2 </div><div style='width:100%'></div>
+    <input type="checkbox" name="test3" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test3' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test3 </div><div style='width:100%'></div>
+    -->
 
         </div>
         <div style="display: flex;padding-right: 10px;flex-flow: wrap;">
@@ -381,32 +385,32 @@
 
     <div id='partDescriptionDiv' style="display: flex; flex-flow: wrap;">
         <!--<div id="content-box-padding"></div>-->
-        <button onclick="closePartDescription()" id="closePartDescription"><b>X</b></button>
-        <div id="nonTextBoxDescription">
-            <div id="partName" style="margin: 0px; width: 100%;" name="test">Name: </div>
-            <div id="innerPartDescription" hidden>
-                Axis: X:<input id="xCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
-                Y:<input id="yCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
-                Z:<input id="zCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
-                Reverse<input id="reverseCheckbox" type="checkbox" onclick='setLine()' />
-                <div>
-                    Start: <input id="lineStart" type="number" step="0.1" style="width: 60px" onchange="setLine()" onfocus='textAreaFocus()' onblur='textAreaBlur()' value="10">
-                    End: <input id="lineEnd" type="number" step="0.1" style="width: 60px" onchange="setLine()" onfocus='textAreaFocus()' onblur='textAreaBlur()' value="10">
+            <button onclick="closePartDescription()" id="closePartDescription"><b>X</b></button>
+            <div id="nonTextBoxDescription">
+                <div id="partName" style="margin: 0px; width: 100%;" name="test">Name: </div>
+                <div id="innerPartDescription" hidden>
+                    Axis: X:<input id="xCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
+                    Y:<input id="yCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
+                    Z:<input id="zCheckbox" type="checkbox" class='partDescriptionCheckBox' onclick='partDescriptionCheckBoxClicked(this)' />
+                    Reverse<input id="reverseCheckbox" type="checkbox" onclick='setLine()' />
+                    <div>
+                        Start: <input id="lineStart" type="number" step="0.1" style="width: 60px" onchange="setLine()" onfocus='textAreaFocus()' onblur='textAreaBlur()' value="10">
+                        End: <input id="lineEnd" type="number" step="0.1" style="width: 60px" onchange="setLine()" onfocus='textAreaFocus()' onblur='textAreaBlur()' value="10">
+                    </div>
+                    <button onclick="setLine()" hidden>set Axis</button>
                 </div>
-                <button onclick="setLine()" hidden>set Axis</button>
+            </div>
+            <div id='partTextAreaDiv'>
+                <!-- <textarea id='partTextArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
+            </div>
+            <div id="resize-bar-part" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBar = true"></div>
+            <div id="resize-bar-bottom-part" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBarBottom = true"></div>
+            <div id="editPartDiv">
+                <button onclick="toggleEditPart()" id="toggleEditPart"><i class="fa" style="font-size: 20px">&#xf044;</i></button>
+                <button id="addObject" onclick="prompt('addExtraPart')"><img src="cube-add.svg" /></button>
+                <!-- <button onclick="addInstructions()" id="addInstructions"><i class="fa" style="font-size: 20px">&#xf196;</i></button>  alternative icon: &#xf067; -->
             </div>
         </div>
-        <div id='partTextAreaDiv'>
-            <!-- <textarea id='partTextArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
-        </div>
-        <div id="resize-bar-part" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBar = true"></div>
-        <div id="resize-bar-bottom-part" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBarBottom = true"></div>
-        <div id="editPartDiv">
-            <button onclick="toggleEditPart()" id="toggleEditPart"><i class="fa" style="font-size: 20px">&#xf044;</i></button>
-            <button id="addObject" onclick="prompt('addExtraPart')"><img src="cube-add.svg" /></button>
-            <!-- <button onclick="addInstructions()" id="addInstructions"><i class="fa" style="font-size: 20px">&#xf196;</i></button>  alternative icon: &#xf067; -->
-        </div>
-    </div>
 
 
 
@@ -450,6 +454,7 @@
             dragPartDescriptionResizeBarBottom = false;
             if (!normalCursor) {
                 changeToNormalCursor()
+                document.body.style.userSelect = "" 
             }
 
         });
@@ -457,28 +462,33 @@
 
         document.addEventListener('mousemove', function (e) {
             if (dragContentBoxResizeBar) {
-                if ((e.clientX - 65) > 90) {
+                if (((e.clientX - 65) > 90) && (e.clientX + 20 < document.body.clientWidth)) {
                     contentBox.style.width = (e.clientX - 65) + "px";
+                    document.body.style.userSelect = "none";
                 }
             }
             else if (dragPartsListResizeBar) {
-                if ((document.body.clientWidth - e.clientX - 15) > 90) {
+                if (((document.body.clientWidth - e.clientX - 15) > 90) && (e.clientX + 20 < document.body.clientWidth)) {
                     partsList.style.width = document.body.clientWidth - e.clientX - 15 + "px";
+                    document.body.style.userSelect = "none";
                 }
             }
             else if (dragContentBoxResizeBarBottom) {
-                if ((e.clientY - 65) > 20) {
+                if (((e.clientY - 65) > 20) && (e.clientY + 20 < document.body.clientHeight)) {
                     contentBox.style.height = e.clientY - 65 + "px";
+                    document.body.style.userSelect = "none";
                 }
             }
             else if (dragPartDescriptionResizeBar) {
-                if ((document.body.clientWidth - e.clientX - 70) > 90) {
+                if (((document.body.clientWidth - e.clientX - 70) > 90) && (e.clientX + 20 < document.body.clientWidth)) {
                     partDescriptionDiv.style.width = document.body.clientWidth - e.clientX - 70 + "px";
+                    document.body.style.userSelect = "none";
                 }
             }
             else if (dragPartDescriptionResizeBarBottom) {
-                if ((document.body.clientHeight - e.clientY - 70) > 20) {
+                if (((document.body.clientHeight - e.clientY - 70) > 20) && (e.clientY + 20 < document.body.clientHeight)) {
                     partDescriptionDiv.style.height = document.body.clientHeight - e.clientY - 70 + "px";
+                    document.body.style.userSelect = "none";
                 }
             }
         });
@@ -691,11 +701,23 @@
             return window.URL.createObjectURL(new Blob([JSON.stringify(instructions)], { type: "application/json" }));
         }
 
-        function importJsonInstructions(jsonString) {
-            let jsonData = JSON.parse(jsonString);
+        var instructionJSON = "";
+
+        function appendToInstructionJSON(jsonString) {
+            instructionJSON += jsonString;
+            prompt("log", "append!");
+        }
+
+        function importJsonInstructions() {
+            prompt("log", "JSONTest1 " + instructionJSON.slice(-20) + " " + instructionJSON.length);
+            let jsonData = JSON.parse(instructionJSON);
+            prompt("log", "JSONTest2");
             instructions = jsonData[0];
+            prompt("log", "JSONTest3");
             partDescriptions = new Map(jsonData[1]);
+            prompt("log", "JSONTest4");
             loadInstructions();
+            prompt("log", "JSONTest5");
         }
 
         var instructionList = [];
@@ -754,7 +776,11 @@
         }
 
         function saveFile() {
-            prompt("saveFile", JSON.stringify([instructions, Array.from(partDescriptions)]));
+            var instructionJSON = JSON.stringify([instructions, Array.from(partDescriptions)]);
+            for (var i = 0; i < instructionJSON.length; i += 8000) {
+                prompt("appendToInstructions", instructionJSON.slice(i, i + 8000));
+            }
+            prompt("saveFile");
         }
 
         function textAreaFocus() {
