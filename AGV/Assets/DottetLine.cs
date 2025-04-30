@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using AGV;
 using SimpleWebBrowser;
@@ -119,7 +120,7 @@ public class DottetLine : MonoBehaviour
                     MainBrowser.RunJavaScript("xCheckBox.checked = false; yCheckBox.checked = false; zCheckBox.checked = false;");
                     return;
             }
-            MainBrowser.RunJavaScript("lineStart.value = '" + lineData.start + "'; lineEnd.value = '" + lineData.end + "';");
+            MainBrowser.RunJavaScript("lineStart.value = " + lineData.start.ToString(CultureInfo.InvariantCulture) + "; lineEnd.value = " + lineData.end.ToString(CultureInfo.InvariantCulture) + ";");
         }
     }
 
