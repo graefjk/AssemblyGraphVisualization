@@ -570,7 +570,7 @@
         }
 
         function selectPartWithName(name) {
-            prompt("log", "auxClick");
+            //prompt("log", "auxClick");
             partName.innerHTML = "Name: " + name;
             partName.name = name;
             if (partDescriptions.has(name)) {
@@ -695,29 +695,22 @@
                     instructions[index][secondIndex][1] = instructionText;
                 }
             }
-
-
-            return encodeURI(JSON.stringify(instructions));
-            return window.URL.createObjectURL(new Blob([JSON.stringify(instructions)], { type: "application/json" }));
+            //return encodeURI(JSON.stringify(instructions));
+            //return window.URL.createObjectURL(new Blob([JSON.stringify(instructions)], { type: "application/json" }));
         }
 
         var instructionJSON = "";
 
         function appendToInstructionJSON(jsonString) {
             instructionJSON += jsonString;
-            prompt("log", "append!");
+            prompt("log", jsonString);
         }
 
         function importJsonInstructions() {
-            prompt("log", "JSONTest1 " + instructionJSON.slice(-20) + " " + instructionJSON.length);
             let jsonData = JSON.parse(instructionJSON);
-            prompt("log", "JSONTest2");
             instructions = jsonData[0];
-            prompt("log", "JSONTest3");
             partDescriptions = new Map(jsonData[1]);
-            prompt("log", "JSONTest4");
             loadInstructions();
-            prompt("log", "JSONTest5");
         }
 
         var instructionList = [];
@@ -776,7 +769,7 @@
         }
 
         function saveFile() {
-            var instructionJSON = JSON.stringify([instructions, Array.from(partDescriptions)]);
+            var instructionJSON = JSON.stringify([instructions, Array.from(partDescriptions)], null, 4);
             for (var i = 0; i < instructionJSON.length; i += 8000) {
                 prompt("appendToInstructions", instructionJSON.slice(i, i + 8000));
             }

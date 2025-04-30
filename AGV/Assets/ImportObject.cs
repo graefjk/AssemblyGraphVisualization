@@ -15,6 +15,7 @@ using SimpleWebBrowser;
 using SFB;
 using MessageLibrary;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace AGV
 {
@@ -265,7 +266,8 @@ namespace AGV
             {
                 using (StreamReader r = new StreamReader(Path.Combine(directory, "instructions.json")))
                 {
-                    string json = r.ReadToEnd().Trim();
+                    string json = Regex.Replace(r.ReadToEnd().Trim(), @"\n|\r", "");
+                    Debug.Log(json);
                     Debug.Log("JSON Length:" + json.Length);
                     int length = 0;
 
@@ -932,7 +934,7 @@ namespace AGV
             //Debug.Log("saving JSON:" + instructionJSON + " to " + Path.Combine(directory, "instructions.json"));
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(directory, "instructions.json")))
             {
-                outputFile.WriteLine(instructionJSON.Replace(@"\",@"\\"));
+                outputFile.WriteLine(instructionJSON.Replace(@"\", @"\\"));
                 outputFile.Flush();
                 outputFile.Close();
                 outputFile.Dispose();
@@ -949,7 +951,7 @@ namespace AGV
 
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(directory, "extraParts.json")))
             {
-                outputFile.WriteLine(JsonUtility.ToJson(dottetLines));
+                outputFile.WriteLine(JsonUtility.ToJson(dottetLines, true));
                 outputFile.Flush();
                 outputFile.Close();
                 outputFile.Dispose();
