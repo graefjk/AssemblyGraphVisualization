@@ -125,7 +125,7 @@
         background: rgba(255, 255, 255, 1);
         border: 5px solid rgba(0, 0, 0, 1);
         border-radius: 0px 0px 0px 0px;
-        width: 300px;
+        width: 350px;
         padding: 0px,0px,0px,0px;
         color: black;
         padding-left: 5px;
@@ -320,6 +320,12 @@
     a {
         pointer-events: none; /*disable clicking on links*/
     }
+
+    .legend {
+        height: 16px;
+        width: 16px;
+        display: inline-flex;
+    }
 </style>
 <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
 
@@ -344,7 +350,6 @@
         </div>
         <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
         <div id="resize-bar-bottom" onmouseover="changeToResizeCursorBottom()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBarBottom = true"></div>
-        <p id="demo"></p>
     </div>
 
 
@@ -360,13 +365,21 @@
     <input type="checkbox" name="test2" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test2' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test2 </div><div style='width:100%'></div>
     <input type="checkbox" name="test3" value="1" class='partCheckBox' onclick='checkBoxClicked()'>&nbsp;<div id='test3' class='part' style='background-color: rgb(255, 141, 30)' onauxclick='selectPart(this)' onmouseover='showBorder(this)' onmouseout='hideBorder(this)'> test3 </div><div style='width:100%'></div>
     -->
-
         </div>
         <div style="display: flex;padding-right: 10px;flex-flow: wrap;">
             <input type="checkbox" id="selectAll" onchange="toggleAll()">
             <div style="flex-grow: 1; justify-content: center; display: flex;">
                 <button onclick="saveExtraParts()">save extra parts</button>
             </div>
+        </div>
+        <div>
+            <div class="legend" style="background-color: rgb(255, 254, 30)"></div> Active Part, is assembled and can be disassembled<br />
+            <div class="legend" style="background-color: dodgerblue"></div> Is assembled and can be disassembled<br />
+            <div class="legend" style="background-color: gray"></div> Is assembled and cannot be disassembled<br />
+            <div class="legend" style="background-color: rgb(144, 255, 30)"></div> Is not assembled and can be assembled<br />
+            <div class="legend" style="background-color: rgb(255, 141, 30)"></div> Is not assembled and cannot be assembled<br />
+
+
         </div>
     </div>
 
@@ -703,7 +716,6 @@
 
         function appendToInstructionJSON(jsonString) {
             instructionJSON += jsonString;
-            prompt("log", jsonString);
         }
 
         function importJsonInstructions() {
@@ -720,11 +732,18 @@
             var parts = partsList.getElementsByClassName("part");
             var assembledParts = [];
             var unAssembledParts = [];
+            var activePart = "";
+            var oldInstructionList = instructionList;
             instructionList = [];
             instructionListIndex = 0;
+            instructionsIndex = 0;
+            newInstrucionIndex = -1;
             for (var i = 0; i < parts.length; i++) {
                 if ((parts[i].style.backgroundColor === "gray") || (parts[i].style.backgroundColor === "dodgerblue") || (parts[i].style.backgroundColor === "rgb(255, 254, 30)")) {
                     assembledParts.push(parts[i].id);
+                    if ((parts[i].style.backgroundColor === "rgb(255, 254, 30)")) {
+                        activePart = parts[i].id;
+                    }
                 } else {
                     unAssembledParts.push(parts[i].id);
                 }
@@ -736,18 +755,28 @@
                 if (isSuperset(assembledParts, instructions[i][0])) {
                     for (var k = 1; k < instructions[i].length; k++) {
                         if (isSuperset(unAssembledParts, instructions[i][k][0])) {
-                            console.log("pushed: " + instructions[i][k][1]);
+                            //go to A page with the active Part
+                            if (instructions[i][0].includes(activePart)) {
+                                if (!oldInstructionList.some(e => e[0]===i && e[1]===k)) {
+                                    newInstrucionIndex = instructionList.length;
+                                }
+                                instructionsIndex = instructionList.length;
+                            }
                             instructionList.push([i, k]);
                         }
                     }
                 }
             }
+            if (newInstrucionIndex != -1) {
+                instructionsIndex = newInstrucionIndex;
+            }
+
             if (instructionList.length > 0) {
-                instructionText = instructions[instructionList[0][0]][instructionList[0][1]][1];
+                instructionText = instructions[instructionList[instructionsIndex][0]][instructionList[instructionsIndex][1]][1];
             } else {
                 instructionText = "";
             }
-            instructionsIndex = 0;
+            
             updateInstructionText();
             checkCheckBoxes();
             disOrEnAbleButtons();
