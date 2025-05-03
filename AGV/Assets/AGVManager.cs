@@ -19,7 +19,7 @@ using System.Text.RegularExpressions;
 
 namespace AGV
 {
-    public class ImportObject : MonoBehaviour
+    public class AGVManager : MonoBehaviour
     {
         [SerializeField]
         public string zipFile;

@@ -9,19 +9,19 @@ namespace AGV
         public Vector3 centerPosition;
         public Vector3 initialPosition;
         Transform extraParts;
-        ImportObject importer;
+        AGVManager manager;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
             extraParts = transform.parent.Find("ExtraParts");
-            importer = GameObject.Find("Importer").GetComponent<ImportObject>();
+            manager = GameObject.Find("AGVManager").GetComponent<AGVManager>();
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (importer.textAreaHasFocus)
+            if (manager.textAreaHasFocus)
             {
                 return;
             }

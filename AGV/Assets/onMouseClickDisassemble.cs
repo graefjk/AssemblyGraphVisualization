@@ -4,11 +4,11 @@ namespace AGV
 {
     public class OnMouseClickDisassemble : MonoBehaviour
     {
-        ImportObject parent;
+        AGVManager parent;
 
         void Start()
         {
-            parent = transform.parent.parent.gameObject.GetComponent<ImportObject>();
+            parent = transform.parent.parent.gameObject.GetComponent<AGVManager>();
         }
         void OnMouseDown()
         {

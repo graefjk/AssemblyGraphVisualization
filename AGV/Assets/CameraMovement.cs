@@ -13,7 +13,7 @@ namespace AGV
         public float rotationSpeed = 1;
         [SerializeField]
         public float distanceFactor = 3;
-        ImportObject importer;
+        AGVManager importer;
         WebBrowser2D MainBrowser;
         RawImage ui;
         public float scrollSpeed;
@@ -23,7 +23,7 @@ namespace AGV
         void Start()
         {
             assembly = GameObject.Find("Assembly");
-            importer = GameObject.Find("Importer").GetComponent<ImportObject>();
+            importer = GameObject.Find("AGVManager").GetComponent<AGVManager>();
             MainBrowser = GameObject.Find("Browser2D").GetComponent<WebBrowser2D>();
             ui = GameObject.Find("Browser2D").GetComponent<RawImage>();
         }

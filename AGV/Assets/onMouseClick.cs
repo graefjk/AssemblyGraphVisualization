@@ -8,7 +8,7 @@ namespace AGV
 {
     public class OnMouseClick : MonoBehaviour
     {
-        ImportObject parent;
+        AGVManager parent;
         GameObject assemblyPart;
         GameObject finishedPart;
         GameObject partsPart;
@@ -19,7 +19,7 @@ namespace AGV
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
-            parent = transform.parent.parent.gameObject.GetComponent<ImportObject>();
+            parent = transform.parent.parent.gameObject.GetComponent<AGVManager>();
             assemblyPart = GameObject.Find("Assembly").transform.Find(gameObject.name).gameObject;
             partsPart = GameObject.Find("Parts").transform.Find(gameObject.name).gameObject;
             finishedPart = GameObject.Find("Finished").transform.Find(gameObject.name).gameObject;
@@ -82,7 +82,7 @@ namespace AGV
             {
                 if (Input.GetKeyDown(KeyCode.Mouse2))
                 {
-                    Debug.Log("Middle? Mouse button pressed!");
+                    //Debug.Log("Middle? Mouse button pressed!");
                     MainBrowser.RunJavaScript("formatPartDescription(true,'" + gameObject.name + "');");
                 }
                 if (!mouseEntered)

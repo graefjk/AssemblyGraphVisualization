@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 161834446}
   - component: {fileID: 161834451}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: BrowserCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1538,7 +1538,7 @@ GameObject:
   - component: {fileID: 1048240934}
   - component: {fileID: 1048240936}
   m_Layer: 0
-  m_Name: Importer
+  m_Name: AGVManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1553,10 +1553,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1048240933}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11441770a1c04d840ac65077e87a46dc, type: 3}
+  m_Script: {fileID: 11500000, guid: b7b632b3f2b3c3b48a0fdad4071b04c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zipFile: C:\\Users\\janni\\Documents\\GitHub\\ATM-AGV\\assembly_00002_graph.zip
+  zipFile: 
   timeLine: []
   timeLinePosition: -1
   activePart: {fileID: 0}
@@ -1565,8 +1565,8 @@ MonoBehaviour:
   partTableLenght: 13.5
   spacing: 0
   directory: 
-  MainBrowser: {fileID: 0}
-  previewPartsThatCannotBeAssembledRightNow: 1
+  MainBrowser: {fileID: 2038658010}
+  previewPartsThatCannotBeAssembledRightNow: 0
   dottetLineMaterial: {fileID: 2100000, guid: 44aa5ba403dc18d49ac3453efe7e968a, type: 2}
   maxY: 0
   xSpacing: 0.75
@@ -1579,8 +1579,8 @@ MonoBehaviour:
   play: 0
   tickTime: 0.02
   repeat: 0
-  resizeCursor: {fileID: 2800000, guid: 394235fe51f928247bbdf40c909c80e1, type: 3}
-  resizeCursorBottom: {fileID: 2800000, guid: 0cce760ff0f2ba1498d417a115e8cdd6, type: 3}
+  resizeCursor: {fileID: 0}
+  resizeCursorBottom: {fileID: 0}
   cursorMode: 0
   textAreaHasFocus: 0
   selectedExtraParts: []
@@ -2197,6 +2197,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!114 &2038658010 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114000010958089028, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
+  m_PrefabInstance: {fileID: 567863340}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038658005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf88a6a242a01d4c883bf380eadfd93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
