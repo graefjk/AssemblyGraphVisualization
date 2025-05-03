@@ -462,6 +462,7 @@ namespace AGV
                 partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
                 partOutline.OutlineColor = yellow;
                 partOutline.enabled = true;
+                MainBrowser.RunJavaScript("document.getElementById('" + activePart.name + "').style.backgroundColor = '" + htmlYellow + "';");
                 activePart.GetComponent<Renderer>().material.color = yellow;
             }
             activePart.SetActive(true);
