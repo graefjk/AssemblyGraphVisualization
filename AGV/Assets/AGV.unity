@@ -1579,8 +1579,8 @@ MonoBehaviour:
   play: 0
   tickTime: 0.02
   repeat: 0
-  resizeCursor: {fileID: 0}
-  resizeCursorBottom: {fileID: 0}
+  resizeCursor: {fileID: 2800000, guid: 394235fe51f928247bbdf40c909c80e1, type: 3}
+  resizeCursorBottom: {fileID: 2800000, guid: 0cce760ff0f2ba1498d417a115e8cdd6, type: 3}
   cursorMode: 0
   textAreaHasFocus: 0
   selectedExtraParts: []
