@@ -15,7 +15,7 @@ public class DottetLine : MonoBehaviour
     WebBrowser2D MainBrowser;
     RawImage ui;
     Outline outline;
-    AGVManager importer;
+    AGVManager manager;
 
     [System.Serializable]
     public struct LineData
@@ -43,7 +43,7 @@ public class DottetLine : MonoBehaviour
         MainBrowser = GameObject.Find("Browser2D").GetComponent<WebBrowser2D>();
         ui = GameObject.Find("Browser2D").GetComponent<RawImage>();
         outline = GetComponent<Outline>();
-        importer = GameObject.Find("AGVManager").GetComponent<AGVManager>();
+        manager = GameObject.Find("AGVManager").GetComponent<AGVManager>();
         if (lineData.partName == null)
         {
             lineData.partName = gameObject.name;
@@ -132,11 +132,11 @@ public class DottetLine : MonoBehaviour
             outline.enabled = selected;
             if (selected)
             {
-                importer.selectedExtraParts.Add(this);
+                manager.selectedExtraParts.Add(this);
             }
             else
             {
-                importer.selectedExtraParts.Remove(this);
+                manager.selectedExtraParts.Remove(this);
             }
         }
     }
