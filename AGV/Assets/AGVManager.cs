@@ -365,7 +365,7 @@ namespace AGV
             {
                 string partName = parts.transform.GetChild(i).name;
                 parts.transform.Find(partName).GetComponent<Renderer>().material.color = orange;
-                MainBrowser.RunJavaScript("document.getElementById(" + partName + ").style.backgroundColor = '" + htmlOrange + "'");
+                MainBrowser.RunJavaScript("document.getElementById('" + partName + "').style.backgroundColor = '" + htmlOrange + "';");
             }
             Debug.Log("current Vertex: " + currentVertex + " " + currentVertex.Split(','));
             string[] currentParts = currentVertex.ReplaceMultiple(removeChars, ' ').Replace(" ", "").Split(',');
@@ -413,7 +413,7 @@ namespace AGV
             foreach (STaggedEdge<string, string[]> edgeItem in edgeList)
             {
                 Debug.Log(edgeItem + " " + edgeItem.Tag[0] + " " + edgeItem.Tag[1] + " document.getElementById('" + edgeItem.Tag[0] + "').style.backgroundColor = '" + htmlGreen + "'");
-                parts.transform.Find(edgeItem.Tag[0] + "").GetComponent<Renderer>().material.color = green;
+                parts.transform.Find(edgeItem.Tag[0]).GetComponent<Renderer>().material.color = green;
                 MainBrowser.RunJavaScript("document.getElementById('" + edgeItem.Tag[0] + "').style.backgroundColor = '" + htmlGreen + "'");
                 addableParts.Add(edgeItem.Tag[0] + "");
             }
@@ -462,8 +462,6 @@ namespace AGV
                 partOutline = parts.transform.Find(this.activePart.name).GetComponent<Outline>();
                 partOutline.OutlineColor = yellow;
                 partOutline.enabled = true;
-
-                MainBrowser.RunJavaScript("document.getElementById('" + activePart.name + "').style.backgroundColor = '" + htmlYellow + "';");
                 activePart.GetComponent<Renderer>().material.color = yellow;
             }
             activePart.SetActive(true);
@@ -487,7 +485,6 @@ namespace AGV
             {
                 loadAndPlayTransition(edge.Tag[0], edge.Tag[1]);
             }
-
             MainBrowser.RunJavaScript("loadInstructions();");
         }
 
@@ -518,7 +515,6 @@ namespace AGV
                     DottetLine line = extraPart.GetComponent<DottetLine>();
                     if (extraPart.activeSelf && (line.lineData.assembledParts.Except(assembledParts).Count() > 0))
                     {
-                        Debug.Log("TRUE");
                         line.assembled = false;
                         extraPart.SetActive(false);
                     }
@@ -753,7 +749,7 @@ namespace AGV
             {
                 if (edgeLabels)
                 {
-                    graphString += "\"" + edge.Source.Replace("\"", "") + "\" -> \"" + edge.Target.Replace("\"", "") + "\" [label=" + edge.Tag + "];\n";
+                    graphString += "\"" + edge.Source.Replace("\"", "") + "\" -> \"" + edge.Target.Replace("\"", "") + "\" [label=" + edge.Tag[0] + "];\n";
                 }
                 else
                 {
