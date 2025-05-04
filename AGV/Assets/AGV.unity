@@ -927,7 +927,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114000010958089028, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
       propertyPath: InitialURL
-      value: http://localhost/Basics.html
+      value: http://localhost/AGV.html
       objectReference: {fileID: 0}
     - target: {fileID: 114000010958089028, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
       propertyPath: DialogPanel
@@ -947,7 +947,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114000010958089028, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
       propertyPath: StreamingResourceName
-      value: BoilerController
+      value: AGV-HTML-Controller
       objectReference: {fileID: 0}
     - target: {fileID: 114000013104010366, guid: a157ba4f6c2697e45940e6c6b280da74, type: 3}
       propertyPath: m_Color.a
