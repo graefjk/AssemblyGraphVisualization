@@ -23,5 +23,6 @@ You can add a dotted line through one axis of the part by middle clicking it and
 Once all parts are properly positioned in the scene you can save them by clicking the `save extra parts` button.
 # Models
 Spacemouse from https://github.com/Launcherspider/3D-Spacemouse<br>
+with assembly instructions from https://www.instructables.com/DIY-Space-Mouse-for-Fusion-360-Using-Magnets/<br><br>
 Ripcord Flyer from https://www.thingiverse.com/thing:3867577<br>
 Forklift Kit from https://www.thingiverse.com/thing:6550035<br>
