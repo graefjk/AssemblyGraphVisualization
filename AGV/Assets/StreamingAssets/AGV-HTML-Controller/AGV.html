@@ -345,7 +345,7 @@
             <button onclick="pageRight()" id="pageRight"><i class="fa" style="font-size: 20px">&#xf054;</i></button>
         </div>
 
-        <div id='textAreaDiv'>
+        <div id='textAreaDiv' onmouseenter = "prompt('textDivEnter')" onmouseleave = "prompt('textDivExit')">
             <!-- <textarea id='textArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
         </div>
         <div id="resize-bar" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragContentBoxResizeBar = true"></div>
@@ -413,7 +413,7 @@
                     <button onclick="setLine()" hidden>set Axis</button>
                 </div>
             </div>
-            <div id='partTextAreaDiv'>
+            <div id='partTextAreaDiv' onmouseenter = "prompt('textDivEnter')" onmouseleave = "prompt('textDivExit')">
                 <!-- <textarea id='partTextArea' onfocus='textAreaFocus()' onblur='textAreaBlur()'></textarea> -->
             </div>
             <div id="resize-bar-part" onmouseover="changeToResizeCursor()" onmouseout="changeToNormalCursor()" onmousedown="dragPartDescriptionResizeBar = true"></div>

@@ -13,7 +13,7 @@ namespace AGV
         public float rotationSpeed = 1;
         [SerializeField]
         public float distanceFactor = 3;
-        AGVManager importer;
+        AGVManager manager;
         WebBrowser2D MainBrowser;
         RawImage ui;
         public float scrollSpeed;
@@ -23,7 +23,7 @@ namespace AGV
         void Start()
         {
             assembly = GameObject.Find("Assembly");
-            importer = GameObject.Find("AGVManager").GetComponent<AGVManager>();
+            manager = GameObject.Find("AGVManager").GetComponent<AGVManager>();
             MainBrowser = GameObject.Find("Browser2D").GetComponent<WebBrowser2D>();
             ui = GameObject.Find("Browser2D").GetComponent<RawImage>();
         }
@@ -31,12 +31,12 @@ namespace AGV
         // Update is called once per frame
         void Update()
         {
-            if (importer.textAreaHasFocus)
+            if (manager.textAreaHasFocus)
             {
                 return;
             }
 
-            Bounds bounds = importer.getAssemblyBounds();
+            Bounds bounds = manager.getAssemblyBounds();
             Vector3 center = assembly.GetComponent<RotateAssembly>().centerPosition;
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.LeftControl))
             {
@@ -123,7 +123,9 @@ namespace AGV
                 transform.rotation = Quaternion.Euler(0, 180, 0);
             }
 
-            Camera.main.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
+            if (!manager.textDivHover) {
+                Camera.main.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
+            }
         }
 
         public bool isUI()

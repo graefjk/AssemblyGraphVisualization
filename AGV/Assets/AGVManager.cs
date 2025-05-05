@@ -903,6 +903,7 @@ namespace AGV
         }
 
         public bool textAreaHasFocus = false;
+        public bool textDivHover = true;
         public void textAreaFocus()
         {
             textAreaHasFocus = true;
@@ -911,6 +912,16 @@ namespace AGV
         public void textAreaBlur()
         {
             textAreaHasFocus = false;
+        }
+
+        public void textDivEnter()
+        {
+            textDivHover = true;
+        }
+
+        public void textDivExit()
+        {
+            textDivHover = false;
         }
 
         [System.Serializable]
