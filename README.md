@@ -1,9 +1,10 @@
 # AssemblyGraphVisualization
 AssemblyGraphVisualization is a program to visualize all possible paths an assembly can be build. <br>
 Generate the assembly graph with [Assembly Graph Visualization - Assemble them all](https://github.tik.uni-stuttgart.de/st161399/AssemblyGraphVisualization-AssembleThemAll)
-<img width="961" alt="AGV3" src="https://github.tik.uni-stuttgart.de/st161399/AssemblyGraphVisualization/assets/1090/c81c56ae-9148-495f-af46-3b3d5d286a9e">
+<img width="961" alt="AGV3" src="https://github.com/user-attachments/assets/896e8c07-6c90-4f63-9c4f-32c19a0081aa" />
 
-https://github.tik.uni-stuttgart.de/st161399/AssemblyGraphVisualization/assets/1090/1f790a1c-4458-4190-a3b6-79a3858fd983
+
+
 
 # Adding Instructions 
 To add instructions first choose which parts should be assembled and which should be disassembled by clicking the checkboxes next to each part name in the parts list.<br>
