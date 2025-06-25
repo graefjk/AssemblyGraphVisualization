@@ -6,6 +6,10 @@ Generate the assembly graph with [Assembly Graph Visualization - Assemble them a
 
 
 
+https://github.com/user-attachments/assets/5df7a85b-8418-420c-937d-829f60ba4d22
+
+
+
 # Adding Instructions 
 To add instructions first choose which parts should be assembled and which should be disassembled by clicking the checkboxes next to each part name in the parts list.<br>
 A part that is currently assembled and whose chakbox is checked is one which will have to be assembled for the instructions to be shown.<br>
