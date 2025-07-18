@@ -1,6 +1,6 @@
 # AssemblyGraphVisualization
 AssemblyGraphVisualization is a program to visualize all possible paths an assembly can be build. <br>
-Generate the assembly graph with [Assembly Graph Visualization - Assemble them all](https://github.tik.uni-stuttgart.de/st161399/AssemblyGraphVisualization-AssembleThemAll)
+Generate the assembly graph with [Assembly Graph Visualization - Assemble them all](https://github.com/graefjk/AssemblyGraphVisualization-AssembleThemAll)
 <img width="961" alt="AGV3" src="https://github.com/user-attachments/assets/896e8c07-6c90-4f63-9c4f-32c19a0081aa" />
 
 
